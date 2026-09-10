@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import profileIcon from '@/assets/icons/profile.svg';
 import DMModal from '@/components/profile/DMModal';
 import {getDmRooms} from '@/lib/api/messages';
@@ -21,9 +21,11 @@ export default function DirectMessagesPage() {
   const {isConnected, subscribe, unsubscribe} = useWebSocketStore();
   const currentUserId = useAuthStore(state => state.data?.userDto?.id);
 
-  useEffect(() => {
+  const fetchRooms = useCallback(() => {
     getDmRooms().then(response => setRooms(response.data)).catch(console.error).finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => { fetchRooms(); }, [fetchRooms]);
 
   useEffect(() => {
     const updateList = (event: Event) => {
@@ -36,6 +38,20 @@ export default function DirectMessagesPage() {
     window.addEventListener('dm-list-updated', updateList);
     return () => window.removeEventListener('dm-list-updated', updateList);
   }, []);
+
+  useEffect(() => {
+    const refresh = () => fetchRooms();
+    const markRoomRead = (event: Event) => {
+      const {roomId} = (event as CustomEvent<{roomId: string}>).detail;
+      setRooms(previous => previous.map(room => room.roomId === roomId ? {...room, unreadCount: 0} : room));
+    };
+    window.addEventListener('dm-list-refresh', refresh);
+    window.addEventListener('dm-room-read', markRoomRead);
+    return () => {
+      window.removeEventListener('dm-list-refresh', refresh);
+      window.removeEventListener('dm-room-read', markRoomRead);
+    };
+  }, [fetchRooms]);
 
   useEffect(() => {
     if (!isConnected || rooms.length === 0) return;

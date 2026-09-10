@@ -20,8 +20,21 @@ export default function DMModal({open, onOpenChange, targetUser, roomId, dmKey}:
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const activeRoom = roomId && dmKey ? {roomId, dmKey} : createdRoom;
   const handleIncomingMessage = useCallback((message: DmMessage) => {
-    setMessages(previous => previous.some(item => item.messageId === message.messageId) ? previous : [...previous, message]);
-  }, []);
+    setMessages(previous => {
+      if (previous.some(item => item.messageId === message.messageId)) return previous;
+      const pendingIndex = previous.findIndex(item =>
+        item.messageId.startsWith('pending-')
+        && item.senderId === message.senderId
+        && item.content === message.content);
+      if (pendingIndex === -1) return [...previous, message];
+      return previous.map((item, index) => index === pendingIndex ? message : item);
+    });
+    if (activeRoom && message.senderId !== currentUserId) {
+      markDmMessagesRead(activeRoom.roomId, message.messageId)
+        .then(() => window.dispatchEvent(new CustomEvent('dm-room-read', {detail: {roomId: activeRoom.roomId}})))
+        .catch(console.error);
+    }
+  }, [activeRoom, currentUserId]);
 
   useEffect(() => {
     if (open && accessToken && !isConnected) connect(accessToken);
@@ -33,7 +46,10 @@ export default function DMModal({open, onOpenChange, targetUser, roomId, dmKey}:
       const response = await getDmMessages(id);
       setMessages(response.messages);
       const lastMessage = response.messages.at(-1);
-      if (lastMessage) await markDmMessagesRead(id, lastMessage.messageId);
+      if (lastMessage) {
+        await markDmMessagesRead(id, lastMessage.messageId);
+        window.dispatchEvent(new CustomEvent('dm-room-read', {detail: {roomId: id}}));
+      }
     } finally { setLoading(false); }
   }, []);
 
@@ -65,6 +81,12 @@ export default function DMModal({open, onOpenChange, targetUser, roomId, dmKey}:
   const sendMessage = () => {
     if (!activeRoom || !targetUser || !content.trim() || !isConnected) return;
     const text = content.trim();
+    setMessages(previous => [...previous, {
+      messageId: `pending-${crypto.randomUUID()}`,
+      senderId: currentUserId || '',
+      content: text,
+      createdAt: new Date().toISOString(),
+    }]);
     send('/pub/direct-messages_send', {roomId: activeRoom.roomId, receiverId: targetUser.id, content: text});
     window.dispatchEvent(new CustomEvent('dm-list-updated', {detail: {
       roomId: activeRoom.roomId,
@@ -76,7 +98,10 @@ export default function DMModal({open, onOpenChange, targetUser, roomId, dmKey}:
   };
   if (!targetUser) return null;
 
-  return <Dialog open={open} onOpenChange={onOpenChange}>
+  return <Dialog open={open} onOpenChange={nextOpen => {
+    if (!nextOpen) window.dispatchEvent(new Event('dm-list-refresh'));
+    onOpenChange(nextOpen);
+  }}>
     <DialogContent className="bg-white w-[600px] h-[510px] max-w-[min(600px,90vw)] p-0 gap-0 rounded-[30px] border-0 flex overflow-hidden" showCloseButton={false}>
       <div className="flex flex-col h-full w-full">
         <header className="flex gap-2 items-center px-5 py-3 border-b border-[#e7e7e9]"><img src={targetUser.profileImageUrl || profileIcon} alt="" className="size-[30px] rounded-full object-cover bg-[#a9a9b1]" /><strong className="text-[#34343d] text-[18px]">{targetUser.name}</strong></header>
