@@ -10,13 +10,18 @@ import {useAuthStore} from '@/lib/stores/useAuthStore';
 interface DMModalProps { open: boolean; onOpenChange: (open: boolean) => void; targetUser: {id: string; name: string; profileImageUrl?: string} | null; roomId?: string; dmKey?: string; }
 
 export default function DMModal({open, onOpenChange, targetUser, roomId, dmKey}: DMModalProps) {
-  const {send, isConnected, subscribe, unsubscribe} = useWebSocketStore();
+  const {send, connect, isConnected, subscribe, unsubscribe} = useWebSocketStore();
   const currentUserId = useAuthStore(state => state.data?.userDto?.id);
+  const accessToken = useAuthStore(state => state.data?.accessToken);
   const [messages, setMessages] = useState<DmMessage[]>([]);
   const [content, setContent] = useState('');
   const [createdRoom, setCreatedRoom] = useState<{roomId: string; dmKey: string} | null>(null);
   const [loading, setLoading] = useState(false);
   const activeRoom = roomId && dmKey ? {roomId, dmKey} : createdRoom;
+
+  useEffect(() => {
+    if (open && accessToken && !isConnected) connect(accessToken);
+  }, [open, accessToken, isConnected, connect]);
 
   const loadMessages = useCallback(async (id: string) => {
     setLoading(true);
