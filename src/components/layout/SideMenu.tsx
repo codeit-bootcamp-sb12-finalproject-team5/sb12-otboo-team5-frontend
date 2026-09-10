@@ -90,7 +90,7 @@ function Setting2Icon() {
 }
 
 function DmIcon() {
-  return <div className="overflow-clip relative shrink-0 size-5"><img alt="DM" className="block max-w-none size-full" src={sendIcon} /></div>;
+  return <div className="overflow-clip relative shrink-0 size-4"><img alt="DM" className="block max-w-none size-full" src={sendIcon} /></div>;
 }
 
 // 메뉴 아이템 정의
