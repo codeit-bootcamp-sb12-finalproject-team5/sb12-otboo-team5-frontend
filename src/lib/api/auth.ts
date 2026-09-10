@@ -9,11 +9,7 @@ import type {
  * 로그인
  */
 export const signIn = async (request: SignInRequest): Promise<JwtDto> => {
-  const formData = new FormData();
-  formData.append('username', request.username);
-  formData.append('password', request.password);
-  
-  return apiClient.postFormData<JwtDto>('/api/auth/sign-in', formData);
+  return apiClient.post<JwtDto>('/api/auth/sign-in', request);
 };
 
 /**
