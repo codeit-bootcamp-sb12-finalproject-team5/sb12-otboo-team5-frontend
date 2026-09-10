@@ -111,5 +111,8 @@ export {
 
 export {
   // Messages
-  getDms,
+  getDmRooms,
+  getDmMessages,
+  createDmRoom,
+  markDmMessagesRead,
 } from './messages';

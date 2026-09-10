@@ -7,6 +7,7 @@ import settingIcon from '@/assets/illust_logos/il_setting.svg';
 import setting2Icon from '@/assets/illust_logos/il_setting-2.svg';
 import closetIcon from '@/assets/illust_logos/il_closet.svg';
 import profileIcon from '@/assets/icons/profile.svg';
+import sendIcon from '@/assets/icons/ic_send.svg';
 import LogoSvg from "@/assets/illust_logos/Logo.svg";
 import {useAuthStore} from "@/lib/stores/useAuthStore.ts";
 
@@ -88,6 +89,10 @@ function Setting2Icon() {
   );
 }
 
+function DmIcon() {
+  return <div className="overflow-clip relative shrink-0 size-5"><img alt="DM" className="block max-w-none size-full" src={sendIcon} /></div>;
+}
+
 // 메뉴 아이템 정의
 const menuItems = [
   {
@@ -113,6 +118,12 @@ const menuItems = [
     label: '프로필',
     path: '/profiles',
     icon: <ProfileIcon />
+  },
+  {
+    id: 'direct-messages',
+    label: 'DM',
+    path: '/direct-messages',
+    icon: <DmIcon />
   },
   {
     id: 'users',
