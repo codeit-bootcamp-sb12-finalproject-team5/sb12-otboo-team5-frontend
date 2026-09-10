@@ -2,7 +2,9 @@ import {useEffect, useState} from 'react';
 import profileIcon from '@/assets/icons/profile.svg';
 import DMModal from '@/components/profile/DMModal';
 import {getDmRooms} from '@/lib/api/messages';
-import type {DmRoomListItem} from '@/lib/api/types';
+import type {DmMessage, DmRoomListItem} from '@/lib/api/types';
+import {useWebSocketStore} from '@/lib/stores/websocketStore';
+import {useAuthStore} from '@/lib/stores/useAuthStore';
 
 function formatSentAt(sentAt: string) {
   const date = new Date(sentAt);
@@ -16,10 +18,43 @@ export default function DirectMessagesPage() {
   const [rooms, setRooms] = useState<DmRoomListItem[]>([]);
   const [selectedRoom, setSelectedRoom] = useState<DmRoomListItem | null>(null);
   const [loading, setLoading] = useState(true);
+  const {isConnected, subscribe, unsubscribe} = useWebSocketStore();
+  const currentUserId = useAuthStore(state => state.data?.userDto?.id);
 
   useEffect(() => {
     getDmRooms().then(response => setRooms(response.data)).catch(console.error).finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    const updateList = (event: Event) => {
+      const detail = (event as CustomEvent<{roomId: string; dmKey: string; opponent: DmRoomListItem['opponent']; message: DmMessage}>).detail;
+      setRooms(previous => {
+        const nextItem: DmRoomListItem = {roomId: detail.roomId, dmKey: detail.dmKey, opponent: detail.opponent, lastMessage: {content: detail.message.content, sentAt: detail.message.createdAt}, unreadCount: 0};
+        return [nextItem, ...previous.filter(item => item.roomId !== detail.roomId)];
+      });
+    };
+    window.addEventListener('dm-list-updated', updateList);
+    return () => window.removeEventListener('dm-list-updated', updateList);
+  }, []);
+
+  useEffect(() => {
+    if (!isConnected || rooms.length === 0) return;
+    const subscriptions = rooms.map(room => {
+      const destination = `/sub/direct-messages_${room.dmKey}`;
+      const handler = (message: DmMessage) => {
+        setRooms(previous => previous
+          .map(item => item.roomId !== room.roomId ? item : {
+            ...item,
+            lastMessage: {content: message.content, sentAt: message.createdAt},
+            unreadCount: message.senderId === currentUserId ? item.unreadCount : item.unreadCount + 1,
+          })
+          .sort((left, right) => new Date(right.lastMessage.sentAt).getTime() - new Date(left.lastMessage.sentAt).getTime()));
+      };
+      subscribe(destination, handler);
+      return {destination, handler};
+    });
+    return () => subscriptions.forEach(({destination, handler}) => unsubscribe(destination, handler));
+  }, [isConnected, rooms, currentUserId, subscribe, unsubscribe]);
 
   return <div className="h-full overflow-y-auto bg-white px-8 py-10">
     <div className="mx-auto w-full max-w-[760px]">

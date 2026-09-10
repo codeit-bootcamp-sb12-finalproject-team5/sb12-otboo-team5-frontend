@@ -19,6 +19,9 @@ export default function DMModal({open, onOpenChange, targetUser, roomId, dmKey}:
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const activeRoom = roomId && dmKey ? {roomId, dmKey} : createdRoom;
+  const handleIncomingMessage = useCallback((message: DmMessage) => {
+    setMessages(previous => previous.some(item => item.messageId === message.messageId) ? previous : [...previous, message]);
+  }, []);
 
   useEffect(() => {
     if (open && accessToken && !isConnected) connect(accessToken);
@@ -55,13 +58,20 @@ export default function DMModal({open, onOpenChange, targetUser, roomId, dmKey}:
   useEffect(() => {
     if (!open || !activeRoom) return;
     const destination = `/sub/direct-messages_${activeRoom.dmKey}`;
-    subscribe(destination, (message: DmMessage) => setMessages(previous => previous.some(item => item.messageId === message.messageId) ? previous : [...previous, message]));
-    return () => unsubscribe(destination);
-  }, [open, activeRoom?.dmKey, subscribe, unsubscribe]);
+    subscribe(destination, handleIncomingMessage);
+    return () => unsubscribe(destination, handleIncomingMessage);
+  }, [open, activeRoom?.dmKey, subscribe, unsubscribe, handleIncomingMessage]);
 
   const sendMessage = () => {
     if (!activeRoom || !targetUser || !content.trim() || !isConnected) return;
-    send('/pub/direct-messages_send', {roomId: activeRoom.roomId, receiverId: targetUser.id, content: content.trim()});
+    const text = content.trim();
+    send('/pub/direct-messages_send', {roomId: activeRoom.roomId, receiverId: targetUser.id, content: text});
+    window.dispatchEvent(new CustomEvent('dm-list-updated', {detail: {
+      roomId: activeRoom.roomId,
+      dmKey: activeRoom.dmKey,
+      opponent: targetUser,
+      message: {senderId: currentUserId, content: text, createdAt: new Date().toISOString()},
+    }}));
     setContent('');
   };
   if (!targetUser) return null;
