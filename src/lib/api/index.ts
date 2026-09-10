@@ -115,4 +115,5 @@ export {
   getDmMessages,
   createDmRoom,
   markDmMessagesRead,
+  leaveDmRoom,
 } from './messages';

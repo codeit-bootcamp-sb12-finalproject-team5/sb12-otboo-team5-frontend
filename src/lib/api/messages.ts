@@ -19,3 +19,7 @@ export const createDmRoom = async (receiverId: string): Promise<DmRoomResponse> 
 export const markDmMessagesRead = async (roomId: string, lastReadMessageId: string): Promise<void> => {
   await apiClient.patch<void>(`/api/direct-messages/${roomId}/read`, {lastReadMessageId});
 };
+
+export const leaveDmRoom = async (roomId: string): Promise<void> => {
+  await apiClient.delete<void>(`/api/direct-messages/${roomId}`);
+};
