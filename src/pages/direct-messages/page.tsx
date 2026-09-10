@@ -28,14 +28,26 @@ export default function DirectMessagesPage() {
   const currentUserId = useAuthStore(state => state.data?.userDto?.id);
 
   const fetchRooms = useCallback(() => {
-    getDmRooms().then(response => setRooms(response.data)).catch(console.error).finally(() => setLoading(false));
+    getDmRooms().then(response => {
+      setRooms(response.data);
+      setSwipedRoomId(null);
+    }).catch(console.error).finally(() => setLoading(false));
   }, []);
 
   useEffect(() => { fetchRooms(); }, [fetchRooms]);
 
   useEffect(() => {
+    if (!isConnected || !currentUserId) return;
+    const destination = `/sub/users_${currentUserId}/dm-list`;
+    const refreshList = () => fetchRooms();
+    subscribe(destination, refreshList);
+    return () => unsubscribe(destination, refreshList);
+  }, [isConnected, currentUserId, fetchRooms, subscribe, unsubscribe]);
+
+  useEffect(() => {
     const updateList = (event: Event) => {
       const detail = (event as CustomEvent<{roomId: string; dmKey: string; opponent: DmRoomListItem['opponent']; message: DmMessage}>).detail;
+      setSwipedRoomId(null);
       setRooms(previous => {
         const nextItem: DmRoomListItem = {roomId: detail.roomId, dmKey: detail.dmKey, opponent: detail.opponent, lastMessage: {content: detail.message.content, sentAt: detail.message.createdAt}, unreadCount: 0};
         return [nextItem, ...previous.filter(item => item.roomId !== detail.roomId)];
