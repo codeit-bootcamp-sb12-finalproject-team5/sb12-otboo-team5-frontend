@@ -7,10 +7,11 @@ interface WebSocketState {
   isConnected: boolean;
   isConnecting: boolean;
   subscriptions: Map<string, StompSubscription>;
+  messageHandlers: Map<string, Set<(message: any) => void>>;
   connect: (accessToken: string) => Promise<void>;
   disconnect: () => void;
   subscribe: (destination: string, callback: (message: any) => void) => void;
-  unsubscribe: (destination: string) => void;
+  unsubscribe: (destination: string, callback?: (message: any) => void) => void;
   send: (destination: string, body: any) => void;
 }
 
@@ -19,6 +20,7 @@ export const useWebSocketStore = create<WebSocketState>((set, get) => ({
   isConnected: false,
   isConnecting: false,
   subscriptions: new Map(),
+  messageHandlers: new Map(),
 
   connect: async (accessToken: string) => {
     const { isConnected, isConnecting } = get();
@@ -62,37 +64,50 @@ export const useWebSocketStore = create<WebSocketState>((set, get) => ({
     const { stompClient, isConnected } = get();
     if (stompClient && isConnected) {
       stompClient.deactivate();
-      set({ stompClient: null, isConnected: false, subscriptions: new Map() });
+      set({ stompClient: null, isConnected: false, subscriptions: new Map(), messageHandlers: new Map() });
     }
   },
 
   subscribe: (destination: string, callback: (message: any) => void) => {
-    const { stompClient, isConnected, subscriptions } = get();
+    const { stompClient, isConnected, subscriptions, messageHandlers } = get();
 
-    if (subscriptions.has(destination) || !isConnected || stompClient == null) {
+    if (!isConnected || stompClient == null) {
       return;
     }
 
+    const handlers = messageHandlers.get(destination) ?? new Set();
+    handlers.add(callback);
+    messageHandlers.set(destination, handlers);
+
+    if (subscriptions.has(destination)) return;
+
     const subscription: StompSubscription = stompClient.subscribe(destination, (message) => {
       const payload = JSON.parse(message.body);
-      callback(payload);
+      get().messageHandlers.get(destination)?.forEach(handler => handler(payload));
     });
 
     subscriptions.set(destination, subscription);
   },
 
-  unsubscribe: (destination: string) => {
-    const { stompClient, isConnected, subscriptions } = get();
+  unsubscribe: (destination: string, callback?: (message: any) => void) => {
+    const { stompClient, isConnected, subscriptions, messageHandlers } = get();
 
     if (!subscriptions.has(destination) || !isConnected || stompClient == null) {
       return;
+    }
+
+    const handlers = messageHandlers.get(destination);
+    if (callback && handlers) {
+      handlers.delete(callback);
+      if (handlers.size > 0) return;
     }
 
     const subscription = subscriptions.get(destination);
     if (subscription) {
       subscription.unsubscribe();
       subscriptions.delete(destination);
-      set({ subscriptions });
+      messageHandlers.delete(destination);
+      set({ subscriptions, messageHandlers });
     }
   },
 

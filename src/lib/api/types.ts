@@ -203,6 +203,41 @@ export interface DirectMessageDto {
   content: string;
 }
 
+export interface DmRoomListItem {
+  roomId: string;
+  dmKey: string;
+  opponent: { id: string; name: string; profileImageUrl?: string };
+  lastMessage: { content: string; sentAt: string };
+  unreadCount: number;
+}
+
+export interface DmRoomListResponse {
+  data: DmRoomListItem[];
+  nextCursor?: string;
+  hasNext: boolean;
+}
+
+export interface DmMessage {
+  messageId: string;
+  senderId: string;
+  content: string;
+  createdAt: string;
+}
+
+export interface DmMessageListResponse {
+  roomId: string;
+  messages: DmMessage[];
+  nextCursor?: string;
+  hasNext: boolean;
+}
+
+export interface DmRoomResponse {
+  roomId: string;
+  dmKey: string;
+  opponentId: string;
+  created: boolean;
+}
+
 export interface JwtDto {
   userDto: UserDto;
   accessToken: string;

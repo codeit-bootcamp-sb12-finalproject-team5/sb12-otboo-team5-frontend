@@ -15,6 +15,7 @@ import ProfilePage from '@/pages/profile/page';
 import UserManagementPage from '@/pages/admin/users/page';
 import ClothesAttributeManagementPage from '@/pages/admin/clothes-attributes/page';
 import MyProfileSettingsPage from '@/pages/settings/page';
+import DirectMessagesPage from '@/pages/direct-messages/page';
 import NotFoundPage from '@/pages/404/page';
 import CsrfInitializer from "@/components/auth/CsrfInitializer.tsx";
 
@@ -44,6 +45,7 @@ function App() {
           <Route path="admin/users" element={<UserManagementPage />} />
           <Route path="admin/clothes-attributes" element={<ClothesAttributeManagementPage />} />
           <Route path="settings" element={<MyProfileSettingsPage />} />
+          <Route path="direct-messages" element={<DirectMessagesPage />} />
         </Route>
         
         <Route path="/404" element={<NotFoundPage />} />

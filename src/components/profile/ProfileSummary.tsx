@@ -183,11 +183,11 @@ export default function ProfileSummary({
       <DMModal 
         open={dmModalOpen}
         onOpenChange={setDmModalOpen}
-        targetUser={profile ? {
-          id: profile.userId,
-          name: profile.name,
-          profileImageUrl: profile.profileImageUrl
-        } : null}
+        targetUser={{
+          id: userId,
+          name: profile?.name || '사용자',
+          profileImageUrl: profile?.profileImageUrl
+        }}
       />
 
       {/* 팔로워 모달 */}
