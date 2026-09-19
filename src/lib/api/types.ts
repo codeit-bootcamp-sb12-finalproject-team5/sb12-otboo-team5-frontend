@@ -53,7 +53,7 @@ export interface ProfileDto {
   name: string;
   gender?: Gender;
   birthDate?: string;
-  location?: WeatherAPILocation;
+  locationNames: string[];
   temperatureSensitivity?: number;
   profileImageUrl?: string;
 }
@@ -284,7 +284,8 @@ export interface ProfileUpdateRequest {
   name?: string;
   gender?: Gender;
   birthDate?: string;
-  location?: WeatherAPILocation;
+  longitude?: number;
+  latitude?: number;
   temperatureSensitivity?: number;
 }
 

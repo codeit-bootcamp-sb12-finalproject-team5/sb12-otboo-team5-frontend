@@ -53,7 +53,7 @@ export default function MyProfileSettingsPage() {
         name: profile.name || '',
         gender: profile.gender,
         birthDate: profile.birthDate || '',
-        location: profile.location,
+        location: undefined,
         temperatureSensitivity: profile.temperatureSensitivity,
         profileImageUrl: profile.profileImageUrl
       });
@@ -87,7 +87,7 @@ export default function MyProfileSettingsPage() {
         name: profile.name || '',
         gender: profile.gender,
         birthDate: profile.birthDate || '',
-        location: profile.location,
+        location: undefined,
         temperatureSensitivity: profile.temperatureSensitivity,
         profileImageUrl: profile.profileImageUrl
       });
@@ -108,13 +108,10 @@ export default function MyProfileSettingsPage() {
         name: data.name || undefined,
         gender: data.gender,
         birthDate: data.birthDate || undefined,
+        latitude: data.location?.latitude,
+        longitude: data.location?.longitude,
         temperatureSensitivity: data.temperatureSensitivity
       };
-
-      // 위치 정보 처리
-      if (data.location) {
-        updateRequest.location = data.location;
-      }
 
       // API 직접 호출
       const updatedProfile = await updateProfile(
@@ -192,6 +189,7 @@ export default function MyProfileSettingsPage() {
           {/* 현재 위치 */}
           <LocationInput
             location={watchedValues.location}
+            locationNames={profile?.locationNames}
             onChange={handleLocationChange}
           />
 
