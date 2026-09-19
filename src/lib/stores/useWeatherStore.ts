@@ -8,6 +8,7 @@ interface WeatherStore extends ListStore<WeatherDto, WeatherParams> {
   selectedWeather?: WeatherDto;
   selectWeather: (weather: WeatherDto) => void;
   clearSelection: () => void;
+  setData: (weather: WeatherDto[]) => void;
 }
 
 
@@ -21,6 +22,7 @@ export const useWeatherStore = create<WeatherStore>((set, get) => ({
   }),
 
   selectedWeather: undefined,
+  setData: (weather) => set({ data: weather }),
   selectWeather: (weather: WeatherDto) => set({ selectedWeather: weather }),
   clearSelection: () => set({ selectedWeather: undefined })
 }));

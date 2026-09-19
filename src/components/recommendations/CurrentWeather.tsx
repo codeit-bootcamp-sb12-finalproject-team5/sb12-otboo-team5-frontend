@@ -3,9 +3,10 @@ import {useWeatherStore} from "@/lib/stores/useWeatherStore.ts";
 
 interface CurrentWeatherProps {
   fetchLocation: () => Promise<void>;
+  locationNames?: string[];
 }
 
-export default function CurrentWeather({ fetchLocation }: CurrentWeatherProps) {
+export default function CurrentWeather({ fetchLocation, locationNames, }: CurrentWeatherProps) {
   const {selectedWeather: weather} = useWeatherStore();
 
   const temperature = weather?.temperature?.current;
@@ -54,7 +55,8 @@ export default function CurrentWeather({ fetchLocation }: CurrentWeatherProps) {
         <div className="font-bold leading-none not-italic relative shrink-0 text-gray-600 text-base text-center text-nowrap tracking-[-0.4px]">
           <p className="leading-normal whitespace-pre">
             {
-              weather?.location?.locationNames?.reduce((prev, current) => prev.concat(' ').concat(current))
+              weather?.location?.locationNames?.join(' ')
+                || locationNames?.join(' ')
                 || '위치 정보가 없습니다.'
             }
           </p>
