@@ -14,18 +14,15 @@ import emptyImageIcon from '@/assets/icons/empty image.svg'
 import leftArrowIcon from '@/assets/icons/ic_left.svg'
 
 const CLOTHES_TYPES = [
-  { label: '상의', value: 'TOP' as ClothesType },
-  { label: '하의', value: 'BOTTOM' as ClothesType },
-  { label: '원피스', value: 'DRESS' as ClothesType },
-  { label: '아우터', value: 'OUTER' as ClothesType },
-  { label: '속옷', value: 'UNDERWEAR' as ClothesType },
-  { label: '신발', value: 'SHOES' as ClothesType },
-  { label: '악세서리', value: 'ACCESSORY' as ClothesType },
-  { label: '양말', value: 'SOCKS' as ClothesType },
-  { label: '모자', value: 'HAT' as ClothesType },
-  { label: '가방', value: 'BAG' as ClothesType },
-  { label: '스카프', value: 'SCARF' as ClothesType },
-  { label: '기타', value: 'ETC' as ClothesType },
+  { label: '상의', value: '상의' as ClothesType },
+  { label: '바지', value: '바지' as ClothesType },
+  { label: '치마', value: '치마' as ClothesType },
+  { label: '아우터', value: '아우터' as ClothesType },
+  { label: '원피스', value: '원피스' as ClothesType },
+  { label: '신발', value: '신발' as ClothesType },
+  { label: '모자', value: '모자' as ClothesType },
+  { label: '가방', value: '가방' as ClothesType },
+  { label: '악세서리', value: '악세서리' as ClothesType },
 ];
 
 type ModalMode = 'form' | 'url';
@@ -45,8 +42,14 @@ export default function AddClothesModal({ open, onClose }: AddClothesModalProps)
   
   const [formData, setFormData] = useState({
     name: '',
+    brand: '',
     type: '' as ClothesType,
-    attributes: [] as ClothesAttributeDto[]
+    season: '',
+    gender: '',
+    attributes: [] as ClothesAttributeDto[],
+    description: '',
+    isOwned: true,
+    preference: 3
   });
   const [selectedAttributes, setSelectedAttributes] = useState<Record<string, string>>({});
   const [url, setUrl] = useState('');
@@ -74,8 +77,14 @@ export default function AddClothesModal({ open, onClose }: AddClothesModalProps)
       const newClothes = await createClothes({
         ownerId: auth.userDto.id,
         name: formData.name,
+        brand: formData.brand,
         type: formData.type,
-        attributes: attributes
+        season: formData.season,
+        gender: formData.gender,
+        attributes: attributes,
+        description: formData.description,
+        isOwned: formData.isOwned,
+        preference: formData.preference
       }, selectedImage || undefined);
       
       add(newClothes);
@@ -98,9 +107,24 @@ export default function AddClothesModal({ open, onClose }: AddClothesModalProps)
       const extracted = await extractByUrl(url.trim());
       setFormData({
         name: extracted.name || formData.name,
+        brand: extracted.brand ?? formData.brand,
         type: extracted.type || formData.type,
-        attributes: extracted.attributes || formData.attributes
+        season: extracted.season ?? formData.season,
+        gender: extracted.gender ?? formData.gender,
+        attributes: extracted.attributes || formData.attributes,
+        description: extracted.description ?? formData.description,
+        isOwned: extracted.isOwned ?? formData.isOwned,
+        preference: extracted.preference ?? formData.preference
       });
+      if (extracted.attributes) {
+        setSelectedAttributes(
+          Object.fromEntries(
+            extracted.attributes
+              .filter((attribute) => Boolean(attribute.value))
+              .map((attribute) => [attribute.definitionId, attribute.value])
+          )
+        );
+      }
       if (extracted.imageUrl) {
         fetch(extracted.imageUrl)
         .then((res) => res.blob())
@@ -123,7 +147,17 @@ export default function AddClothesModal({ open, onClose }: AddClothesModalProps)
 
   const handleClose = () => {
     setMode('form');
-    setFormData({ name: '', type: '' as ClothesType, attributes: [] });
+    setFormData({
+      name: '',
+      brand: '',
+      type: '' as ClothesType,
+      season: '',
+      gender: '',
+      attributes: [],
+      description: '',
+      isOwned: true,
+      preference: 3
+    });
     setSelectedAttributes({});
     clearImage();
     setUrl('');
@@ -208,6 +242,21 @@ export default function AddClothesModal({ open, onClose }: AddClothesModalProps)
                 />
               </div>
 
+              {/* 브랜드 */}
+              <div className="content-stretch flex flex-col gap-2.5 items-start justify-start relative shrink-0 w-full">
+                <label htmlFor="clothes-brand" className="font-bold leading-none not-italic relative shrink-0 text-gray-500 text-[14px] tracking-[-0.35px] w-full">
+                  브랜드
+                </label>
+                <input
+                  id="clothes-brand"
+                  type="text"
+                  value={formData.brand}
+                  onChange={(e) => setFormData(prev => ({ ...prev, brand: e.target.value }))}
+                  placeholder="브랜드를 입력해주세요"
+                  className="bg-white box-border content-stretch flex h-[46px] items-center justify-between px-5 py-3.5 relative rounded-[12px] shrink-0 w-full border border-gray-200 shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)] focus:outline-none focus:border-blue-500"
+                />
+              </div>
+
               {/* 종류 */}
               <div className="content-stretch flex flex-col gap-2.5 items-start justify-start relative shrink-0 w-full">
                 <div className="font-bold leading-none not-italic relative shrink-0 text-gray-500 text-[14px] tracking-[-0.35px] w-full">
@@ -225,6 +274,85 @@ export default function AddClothesModal({ open, onClose }: AddClothesModalProps)
                     ))}
                   </SelectContent>
                 </Select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 w-full">
+                <div className="content-stretch flex flex-col gap-2.5 items-start justify-start relative shrink-0 w-full">
+                  <label htmlFor="clothes-season" className="font-bold leading-none text-gray-500 text-[14px] tracking-[-0.35px] w-full">
+                    계절
+                  </label>
+                  <input
+                    id="clothes-season"
+                    type="text"
+                    value={formData.season}
+                    onChange={(e) => setFormData(prev => ({ ...prev, season: e.target.value }))}
+                    placeholder="예: 가을"
+                    className="bg-white h-[46px] px-5 py-3.5 rounded-[12px] w-full border border-gray-200 shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)] focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+                <div className="content-stretch flex flex-col gap-2.5 items-start justify-start relative shrink-0 w-full">
+                  <label htmlFor="clothes-gender" className="font-bold leading-none text-gray-500 text-[14px] tracking-[-0.35px] w-full">
+                    성별
+                  </label>
+                  <input
+                    id="clothes-gender"
+                    type="text"
+                    value={formData.gender}
+                    onChange={(e) => setFormData(prev => ({ ...prev, gender: e.target.value }))}
+                    placeholder="예: 남성"
+                    className="bg-white h-[46px] px-5 py-3.5 rounded-[12px] w-full border border-gray-200 shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)] focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+              </div>
+
+              {/* 설명 */}
+              <div className="content-stretch flex flex-col gap-2.5 items-start justify-start relative shrink-0 w-full">
+                <label htmlFor="clothes-description" className="font-bold leading-none not-italic relative shrink-0 text-gray-500 text-[14px] tracking-[-0.35px] w-full">
+                  설명
+                </label>
+                <textarea
+                  id="clothes-description"
+                  value={formData.description}
+                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                  placeholder="의상에 대한 설명을 입력해주세요"
+                  rows={3}
+                  className="bg-white box-border resize-y min-h-[92px] px-5 py-3.5 rounded-[12px] w-full border border-gray-200 shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)] focus:outline-none focus:border-blue-500"
+                />
+              </div>
+
+              {/* 보유 여부 */}
+              <label className="content-stretch flex items-center justify-between relative shrink-0 w-full cursor-pointer">
+                <span className="font-bold text-gray-500 text-[14px] tracking-[-0.35px]">보유 여부</span>
+                <span className="flex items-center gap-2 text-[14px] text-gray-700">
+                  <input
+                    type="checkbox"
+                    checked={formData.isOwned}
+                    onChange={(e) => setFormData(prev => ({ ...prev, isOwned: e.target.checked }))}
+                    className="size-4 accent-blue-500 cursor-pointer"
+                  />
+                  보유함
+                </span>
+              </label>
+
+              {/* 선호도 */}
+              <div className="content-stretch flex flex-col gap-2.5 items-start justify-start relative shrink-0 w-full">
+                <div className="flex items-center justify-between w-full">
+                  <label htmlFor="clothes-preference" className="font-bold text-gray-500 text-[14px] tracking-[-0.35px]">선호도</label>
+                  <span className="font-semibold text-blue-500 text-[14px]">{formData.preference} / 5</span>
+                </div>
+                <input
+                  id="clothes-preference"
+                  type="range"
+                  min="1"
+                  max="5"
+                  step="1"
+                  value={formData.preference}
+                  onChange={(e) => setFormData(prev => ({ ...prev, preference: Number(e.target.value) }))}
+                  className="w-full accent-blue-500 cursor-pointer"
+                />
+                <div className="flex justify-between w-full px-0.5 text-[12px] text-gray-400">
+                  <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                </div>
               </div>
 
               {/* 의상 속성 Select들 */}

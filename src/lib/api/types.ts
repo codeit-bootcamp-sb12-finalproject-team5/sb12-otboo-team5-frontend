@@ -2,19 +2,26 @@ export type Role = 'USER' | 'ADMIN';
 export type OAuthProvider = 'google' | 'kakao';
 export type Gender = 'MALE' | 'FEMALE' | 'OTHER';
 export type SortDirection = 'ASCENDING' | 'DESCENDING';
-export type ClothesType = 
-  | 'TOP' 
-  | 'BOTTOM' 
-  | 'DRESS' 
-  | 'OUTER' 
-  | 'UNDERWEAR' 
-  | 'ACCESSORY' 
-  | 'SHOES' 
-  | 'SOCKS' 
-  | 'HAT' 
-  | 'BAG' 
-  | 'SCARF' 
-  | 'ETC';
+export type ClothesType =
+  | '상의'
+  | '바지'
+  | '치마'
+  | '아우터'
+  | '원피스'
+  | '신발'
+  | '모자'
+  | '가방'
+  | '악세서리';
+export type ClothesCategory =
+  | 'TOP'
+  | 'PANTS'
+  | 'SKIRT'
+  | 'OUTER'
+  | 'DRESS'
+  | 'SHOES'
+  | 'HAT'
+  | 'BAG'
+  | 'ACCESSORY';
 export type SkyStatus = 'CLEAR' | 'MOSTLY_CLOUDY' | 'CLOUDY';
 export type PrecipitationType = 'NONE' | 'RAIN' | 'RAIN_SNOW' | 'SNOW' | 'SHOWER';
 export type WindStrength = 'WEAK' | 'MODERATE' | 'STRONG';
@@ -131,9 +138,15 @@ export interface ClothesDto {
   id: string;
   ownerId: string;
   name: string;
+  brand?: string;
   imageUrl?: string;
   type: ClothesType;
+  season?: string;
+  gender?: string;
   attributes: ClothesAttributeWithDefDto[];
+  description?: string;
+  isOwned?: boolean;
+  preference?: number;
 }
 
 export interface OotdDto {
@@ -308,14 +321,26 @@ export interface CommentCreateRequest {
 export interface ClothesCreateRequest {
   ownerId: string;
   name: string;
+  brand: string;
   type: ClothesType;
+  season: string;
+  gender: string;
   attributes: ClothesAttributeDto[];
+  description: string;
+  isOwned: boolean;
+  preference: number;
 }
 
 export interface ClothesUpdateRequest {
   name?: string;
+  brand?: string;
   type?: ClothesType;
+  season?: string;
+  gender?: string;
   attributes?: ClothesAttributeDto[];
+  description?: string;
+  isOwned?: boolean;
+  preference?: number;
 }
 
 export interface ClothesAttributeDefCreateRequest {
@@ -359,7 +384,7 @@ export interface FeedListParams extends CursorParams, SortParams {
 }
 
 export interface ClothesListParams extends CursorParams {
-  typeEqual?: ClothesType;
+  typeEqual?: ClothesCategory;
   ownerId: string;
 }
 
