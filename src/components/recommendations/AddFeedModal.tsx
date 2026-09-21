@@ -2,10 +2,10 @@ import {useState} from 'react';
 import {Dialog, DialogContent, DialogOverlay} from '@/components/ui/dialog';
 import {useAuthStore} from '@/lib/stores/useAuthStore';
 import {useWeatherStore} from '@/lib/stores/useWeatherStore';
-import {useRecommendationStore} from '@/lib/stores/useRecommendationStore';
 import {createFeed} from '@/lib/api/feeds';
+import {createOutfit} from '@/lib/api/outfits';
 import {toast} from 'sonner';
-import type {FeedDto} from "@/lib/api";
+import type {FeedDto, RecommendedOutfitDto} from "@/lib/api";
 
 // Figma assets
 import closeIcon from '@/assets/icons/ic_X.svg';
@@ -14,18 +14,18 @@ interface AddFeedModalProps {
   open: boolean;
   onClose: () => void;
   onCreated: (feed: FeedDto) => void;
+  outfit?: RecommendedOutfitDto;
 }
 
-export default function AddFeedModal({ open, onClose, onCreated }: AddFeedModalProps) {
+export default function AddFeedModal({ open, onClose, onCreated, outfit }: AddFeedModalProps) {
   const { data: auth } = useAuthStore();
   const { selectedWeather } = useWeatherStore();
-  const { data: recommendation } = useRecommendationStore();
 
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
-    if (!auth?.userDto.id || !selectedWeather || !recommendation?.clothes) {
+    if (!auth?.userDto.id || !selectedWeather || !outfit || outfit.clothes.length === 0) {
       toast.error('필요한 정보가 없습니다.');
       return;
     }
@@ -38,12 +38,17 @@ export default function AddFeedModal({ open, onClose, onCreated }: AddFeedModalP
     setLoading(true);
     
     try {
-      const clothesIds = recommendation.clothes.map(ootd => ootd.clothesId);
+      const createdOutfit = await createOutfit({
+        name: `추천 코디 ${outfit.rank}`,
+        description: outfit.reason || undefined,
+        category: 'OOTD',
+        clothesIds: outfit.clothes.map(clothes => clothes.id),
+        weatherId: selectedWeather.id,
+      });
       
       const created = await createFeed({
         authorId: auth.userDto.id,
-        weatherId: selectedWeather.id,
-        clothesIds,
+        outfitId: createdOutfit.id,
         content: content.trim()
       });
 

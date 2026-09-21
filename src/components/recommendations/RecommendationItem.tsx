@@ -1,7 +1,7 @@
-import { type OotdDto } from '@/lib/api/types';
+import { type RecommendationClothesDto } from '@/lib/api/types';
 
 interface RecommendationItemProps {
-  item: OotdDto;
+  item: RecommendationClothesDto;
   onClick?: () => void;
 }
 
@@ -36,16 +36,13 @@ export default function RecommendationItem({ item, onClick }: RecommendationItem
       {/* 속성 태그들 */}
       <div className="relative shrink-0 w-full">
         <div className="content-stretch flex gap-1.5 items-center justify-start overflow-x-auto">
-          {item.attributes.map((attribute, index) => (
-              <div
-                  key={index}
-                  className="box-border content-stretch flex gap-1 items-center justify-center px-1.5 py-1 relative rounded-[7px] shrink-0 border border-gray-300"
-              >
-                <div className="font-semibold leading-none not-italic relative shrink-0 text-gray-500 text-[14px] tracking-[-0.35px] w-full">
-                  <p className="leading-normal">{attribute.value}</p>
-                </div>
-              </div>
-          ))}
+          <div
+            className="box-border content-stretch flex gap-1 items-center justify-center px-1.5 py-1 relative rounded-[7px] shrink-0 border border-gray-300"
+          >
+            <div className="font-semibold leading-none not-italic relative shrink-0 text-gray-500 text-[14px] tracking-[-0.35px] w-full">
+              <p className="leading-normal">{item.category}</p>
+            </div>
+          </div>
           {/* 페이드 효과를 위한 스페이서 */}
           <div className="shrink-0 w-8 h-1" />
         </div>

@@ -235,10 +235,49 @@ export interface FollowSummaryDto {
   followingMe: boolean;
 }
 
+export interface RecommendationClothesDto {
+  id: string;
+  name: string;
+  imageUrl?: string;
+  category: ClothesType;
+}
+
+export interface RecommendedOutfitDto {
+  rank: number;
+  clothes: RecommendationClothesDto[];
+  reason: string;
+  styleTags: string[];
+}
+
 export interface RecommendationDto {
-  weatherId: string;
-  userId: string;
-  clothes: OotdDto[];
+  outfits: RecommendedOutfitDto[];
+}
+
+export interface RecommendationUsage {
+  limit: number;
+  used: number;
+  remaining: number;
+}
+
+export interface RecommendationUsageResponse {
+  ootd: RecommendationUsage;
+  outfit: RecommendationUsage;
+}
+
+export interface OutfitCreateRequest {
+  name: string;
+  description?: string;
+  category: string;
+  clothesIds: string[];
+  weatherId?: string;
+}
+
+export interface OutfitCreateResponse {
+  id: string;
+  name: string;
+  description?: string;
+  clothes: Array<{id: string; name: string; imageUrl?: string}>;
+  createdAt: string;
 }
 
 export interface NotificationDto {
@@ -346,8 +385,7 @@ export interface ProfileUpdateRequest {
 
 export interface FeedCreateRequest {
   authorId: string;
-  weatherId: string;
-  clothesIds: string[];
+  outfitId: string;
   content: string;
 }
 
@@ -455,6 +493,7 @@ export interface WeatherParams {
 
 export interface RecommendationParams {
   weatherId: string;
+  selectedClothesIds?: string[];
 }
 
 export interface DirectMessageParams extends CursorParams {
