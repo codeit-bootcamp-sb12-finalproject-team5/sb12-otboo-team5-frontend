@@ -144,11 +144,15 @@ export default function FeedDetailRightSection({ feed, onDelete }: FeedDetailRig
           </div>
           <div className="flex items-center gap-2">
             <div className="bg-[#f7f7f8] box-border content-stretch flex gap-[3px] items-center justify-start pl-2.5 pr-3.5 py-1.5 relative rounded-[10px] shrink-0">
-              <div className="overflow-clip relative shrink-0 size-6">
-                <WeatherIcon skyStatus={feed.weather.skyStatus} />
-              </div>
+              {feed.weather && (
+                <div className="overflow-clip relative shrink-0 size-6">
+                  <WeatherIcon skyStatus={feed.weather.skyStatus} />
+                </div>
+              )}
               <div className="font-['SUIT:Bold',_sans-serif] leading-[0] not-italic relative shrink-0 text-[#424242] text-[14px] text-center text-nowrap tracking-[-0.35px]">
-                <p className="leading-[normal] whitespace-pre">{Math.round(feed.weather.temperature.current)}°</p>
+                <p className="leading-[normal] whitespace-pre">
+                  {feed.weather ? `${Math.round(feed.weather.temperature.current)}°` : '날씨 정보 없음'}
+                </p>
               </div>
             </div>
             

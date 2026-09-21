@@ -162,7 +162,7 @@ export interface FeedDto {
   createdAt: string;
   updatedAt: string;
   author: AuthorDto;
-  weather: WeatherSummaryDto;
+  weather: WeatherSummaryDto | null;
   ootds: OotdDto[];
   content: string;
   likeCount: number;
