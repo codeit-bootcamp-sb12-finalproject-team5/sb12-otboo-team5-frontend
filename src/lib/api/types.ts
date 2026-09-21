@@ -411,6 +411,7 @@ export interface WeatherParams {
 
 export interface RecommendationParams {
   weatherId: string;
+  selectedClothesIds?: string[];
 }
 
 export interface DirectMessageParams extends CursorParams {

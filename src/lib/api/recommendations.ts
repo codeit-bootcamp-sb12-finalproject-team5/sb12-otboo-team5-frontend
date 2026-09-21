@@ -9,7 +9,10 @@ import type {
  * 추천 조회
  */
 export const getRecommendation = async (params: RecommendationParams): Promise<RecommendationDto> => {
-  return apiClient.get<RecommendationDto>('/api/recommendations/ootd', { params });
+  const searchParams = new URLSearchParams({weatherId: params.weatherId});
+  params.selectedClothesIds?.forEach(id => searchParams.append('selectedClothesIds', id));
+
+  return apiClient.get<RecommendationDto>(`/api/recommendations/ootd?${searchParams.toString()}`);
 };
 
 /** 오늘의 추천 사용량 조회 */

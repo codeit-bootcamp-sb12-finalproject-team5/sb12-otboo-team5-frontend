@@ -4,20 +4,26 @@ import refreshIcon from '@/assets/icons/ic_refresh.svg';
 import {useRecommendationStore} from "@/lib/stores/useRecommendationStore.ts";
 import {useWeatherStore} from '@/lib/stores/useWeatherStore';
 import {getRecommendationUsage} from '@/lib/api/recommendations';
+import {getClothes} from '@/lib/api/clothes';
+import {useAuthStore} from '@/lib/stores/useAuthStore';
 import AddFeedModal from './AddFeedModal';
 import RecommendationConfirmModal from './RecommendationConfirmModal';
 import FeedDetailModal from "@/components/feeds/FeedDetailModal.tsx";
-import type {FeedDto, RecommendationUsage} from "@/lib/api";
+import type {ClothesDto, FeedDto, RecommendationUsage} from "@/lib/api";
 import {toast} from 'sonner';
 
 export default function RecommendationHeader() {
-  const {data: recommendation, loading, fetch} = useRecommendationStore();
+  const {data: recommendation, loading, fetch, setSelectedClothesIds: setRecommendationSelectedClothesIds} = useRecommendationStore();
   const {selectedWeather} = useWeatherStore();
+  const {data: auth} = useAuthStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRecommendationModalOpen, setIsRecommendationModalOpen] = useState(false);
   const [createdFeed, setCreatedFeed] = useState<FeedDto | undefined>();
   const [usage, setUsage] = useState<RecommendationUsage>();
+  const [clothes, setClothes] = useState<ClothesDto[]>([]);
+  const [selectedClothesIds, setSelectedClothesIds] = useState<string[]>([]);
   const [loadingUsage, setLoadingUsage] = useState(false);
+  const [loadingClothes, setLoadingClothes] = useState(false);
 
   const handleRegister = () => {
     setIsModalOpen(true);
@@ -26,23 +32,40 @@ export default function RecommendationHeader() {
   const handleOpenRecommendationModal = async () => {
     setIsRecommendationModalOpen(true);
     setLoadingUsage(true);
+    setLoadingClothes(true);
     setUsage(undefined);
+    setClothes([]);
+    setSelectedClothesIds([]);
 
-    try {
-      const response = await getRecommendationUsage();
-      setUsage(response.ootd);
-    } catch (error) {
-      console.error('추천 사용량 조회 실패:', error);
+    const [usageResult, clothesResult] = await Promise.allSettled([
+      getRecommendationUsage(),
+      auth?.userDto.id ? getAllClothes(auth.userDto.id) : Promise.resolve(null),
+    ]);
+
+    if (usageResult.status === 'fulfilled') {
+      setUsage(usageResult.value.ootd);
+    } else {
+      console.error('추천 사용량 조회 실패:', usageResult.reason);
       toast.error('추천 가능 횟수를 불러오지 못했습니다.');
-    } finally {
-      setLoadingUsage(false);
     }
+
+    if (clothesResult.status === 'fulfilled' && clothesResult.value) {
+      setClothes(clothesResult.value);
+    } else if (clothesResult.status === 'rejected') {
+      console.error('옷장 조회 실패:', clothesResult.reason);
+      toast.error('옷장을 불러오지 못했습니다.');
+    }
+
+    setLoadingUsage(false);
+    setLoadingClothes(false);
   };
 
   const handleConfirmRecommendation = async () => {
+    setIsRecommendationModalOpen(false);
+
     try {
+      setRecommendationSelectedClothesIds(selectedClothesIds);
       await fetch({throwError: true});
-      setIsRecommendationModalOpen(false);
     } catch (error) {
       console.error('OOTD 추천 요청 실패:', error);
       toast.error('OOTD 추천을 받지 못했습니다.');
@@ -111,10 +134,14 @@ export default function RecommendationHeader() {
         open={isRecommendationModalOpen}
         dateLabel={selectedWeather ? formatDate(selectedWeather.forecastAt) : ''}
         usage={usage}
+        clothes={clothes}
+        selectedClothesIds={selectedClothesIds}
         loadingUsage={loadingUsage}
+        loadingClothes={loadingClothes}
         recommending={loading}
         onClose={() => setIsRecommendationModalOpen(false)}
         onConfirm={handleConfirmRecommendation}
+        onToggleClothes={setSelectedClothesIds}
       />
       {/* 피드 상세 모달 */}
       {
@@ -142,4 +169,21 @@ function isToday(dateTime: string) {
 function formatDate(dateTime: string) {
   const date = new Date(dateTime);
   return `${date.getMonth() + 1}월 ${date.getDate()}일`;
+}
+
+async function getAllClothes(ownerId: string) {
+  const clothes: ClothesDto[] = [];
+  let cursor: string | undefined;
+  let idAfter: string | undefined;
+  let hasNext = true;
+
+  while (hasNext) {
+    const response = await getClothes({ownerId, limit: 100, cursor, idAfter});
+    clothes.push(...response.data);
+    cursor = response.nextCursor;
+    idAfter = response.nextIdAfter;
+    hasNext = response.hasNext;
+  }
+
+  return clothes;
 }
