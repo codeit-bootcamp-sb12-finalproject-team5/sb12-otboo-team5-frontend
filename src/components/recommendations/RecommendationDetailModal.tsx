@@ -4,8 +4,9 @@ import type {RecommendedOutfitDto} from '@/lib/api';
 interface RecommendationDetailModalProps {
   outfit?: RecommendedOutfitDto;
   onClose: () => void;
-  onRegisterOotd: () => void;
-  onRegisterOutfit: () => void;
+  onRegisterOotd?: () => void;
+  onRegisterOutfit?: () => void;
+  recommendationType?: 'OOTD' | 'OUTFIT';
 }
 
 export default function RecommendationDetailModal({
@@ -13,6 +14,7 @@ export default function RecommendationDetailModal({
   onClose,
   onRegisterOotd,
   onRegisterOutfit,
+  recommendationType = 'OOTD',
 }: RecommendationDetailModalProps) {
   return (
     <Dialog open={Boolean(outfit)} onOpenChange={(open) => !open && onClose()}>
@@ -24,7 +26,7 @@ export default function RecommendationDetailModal({
           <div className="flex flex-col gap-6">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="font-bold text-[#1e89f4] text-[14px]">OOTD RECOMMENDATION</p>
+                <p className="font-bold text-[#1e89f4] text-[14px]">{recommendationType} RECOMMENDATION</p>
                 <h2 className="mt-1 font-extrabold text-[#212126] text-[26px] tracking-[-0.65px]">
                   추천 코디 {outfit.rank}
                 </h2>
@@ -76,22 +78,28 @@ export default function RecommendationDetailModal({
               </div>
             </section>
 
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={onRegisterOotd}
-                className="h-[52px] rounded-[12px] bg-[#1e89f4] font-bold text-white text-[17px] transition-colors hover:bg-[#1479dd]"
-              >
-                OOTD 피드 등록
-              </button>
-              <button
-                type="button"
-                onClick={onRegisterOutfit}
-                className="h-[52px] rounded-[12px] border border-[#1e89f4] bg-white font-bold text-[#1e89f4] text-[17px] transition-colors hover:bg-[#e8f3ff]"
-              >
-                아웃핏 등록
-              </button>
-            </div>
+            {(onRegisterOotd || onRegisterOutfit) && (
+              <div className={`grid gap-3 ${onRegisterOotd && onRegisterOutfit ? 'grid-cols-2' : 'grid-cols-1'}`}>
+                {onRegisterOotd && (
+                  <button
+                    type="button"
+                    onClick={onRegisterOotd}
+                    className="h-[52px] rounded-[12px] bg-[#1e89f4] font-bold text-white text-[17px] transition-colors hover:bg-[#1479dd]"
+                  >
+                    OOTD 피드 등록
+                  </button>
+                )}
+                {onRegisterOutfit && (
+                  <button
+                    type="button"
+                    onClick={onRegisterOutfit}
+                    className="h-[52px] rounded-[12px] border border-[#1e89f4] bg-white font-bold text-[#1e89f4] text-[17px] transition-colors hover:bg-[#e8f3ff]"
+                  >
+                    아웃핏 등록
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         )}
       </DialogContent>
