@@ -6,6 +6,7 @@ import feedIcon from '@/assets/illust_logos/il_feed.svg';
 import settingIcon from '@/assets/illust_logos/il_setting.svg';
 import setting2Icon from '@/assets/illust_logos/il_setting-2.svg';
 import closetIcon from '@/assets/illust_logos/il_closet.svg';
+import outfitIcon from '@/assets/icons/il_t-shirt.svg';
 import profileIcon from '@/assets/icons/profile.svg';
 import sendIcon from '@/assets/icons/ic_send.svg';
 import LogoSvg from "@/assets/illust_logos/Logo.svg";
@@ -106,6 +107,12 @@ const menuItems = [
     label: '옷장',
     path: '/closet',
     icon: <ClosetIcon />
+  },
+  {
+    id: 'outfits',
+    label: '아웃핏',
+    path: '/outfits',
+    icon: <img src={outfitIcon} alt="" className="size-6 shrink-0" />
   },
   {
     id: 'feeds',

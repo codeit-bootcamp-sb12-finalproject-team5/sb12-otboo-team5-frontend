@@ -16,6 +16,9 @@ export * as feedApi from './feeds';
 // Clothes API
 export * as clothesApi from './clothes';
 
+// Outfit API
+export * as outfitApi from './outfits';
+
 // Clothes Attributes API
 export * as clothesAttributesApi from './clothes-attributes';
 
@@ -75,6 +78,8 @@ export {
   deleteClothes,
   extractByUrl,
 } from './clothes';
+
+export { getOutfitList, getOutfit, updateOutfit, deleteOutfit } from './outfits';
 
 export {
   // Clothes Attributes
