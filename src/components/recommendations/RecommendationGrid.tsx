@@ -24,7 +24,9 @@ export default function RecommendationGrid() {
     );
   }
 
-  if (!recommendations || !recommendations.clothes || recommendations.clothes.length === 0) {
+  const outfit = recommendations?.outfits[0];
+
+  if (!outfit || outfit.clothes.length === 0) {
     return (
       <div className="flex items-center justify-center w-full py-16">
         <p className="text-gray-500 text-lg">추천할 옷을 찾을 수 없습니다.</p>
@@ -32,15 +34,15 @@ export default function RecommendationGrid() {
     );
   }
 
-  // 자연스러운 그리드로 모든 옷 표시
-  const clothes = recommendations.clothes;
+  // 가장 우선순위가 높은 코디의 옷을 표시한다.
+  const clothes = outfit.clothes;
 
   return (
     <div className="w-full flex-1 overflow-y-auto">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-1">
         {clothes.map((item, index) => (
           <RecommendationItem
-            key={`${item.clothesId}-${index}`}
+            key={`${item.id}-${index}`}
             item={item}
           />
         ))}

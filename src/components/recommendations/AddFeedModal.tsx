@@ -25,7 +25,9 @@ export default function AddFeedModal({ open, onClose, onCreated }: AddFeedModalP
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
-    if (!auth?.userDto.id || !selectedWeather || !recommendation?.clothes) {
+    const outfit = recommendation?.outfits[0];
+
+    if (!auth?.userDto.id || !selectedWeather || !outfit || outfit.clothes.length === 0) {
       toast.error('필요한 정보가 없습니다.');
       return;
     }
@@ -38,7 +40,7 @@ export default function AddFeedModal({ open, onClose, onCreated }: AddFeedModalP
     setLoading(true);
     
     try {
-      const clothesIds = recommendation.clothes.map(ootd => ootd.clothesId);
+      const clothesIds = outfit.clothes.map(clothes => clothes.id);
       
       const created = await createFeed({
         authorId: auth.userDto.id,

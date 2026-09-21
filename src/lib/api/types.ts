@@ -180,10 +180,22 @@ export interface FollowSummaryDto {
   followingMe: boolean;
 }
 
+export interface RecommendationClothesDto {
+  id: string;
+  name: string;
+  imageUrl?: string;
+  category: ClothesType;
+}
+
+export interface RecommendedOutfitDto {
+  rank: number;
+  clothes: RecommendationClothesDto[];
+  reason: string;
+  styleTags: string[];
+}
+
 export interface RecommendationDto {
-  weatherId: string;
-  userId: string;
-  clothes: OotdDto[];
+  outfits: RecommendedOutfitDto[];
 }
 
 export interface NotificationDto {
