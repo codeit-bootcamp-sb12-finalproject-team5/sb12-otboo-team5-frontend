@@ -61,5 +61,5 @@ export const deleteClothes = async (clothesId: string): Promise<void> => {
  * 구매 링크로 옷 정보 불러오기
  */
 export const extractByUrl = async (url: string): Promise<ClothesDto> => {
-  return apiClient.get<ClothesDto>('/api/clothes/extractions', { params: { url } });
+  return apiClient.get<ClothesDto>('/api/clothes/weblink-extractions', { params: { url } });
 };

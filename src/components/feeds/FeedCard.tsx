@@ -215,35 +215,36 @@ export default function FeedCard({ feed, onClick }: FeedCardProps) {
             </div>
           </div>
         </div>
-        <TooltipProvider>
-          <Tooltip key={feed.id}>
-            <TooltipTrigger asChild>
-            <div className="bg-[var(--color-gray-100)] box-border content-stretch flex gap-[3px] items-center justify-start pl-2.5 pr-3.5 py-1.5 relative rounded-[10px] shrink-0">
-              <div className="overflow-clip relative shrink-0 size-6">
-                <WeatherIcon skyStatus={feed.weather.skyStatus} />
-              </div>
-              <div className="font-[var(--font-weight-bold)] leading-[0] not-italic relative shrink-0 text-[var(--color-gray-800)] text-[14px] text-center text-nowrap tracking-[-0.35px]">
-                <p className="leading-[normal] whitespace-pre">
-                  {displayTemp(feed.weather.temperature.current)}
-                </p>
-              </div>
-            </div>
-            </TooltipTrigger>
-            <TooltipContent
-                side="right"
-                sideOffset={-10}
-                align="start"
-                alignOffset={25}
-
-                className="bg-[rgba(12,12,13,0.74)] text-[#f7f7f8] font-semibold text-[14px] tracking-[-0.35px] px-3.5 py-3 rounded-[10px] flex flex-col gap-2 leading-none border-0"
-            >
-              <div className="whitespace-pre">날씨: {getSkyStatusText(feed.weather.skyStatus)}</div>
-              <div className="whitespace-pre">평균: {displayTemp(feed.weather.temperature.current)}</div>
-              <div className="whitespace-pre">최저: {displayTemp(feed.weather.temperature.min)}</div>
-              <div className="whitespace-pre">최고: {displayTemp(feed.weather.temperature.max)}</div>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        {feed.weather && (
+          <TooltipProvider>
+            <Tooltip key={feed.id}>
+              <TooltipTrigger asChild>
+                <div className="bg-[var(--color-gray-100)] box-border content-stretch flex gap-[3px] items-center justify-start pl-2.5 pr-3.5 py-1.5 relative rounded-[10px] shrink-0">
+                  <div className="overflow-clip relative shrink-0 size-6">
+                    <WeatherIcon skyStatus={feed.weather.skyStatus} />
+                  </div>
+                  <div className="font-[var(--font-weight-bold)] leading-[0] not-italic relative shrink-0 text-[var(--color-gray-800)] text-[14px] text-center text-nowrap tracking-[-0.35px]">
+                    <p className="leading-[normal] whitespace-pre">
+                      {displayTemp(feed.weather.temperature.current)}
+                    </p>
+                  </div>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent
+                  side="right"
+                  sideOffset={-10}
+                  align="start"
+                  alignOffset={25}
+                  className="bg-[rgba(12,12,13,0.74)] text-[#f7f7f8] font-semibold text-[14px] tracking-[-0.35px] px-3.5 py-3 rounded-[10px] flex flex-col gap-2 leading-none border-0"
+              >
+                <div className="whitespace-pre">날씨: {getSkyStatusText(feed.weather.skyStatus)}</div>
+                <div className="whitespace-pre">평균: {displayTemp(feed.weather.temperature.current)}</div>
+                <div className="whitespace-pre">최저: {displayTemp(feed.weather.temperature.min)}</div>
+                <div className="whitespace-pre">최고: {displayTemp(feed.weather.temperature.max)}</div>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
 
       </div>
 

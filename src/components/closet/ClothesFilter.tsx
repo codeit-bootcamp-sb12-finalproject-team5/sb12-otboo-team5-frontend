@@ -1,21 +1,18 @@
 import { useState } from 'react';
 import { useClothesStore } from '@/lib/stores/useClothesStore';
-import type { ClothesType } from '@/lib/api/types';
+import type { ClothesCategory } from '@/lib/api/types';
 
 const CLOTHES_CATEGORIES = [
   { label: '전체', value: undefined },
-  { label: '상의', value: 'TOP' as ClothesType },
-  { label: '하의', value: 'BOTTOM' as ClothesType },
-  { label: '원피스', value: 'DRESS' as ClothesType },
-  { label: '아우터', value: 'OUTER' as ClothesType },
-  { label: '속옷', value: 'UNDERWEAR' as ClothesType },
-  { label: '악세서리', value: 'ACCESSORY' as ClothesType },
-  { label: '신발', value: 'SHOES' as ClothesType },
-  { label: '양말', value: 'SOCKS' as ClothesType },
-  { label: '모자', value: 'HAT' as ClothesType },
-  { label: '가방', value: 'BAG' as ClothesType },
-  { label: '스카프', value: 'SCARF' as ClothesType },
-  { label: '기타', value: 'ETC' as ClothesType },
+  { label: '상의', value: 'TOP' as ClothesCategory },
+  { label: '바지', value: 'PANTS' as ClothesCategory },
+  { label: '치마', value: 'SKIRT' as ClothesCategory },
+  { label: '아우터', value: 'OUTER' as ClothesCategory },
+  { label: '원피스', value: 'DRESS' as ClothesCategory },
+  { label: '신발', value: 'SHOES' as ClothesCategory },
+  { label: '모자', value: 'HAT' as ClothesCategory },
+  { label: '가방', value: 'BAG' as ClothesCategory },
+  { label: '악세서리', value: 'ACCESSORY' as ClothesCategory },
 ];
 
 interface ClothesFilterProps {
@@ -24,9 +21,9 @@ interface ClothesFilterProps {
 
 export default function ClothesFilter({ onAddClick }: ClothesFilterProps) {
   const { updateParams } = useClothesStore();
-  const [selectedType, setSelectedType] = useState<ClothesType | undefined>(undefined);
+  const [selectedType, setSelectedType] = useState<ClothesCategory | undefined>(undefined);
 
-  const handleTypeChange = (type?: ClothesType) => {
+  const handleTypeChange = (type?: ClothesCategory) => {
     setSelectedType(type);
     updateParams({ typeEqual: type });
   };

@@ -2,19 +2,26 @@ export type Role = 'USER' | 'ADMIN';
 export type OAuthProvider = 'google' | 'kakao';
 export type Gender = 'MALE' | 'FEMALE' | 'OTHER';
 export type SortDirection = 'ASCENDING' | 'DESCENDING';
-export type ClothesType = 
-  | 'TOP' 
-  | 'BOTTOM' 
-  | 'DRESS' 
-  | 'OUTER' 
-  | 'UNDERWEAR' 
-  | 'ACCESSORY' 
-  | 'SHOES' 
-  | 'SOCKS' 
-  | 'HAT' 
-  | 'BAG' 
-  | 'SCARF' 
-  | 'ETC';
+export type ClothesType =
+  | '상의'
+  | '바지'
+  | '치마'
+  | '아우터'
+  | '원피스'
+  | '신발'
+  | '모자'
+  | '가방'
+  | '악세서리';
+export type ClothesCategory =
+  | 'TOP'
+  | 'PANTS'
+  | 'SKIRT'
+  | 'OUTER'
+  | 'DRESS'
+  | 'SHOES'
+  | 'HAT'
+  | 'BAG'
+  | 'ACCESSORY';
 export type SkyStatus = 'CLEAR' | 'MOSTLY_CLOUDY' | 'CLOUDY';
 export type PrecipitationType = 'NONE' | 'RAIN' | 'RAIN_SNOW' | 'SNOW' | 'SHOWER';
 export type WindStrength = 'WEAK' | 'MODERATE' | 'STRONG';
@@ -108,6 +115,48 @@ export interface WeatherSummaryDto {
   temperature: TemperatureDto;
 }
 
+export type OutfitWeatherDto = Omit<WeatherSummaryDto, 'weatherId'>;
+
+export interface OutfitClothesDto {
+  id: string;
+  name?: string;
+  imageUrl?: string;
+}
+
+export interface OutfitDto {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  clothes: OutfitClothesDto[];
+  weather: OutfitWeatherDto | null;
+  createdAt?: string;
+}
+
+export interface OutfitListResponse extends Omit<CursorResponse<OutfitDto>, 'nextCursor' | 'nextIdAfter'> {
+  nextCursor: string | null;
+  nextIdAfter: string | null;
+}
+
+export interface OutfitListParams {
+  cursor?: string;
+}
+
+export interface OutfitUpdateRequest {
+  name?: string;
+  description?: string;
+  category?: string;
+  clothesIds?: string[];
+}
+
+export interface OutfitUpdateResponse {
+  id: string;
+  name: string;
+  description: string;
+  clothes: OutfitClothesDto[];
+  updatedAt: string;
+}
+
 export interface ClothesAttributeDto {
   definitionId: string;
   value: string;
@@ -131,9 +180,15 @@ export interface ClothesDto {
   id: string;
   ownerId: string;
   name: string;
+  brand?: string;
   imageUrl?: string;
   type: ClothesType;
+  season?: string;
+  gender?: string;
   attributes: ClothesAttributeWithDefDto[];
+  description?: string;
+  isOwned?: boolean;
+  preference?: number;
 }
 
 export interface OotdDto {
@@ -149,7 +204,7 @@ export interface FeedDto {
   createdAt: string;
   updatedAt: string;
   author: AuthorDto;
-  weather: WeatherSummaryDto;
+  weather: WeatherSummaryDto | null;
   ootds: OotdDto[];
   content: string;
   likeCount: number;
@@ -347,14 +402,26 @@ export interface CommentCreateRequest {
 export interface ClothesCreateRequest {
   ownerId: string;
   name: string;
+  brand: string;
   type: ClothesType;
+  season: string;
+  gender: string;
   attributes: ClothesAttributeDto[];
+  description: string;
+  isOwned: boolean;
+  preference: number;
 }
 
 export interface ClothesUpdateRequest {
   name?: string;
+  brand?: string;
   type?: ClothesType;
+  season?: string;
+  gender?: string;
   attributes?: ClothesAttributeDto[];
+  description?: string;
+  isOwned?: boolean;
+  preference?: number;
 }
 
 export interface ClothesAttributeDefCreateRequest {
@@ -398,7 +465,7 @@ export interface FeedListParams extends CursorParams, SortParams {
 }
 
 export interface ClothesListParams extends CursorParams {
-  typeEqual?: ClothesType;
+  typeEqual?: ClothesCategory;
   ownerId: string;
 }
 
