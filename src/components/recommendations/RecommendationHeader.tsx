@@ -2,12 +2,14 @@ import { useState } from 'react';
 import hangerIcon from '@/assets/icons/il_hanger.svg';
 import refreshIcon from '@/assets/icons/ic_refresh.svg';
 import {useRecommendationStore} from "@/lib/stores/useRecommendationStore.ts";
+import {useWeatherStore} from '@/lib/stores/useWeatherStore';
 import AddFeedModal from './AddFeedModal';
 import FeedDetailModal from "@/components/feeds/FeedDetailModal.tsx";
 import type {FeedDto} from "@/lib/api";
 
 export default function RecommendationHeader() {
   const {data: recommendation, loading, fetch} = useRecommendationStore();
+  const {selectedWeather} = useWeatherStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [createdFeed, setCreatedFeed] = useState<FeedDto | undefined>();
 
@@ -20,6 +22,9 @@ export default function RecommendationHeader() {
   }
 
   const hasRecommendation = Boolean(recommendation?.outfits.some(outfit => outfit.clothes.length > 0));
+  const recommendationMessage = selectedWeather
+    ? `${isToday(selectedWeather.forecastAt) ? '오늘' : formatDate(selectedWeather.forecastAt)} 날씨에 맞는 옷을 추천해드릴게요`
+    : '';
 
   return (
     <div className="content-stretch flex items-center justify-between relative w-full">
@@ -33,9 +38,11 @@ export default function RecommendationHeader() {
             <p className="leading-normal whitespace-pre">#추천 OOTD</p>
           </div>
         </div>
-        <div className="font-semibold leading-none not-italic relative shrink-0 text-[#808089] text-[18px] text-nowrap tracking-[-0.45px]">
-          <p className="leading-normal whitespace-pre">오늘 날씨에 맞는 옷을 추천해드릴게요</p>
-        </div>
+        {hasRecommendation && (
+          <div className="font-semibold leading-none not-italic relative shrink-0 text-[#808089] text-[18px] text-nowrap tracking-[-0.45px]">
+            <p className="leading-normal whitespace-pre">{recommendationMessage}</p>
+          </div>
+        )}
       </div>
 
       {/* 버튼 섹션 */}
@@ -84,4 +91,18 @@ export default function RecommendationHeader() {
 
     </div>
   );
+}
+
+function isToday(dateTime: string) {
+  const date = new Date(dateTime);
+  const today = new Date();
+
+  return date.getFullYear() === today.getFullYear()
+    && date.getMonth() === today.getMonth()
+    && date.getDate() === today.getDate();
+}
+
+function formatDate(dateTime: string) {
+  const date = new Date(dateTime);
+  return `${date.getMonth() + 1}월 ${date.getDate()}일`;
 }
