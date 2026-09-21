@@ -3,6 +3,7 @@ import {Dialog, DialogContent, DialogOverlay} from '@/components/ui/dialog';
 import {useAuthStore} from '@/lib/stores/useAuthStore';
 import {useWeatherStore} from '@/lib/stores/useWeatherStore';
 import {createFeed} from '@/lib/api/feeds';
+import {createOutfit} from '@/lib/api/outfits';
 import {toast} from 'sonner';
 import type {FeedDto, RecommendedOutfitDto} from "@/lib/api";
 
@@ -37,12 +38,17 @@ export default function AddFeedModal({ open, onClose, onCreated, outfit }: AddFe
     setLoading(true);
     
     try {
-      const clothesIds = outfit.clothes.map(clothes => clothes.id);
+      const createdOutfit = await createOutfit({
+        name: `추천 코디 ${outfit.rank}`,
+        description: outfit.reason || undefined,
+        category: 'OOTD',
+        clothesIds: outfit.clothes.map(clothes => clothes.id),
+        weatherId: selectedWeather.id,
+      });
       
       const created = await createFeed({
         authorId: auth.userDto.id,
-        weatherId: selectedWeather.id,
-        clothesIds,
+        outfitId: createdOutfit.id,
         content: content.trim()
       });
 

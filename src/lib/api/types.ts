@@ -212,7 +212,9 @@ export interface RecommendationUsageResponse {
 export interface OutfitCreateRequest {
   name: string;
   description?: string;
+  category: string;
   clothesIds: string[];
+  weatherId?: string;
 }
 
 export interface OutfitCreateResponse {
@@ -328,8 +330,7 @@ export interface ProfileUpdateRequest {
 
 export interface FeedCreateRequest {
   authorId: string;
-  weatherId: string;
-  clothesIds: string[];
+  outfitId: string;
   content: string;
 }
 
