@@ -122,7 +122,7 @@ export default function NewOutfitPage() {
         </main>
       )}
 
-      <RecommendationConfirmModal open={isConfirmOpen} title="아웃핏 추천 받기" dateLabel={dateLabel} usage={usage} clothes={clothes} selectedClothesIds={selectedClothesIds} loadingUsage={loadingUsage} loadingClothes={loadingClothes} recommending={loading} onClose={() => setIsConfirmOpen(false)} onConfirm={requestRecommendation} onToggleClothes={setSelectedClothesIds} />
+      <RecommendationConfirmModal open={isConfirmOpen} title="아웃핏 추천 받기" showDateQuestion={false} dateLabel={dateLabel} usage={usage} clothes={clothes} selectedClothesIds={selectedClothesIds} loadingUsage={loadingUsage} loadingClothes={loadingClothes} recommending={loading} onClose={() => setIsConfirmOpen(false)} onConfirm={requestRecommendation} onToggleClothes={setSelectedClothesIds} />
       <RecommendationDetailModal outfit={selectedOutfit} recommendationType="OUTFIT" onClose={() => setSelectedOutfit(undefined)} onRegisterOutfit={() => { setOutfitToRegister(selectedOutfit); setSelectedOutfit(undefined); }} />
       <AddOutfitModal open={Boolean(outfitToRegister)} outfit={outfitToRegister} weather={todayWeather} onClose={() => setOutfitToRegister(undefined)} />
     </div>

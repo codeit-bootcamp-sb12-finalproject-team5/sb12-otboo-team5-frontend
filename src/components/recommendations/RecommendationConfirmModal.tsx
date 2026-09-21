@@ -7,6 +7,7 @@ const CLOSET_CATEGORIES = ['ALL', '상의', '바지', '스커트', '아우터', 
 interface RecommendationConfirmModalProps {
   open: boolean;
   title?: string;
+  showDateQuestion?: boolean;
   dateLabel: string;
   usage?: RecommendationUsage;
   clothes: ClothesDto[];
@@ -22,6 +23,7 @@ interface RecommendationConfirmModalProps {
 export default function RecommendationConfirmModal({
   open,
   title = 'OOTD 추천 받기',
+  showDateQuestion = true,
   dateLabel,
   usage,
   clothes,
@@ -79,9 +81,11 @@ export default function RecommendationConfirmModal({
           <h2 className="font-bold text-[#212126] text-[22px] tracking-[-0.55px]">
             {title}
           </h2>
-          <p className="font-semibold text-[#575765] text-[17px] tracking-[-0.4px]">
-            {dateLabel} 옷 추천을 받겠습니까?
-          </p>
+          {showDateQuestion && (
+            <p className="font-semibold text-[#575765] text-[17px] tracking-[-0.4px]">
+              {dateLabel} 옷 추천을 받겠습니까?
+            </p>
+          )}
         </div>
 
         <div className="bg-[#f7f7f8] rounded-[12px] px-5 py-4 text-[#575765]">
