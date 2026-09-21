@@ -115,6 +115,48 @@ export interface WeatherSummaryDto {
   temperature: TemperatureDto;
 }
 
+export type OutfitWeatherDto = Omit<WeatherSummaryDto, 'weatherId'>;
+
+export interface OutfitClothesDto {
+  id: string;
+  name?: string;
+  imageUrl?: string;
+}
+
+export interface OutfitDto {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  clothes: OutfitClothesDto[];
+  weather: OutfitWeatherDto | null;
+  createdAt?: string;
+}
+
+export interface OutfitListResponse extends Omit<CursorResponse<OutfitDto>, 'nextCursor' | 'nextIdAfter'> {
+  nextCursor: string | null;
+  nextIdAfter: string | null;
+}
+
+export interface OutfitListParams {
+  cursor?: string;
+}
+
+export interface OutfitUpdateRequest {
+  name?: string;
+  description?: string;
+  category?: string;
+  clothesIds?: string[];
+}
+
+export interface OutfitUpdateResponse {
+  id: string;
+  name: string;
+  description: string;
+  clothes: OutfitClothesDto[];
+  updatedAt: string;
+}
+
 export interface ClothesAttributeDto {
   definitionId: string;
   value: string;

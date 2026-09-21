@@ -10,6 +10,8 @@ import RegisterPage from '@/pages/auth/register/page';
 import ForgotPasswordPage from '@/pages/auth/forgot-password/page';
 import RecommendationsPage from '@/pages/recommendations/page';
 import ClosetPage from '@/pages/closet/page';
+import OutfitsPage from '@/pages/outfits/page';
+import NewOutfitPage from '@/pages/outfits/new/page';
 import FeedsPage from '@/pages/feeds/page';
 import ProfilePage from '@/pages/profile/page';
 import UserManagementPage from '@/pages/admin/users/page';
@@ -40,6 +42,8 @@ function App() {
           <Route index element={<Navigate to="/recommendations" replace />} />
           <Route path="recommendations" element={<RecommendationsPage />} />
           <Route path="closet" element={<ClosetPage />} />
+          <Route path="outfits" element={<OutfitsPage />} />
+          <Route path="outfits/new" element={<NewOutfitPage />} />
           <Route path="feeds" element={<FeedsPage />} />
           <Route path="profiles" element={<ProfilePage />} />
           <Route path="admin/users" element={<UserManagementPage />} />
