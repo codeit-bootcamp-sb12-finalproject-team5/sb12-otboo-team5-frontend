@@ -1,7 +1,8 @@
 import { apiClient } from './client';
 import type {
   RecommendationParams,
-  RecommendationDto
+  RecommendationDto,
+  RecommendationUsageResponse,
 } from './types';
 
 /**
@@ -9,4 +10,9 @@ import type {
  */
 export const getRecommendation = async (params: RecommendationParams): Promise<RecommendationDto> => {
   return apiClient.get<RecommendationDto>('/api/recommendations/ootd', { params });
+};
+
+/** 오늘의 추천 사용량 조회 */
+export const getRecommendationUsage = async (): Promise<RecommendationUsageResponse> => {
+  return apiClient.get<RecommendationUsageResponse>('/api/recommendations/usage');
 };

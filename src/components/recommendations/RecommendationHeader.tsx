@@ -3,22 +3,50 @@ import hangerIcon from '@/assets/icons/il_hanger.svg';
 import refreshIcon from '@/assets/icons/ic_refresh.svg';
 import {useRecommendationStore} from "@/lib/stores/useRecommendationStore.ts";
 import {useWeatherStore} from '@/lib/stores/useWeatherStore';
+import {getRecommendationUsage} from '@/lib/api/recommendations';
 import AddFeedModal from './AddFeedModal';
+import RecommendationConfirmModal from './RecommendationConfirmModal';
 import FeedDetailModal from "@/components/feeds/FeedDetailModal.tsx";
-import type {FeedDto} from "@/lib/api";
+import type {FeedDto, RecommendationUsage} from "@/lib/api";
+import {toast} from 'sonner';
 
 export default function RecommendationHeader() {
   const {data: recommendation, loading, fetch} = useRecommendationStore();
   const {selectedWeather} = useWeatherStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRecommendationModalOpen, setIsRecommendationModalOpen] = useState(false);
   const [createdFeed, setCreatedFeed] = useState<FeedDto | undefined>();
+  const [usage, setUsage] = useState<RecommendationUsage>();
+  const [loadingUsage, setLoadingUsage] = useState(false);
 
   const handleRegister = () => {
     setIsModalOpen(true);
   }
 
-  const handleRefresh = () => {
-    fetch();
+  const handleOpenRecommendationModal = async () => {
+    setIsRecommendationModalOpen(true);
+    setLoadingUsage(true);
+    setUsage(undefined);
+
+    try {
+      const response = await getRecommendationUsage();
+      setUsage(response.ootd);
+    } catch (error) {
+      console.error('추천 사용량 조회 실패:', error);
+      toast.error('추천 가능 횟수를 불러오지 못했습니다.');
+    } finally {
+      setLoadingUsage(false);
+    }
+  };
+
+  const handleConfirmRecommendation = async () => {
+    try {
+      await fetch({throwError: true});
+      setIsRecommendationModalOpen(false);
+    } catch (error) {
+      console.error('OOTD 추천 요청 실패:', error);
+      toast.error('OOTD 추천을 받지 못했습니다.');
+    }
   }
 
   const hasRecommendation = Boolean(recommendation?.outfits.some(outfit => outfit.clothes.length > 0));
@@ -50,7 +78,7 @@ export default function RecommendationHeader() {
         {/* OOTD 추천 요청 버튼 */}
         <button
           className="bg-white box-border content-stretch flex gap-1.5 h-[46px] items-center justify-center px-[18px] py-2.5 relative rounded-[12px] shrink-0 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-[#d4d4d9] shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)]"
-          onClick={handleRefresh}
+          onClick={handleOpenRecommendationModal}
           disabled={loading}
         >
           <div className="font-semibold leading-none not-italic relative shrink-0 text-[#696975] text-[16px] text-nowrap tracking-[-0.4px]">
@@ -78,6 +106,15 @@ export default function RecommendationHeader() {
         open={isModalOpen} 
         onClose={() => setIsModalOpen(false)}
         onCreated={setCreatedFeed}
+      />
+      <RecommendationConfirmModal
+        open={isRecommendationModalOpen}
+        dateLabel={selectedWeather ? formatDate(selectedWeather.forecastAt) : ''}
+        usage={usage}
+        loadingUsage={loadingUsage}
+        recommending={loading}
+        onClose={() => setIsRecommendationModalOpen(false)}
+        onConfirm={handleConfirmRecommendation}
       />
       {/* 피드 상세 모달 */}
       {

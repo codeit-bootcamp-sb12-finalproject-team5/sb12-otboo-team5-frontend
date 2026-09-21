@@ -101,6 +101,7 @@ export {
 export {
   // Recommendations
   getRecommendation,
+  getRecommendationUsage,
 } from './recommendations';
 
 export {

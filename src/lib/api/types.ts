@@ -198,6 +198,17 @@ export interface RecommendationDto {
   outfits: RecommendedOutfitDto[];
 }
 
+export interface RecommendationUsage {
+  limit: number;
+  used: number;
+  remaining: number;
+}
+
+export interface RecommendationUsageResponse {
+  ootd: RecommendationUsage;
+  outfit: RecommendationUsage;
+}
+
 export interface NotificationDto {
   id: string;
   createdAt: string;
