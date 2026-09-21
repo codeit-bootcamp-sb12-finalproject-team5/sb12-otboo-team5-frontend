@@ -8,25 +8,32 @@ import {useWeatherStore} from "@/lib/stores/useWeatherStore.ts";
 import ilBgSunny from '@/assets/illust_logos/il_bg_sunny.svg';
 import ilBgCloudy from '@/assets/illust_logos/il_bg_cloudy.svg';
 import ilBgOvercast from '@/assets/illust_logos/il_bg_overcast.svg';
+import { getProfileWeather } from '@/lib/api/weather';
 
 export default function WeatherSection() {
+  const { location, refetchLocation } = useGeoLocation();
+  const { updateParams, selectedWeather, setData } = useWeatherStore();
   const { data: profile } = useMyProfileStore();
-  const { location, refetchLocation, setLocation } = useGeoLocation();
-  const { updateParams, selectedWeather} = useWeatherStore();
-
-
-  // 프로필의 위치 정보로 초기화
-  useEffect(() => {
-    if (profile?.location) {
-      setLocation({longitude: profile.location.longitude, latitude: profile.location.latitude});
-    }
-  }, [profile?.location, setLocation]);
 
   useEffect(() => {
     if (location) {
-      updateParams({...location});
+      updateParams({ ...location });
     }
   }, [location, updateParams]);
+
+  useEffect(() => {
+    if (!profile?.userId) {
+      return;
+    }
+
+    getProfileWeather(profile.userId)
+    .then((weather) => {
+      setData(weather);
+    })
+    .catch((error) => {
+      console.error('Profile 날씨 조회 실패:', error);
+    });
+  }, [profile?.userId, setData]);
 
   const getBackgroundImage = (skyStatus?: SkyStatus) => {
     switch (skyStatus) {
@@ -57,6 +64,7 @@ export default function WeatherSection() {
       {/* CurrentWeather에 위치 정보를 props로 전달 */}
       <CurrentWeather
           fetchLocation={refetchLocation}
+          locationNames={profile?.locationNames}
       />
       {/* WeatherForecast에 위치 정보를 props로 전달 */}
       <WeatherForecast/>

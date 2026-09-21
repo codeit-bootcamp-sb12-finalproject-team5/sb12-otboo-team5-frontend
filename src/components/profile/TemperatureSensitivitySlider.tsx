@@ -7,7 +7,7 @@ interface TemperatureSensitivitySliderProps {
 }
 
 export default function TemperatureSensitivitySlider({
-  value = 3,
+  value = 0,
   onValueChange,
   className = ""
 }: TemperatureSensitivitySliderProps) {
@@ -27,7 +27,7 @@ export default function TemperatureSensitivitySlider({
             value={[value]}
             onValueChange={handleSliderChange}
             max={5}
-            min={1}
+            min={-5}
             step={1}
             className="w-full [&_[data-slot=slider-track]]:bg-[var(--color-gray-200)] [&_[data-slot=slider-range]]:bg-[var(--color-blue-500)] [&_[data-slot=slider-thumb]]:bg-[var(--color-blue-500)] [&_[data-slot=slider-thumb]]:border-[var(--color-blue-500)]"
           />
@@ -37,7 +37,7 @@ export default function TemperatureSensitivitySlider({
         <div className="flex justify-between items-end text-[var(--color-gray-500)]">
           <div className="text-center text-left leading-[1.4]">
             <div className="text-[13px] font-[var(--font-weight-semibold)] tracking-[-0.325px]">
-              1
+              -5
             </div>
             <div className="text-[12px] font-[var(--font-weight-bold)] tracking-[-0.3px]">
               (추위 많이 탐)

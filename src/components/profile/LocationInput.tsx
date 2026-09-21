@@ -6,12 +6,14 @@ import {useEffect} from "react";
 
 interface LocationInputProps {
   location?: WeatherAPILocation
+  locationNames?: string[];
   onChange: (location: WeatherAPILocation | undefined) => void;
   className?: string;
 }
 
 export default function LocationInput({
   location,
+  locationNames,
   onChange,
   className = ""
 }: LocationInputProps) {
@@ -41,7 +43,7 @@ export default function LocationInput({
         <div className="flex gap-1.5 items-center flex-1">
           <input
             type="text"
-            value={location?.locationNames.reduce((a,b) => a.concat(' ').concat(b)) || ""}
+            value={(location?.locationNames ?? locationNames ?? []).filter(Boolean).join(' ')}
             readOnly
             className="flex-1 bg-transparent outline-none placeholder:text-[var(--color-gray-400)] text-[var(--color-gray-700)] text-[var(--font-size-body-2)] font-[var(--font-weight-semibold)] tracking-[-0.4px]"
           />
