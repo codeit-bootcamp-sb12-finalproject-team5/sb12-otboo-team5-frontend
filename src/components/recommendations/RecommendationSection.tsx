@@ -1,7 +1,6 @@
 import {useEffect} from 'react';
 import RecommendationHeader from './RecommendationHeader';
 import RecommendationGrid from './RecommendationGrid';
-import EmptyRecommendation from './EmptyRecommendation';
 import {useRecommendationStore} from "@/lib/stores/useRecommendationStore.ts";
 import {useWeatherStore} from "@/lib/stores/useWeatherStore.ts";
 
@@ -25,12 +24,13 @@ export default function RecommendationSection() {
   return (
     <div className="relative w-full px-[100px] h-full">
       <div className="bg-white rounded-[20px] box-border content-stretch flex flex-col gap-[34px] px-[40px] items-start justify-start py-8 relative w-full h-full shadow-[0px_-2px_10px_0px_rgba(0,0,0,0.05)]">
-        <RecommendationHeader/>
         {loading || hasClothes ? (
-            
+            <>
+              <RecommendationHeader/>
               <RecommendationGrid/>
+            </>
         ) : (
-          <EmptyRecommendation/>
+          <RecommendationHeader centered />
         )}
       </div>
     </div>

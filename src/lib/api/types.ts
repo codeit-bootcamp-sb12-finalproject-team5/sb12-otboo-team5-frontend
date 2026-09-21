@@ -209,6 +209,20 @@ export interface RecommendationUsageResponse {
   outfit: RecommendationUsage;
 }
 
+export interface OutfitCreateRequest {
+  name: string;
+  description?: string;
+  clothesIds: string[];
+}
+
+export interface OutfitCreateResponse {
+  id: string;
+  name: string;
+  description?: string;
+  clothes: Array<{id: string; name: string; imageUrl?: string}>;
+  createdAt: string;
+}
+
 export interface NotificationDto {
   id: string;
   createdAt: string;

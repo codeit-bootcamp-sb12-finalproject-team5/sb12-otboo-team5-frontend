@@ -42,8 +42,8 @@ export default function RecommendationConfirmModal({
   const modalWidth = isClothesPickerOpen
     ? 1000
     : isFinalConfirmationOpen && selectedClothes.length > 0
-      ? Math.min(1000, Math.max(520, selectedClothes.length * 195 + 60))
-      : 460;
+      ? Math.min(1000, Math.max(580, selectedClothes.length * 195 + 60))
+      : 520;
 
   useEffect(() => {
     if (open) {

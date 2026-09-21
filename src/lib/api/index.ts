@@ -28,6 +28,9 @@ export * as weatherApi from './weather';
 // Recommendation API
 export * as recommendationApi from './recommendations';
 
+// Outfit API
+export * as outfitApi from './outfits';
+
 // Notification API
 export * as notificationApi from './notifications';
 
@@ -103,6 +106,10 @@ export {
   getRecommendation,
   getRecommendationUsage,
 } from './recommendations';
+
+export {
+  createOutfit,
+} from './outfits';
 
 export {
   // Notifications

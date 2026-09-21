@@ -6,28 +6,24 @@ import {useWeatherStore} from '@/lib/stores/useWeatherStore';
 import {getRecommendationUsage} from '@/lib/api/recommendations';
 import {getClothes} from '@/lib/api/clothes';
 import {useAuthStore} from '@/lib/stores/useAuthStore';
-import AddFeedModal from './AddFeedModal';
 import RecommendationConfirmModal from './RecommendationConfirmModal';
-import FeedDetailModal from "@/components/feeds/FeedDetailModal.tsx";
-import type {ClothesDto, FeedDto, RecommendationUsage} from "@/lib/api";
+import type {ClothesDto, RecommendationUsage} from "@/lib/api";
 import {toast} from 'sonner';
 
-export default function RecommendationHeader() {
+interface RecommendationHeaderProps {
+  centered?: boolean;
+}
+
+export default function RecommendationHeader({centered = false}: RecommendationHeaderProps) {
   const {data: recommendation, loading, fetch, setSelectedClothesIds: setRecommendationSelectedClothesIds} = useRecommendationStore();
   const {selectedWeather} = useWeatherStore();
   const {data: auth} = useAuthStore();
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRecommendationModalOpen, setIsRecommendationModalOpen] = useState(false);
-  const [createdFeed, setCreatedFeed] = useState<FeedDto | undefined>();
   const [usage, setUsage] = useState<RecommendationUsage>();
   const [clothes, setClothes] = useState<ClothesDto[]>([]);
   const [selectedClothesIds, setSelectedClothesIds] = useState<string[]>([]);
   const [loadingUsage, setLoadingUsage] = useState(false);
   const [loadingClothes, setLoadingClothes] = useState(false);
-
-  const handleRegister = () => {
-    setIsModalOpen(true);
-  }
 
   const handleOpenRecommendationModal = async () => {
     setIsRecommendationModalOpen(true);
@@ -76,6 +72,37 @@ export default function RecommendationHeader() {
   const recommendationMessage = selectedWeather
     ? `${isToday(selectedWeather.forecastAt) ? '오늘' : formatDate(selectedWeather.forecastAt)} 날씨에 맞는 옷을 추천해드릴게요`
     : '';
+  const recommendationModal = (
+    <RecommendationConfirmModal
+      open={isRecommendationModalOpen}
+      dateLabel={selectedWeather ? formatDate(selectedWeather.forecastAt) : ''}
+      usage={usage}
+      clothes={clothes}
+      selectedClothesIds={selectedClothesIds}
+      loadingUsage={loadingUsage}
+      loadingClothes={loadingClothes}
+      recommending={loading}
+      onClose={() => setIsRecommendationModalOpen(false)}
+      onConfirm={handleConfirmRecommendation}
+      onToggleClothes={setSelectedClothesIds}
+    />
+  );
+
+  if (centered) {
+    return (
+      <div className="flex min-h-[400px] w-full items-center justify-center">
+        <button
+          className="flex h-[52px] items-center justify-center gap-2 rounded-[12px] bg-[#1e89f4] px-6 font-bold text-[18px] text-white transition-colors hover:bg-[#1479dd] disabled:cursor-not-allowed disabled:opacity-50"
+          onClick={handleOpenRecommendationModal}
+          disabled={loading}
+        >
+          {loading ? '추천 중...' : 'OOTD 추천 받기'}
+          <img alt="" className="size-5 brightness-0 invert" src={refreshIcon} />
+        </button>
+        {recommendationModal}
+      </div>
+    );
+  }
 
   return (
     <div className="content-stretch flex items-center justify-between relative w-full">
@@ -112,47 +139,9 @@ export default function RecommendationHeader() {
           <img alt="새로고침" className="size-5" src={refreshIcon} />
         </button>
 
-        {/* OOTD 등록 버튼 */}
-        <button
-          className="bg-[#1e89f4] box-border content-stretch flex gap-1.5 h-[46px] items-center justify-center px-[18px] py-2.5 relative rounded-[12px] shrink-0 hover:bg-[#1e89f4]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          onClick={handleRegister}
-          disabled={!hasRecommendation}
-        >
-          <div className="font-bold leading-none not-italic relative shrink-0 text-white text-[18px] text-nowrap tracking-[-0.45px]">
-            <p className="leading-normal whitespace-pre">OOTD 등록</p>
-          </div>
-        </button>
       </div>
 
-      {/* 피드 등록 모달 */}
-      <AddFeedModal 
-        open={isModalOpen} 
-        onClose={() => setIsModalOpen(false)}
-        onCreated={setCreatedFeed}
-      />
-      <RecommendationConfirmModal
-        open={isRecommendationModalOpen}
-        dateLabel={selectedWeather ? formatDate(selectedWeather.forecastAt) : ''}
-        usage={usage}
-        clothes={clothes}
-        selectedClothesIds={selectedClothesIds}
-        loadingUsage={loadingUsage}
-        loadingClothes={loadingClothes}
-        recommending={loading}
-        onClose={() => setIsRecommendationModalOpen(false)}
-        onConfirm={handleConfirmRecommendation}
-        onToggleClothes={setSelectedClothesIds}
-      />
-      {/* 피드 상세 모달 */}
-      {
-        createdFeed &&
-          <FeedDetailModal
-              feed={createdFeed}
-              open={true}
-              onOpenChange={() => setCreatedFeed(undefined)}
-          />
-      }
-
+      {recommendationModal}
     </div>
   );
 }

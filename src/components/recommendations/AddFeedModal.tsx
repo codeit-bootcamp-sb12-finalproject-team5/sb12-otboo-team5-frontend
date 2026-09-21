@@ -2,10 +2,9 @@ import {useState} from 'react';
 import {Dialog, DialogContent, DialogOverlay} from '@/components/ui/dialog';
 import {useAuthStore} from '@/lib/stores/useAuthStore';
 import {useWeatherStore} from '@/lib/stores/useWeatherStore';
-import {useRecommendationStore} from '@/lib/stores/useRecommendationStore';
 import {createFeed} from '@/lib/api/feeds';
 import {toast} from 'sonner';
-import type {FeedDto} from "@/lib/api";
+import type {FeedDto, RecommendedOutfitDto} from "@/lib/api";
 
 // Figma assets
 import closeIcon from '@/assets/icons/ic_X.svg';
@@ -14,19 +13,17 @@ interface AddFeedModalProps {
   open: boolean;
   onClose: () => void;
   onCreated: (feed: FeedDto) => void;
+  outfit?: RecommendedOutfitDto;
 }
 
-export default function AddFeedModal({ open, onClose, onCreated }: AddFeedModalProps) {
+export default function AddFeedModal({ open, onClose, onCreated, outfit }: AddFeedModalProps) {
   const { data: auth } = useAuthStore();
   const { selectedWeather } = useWeatherStore();
-  const { data: recommendation } = useRecommendationStore();
 
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
-    const outfit = recommendation?.outfits[0];
-
     if (!auth?.userDto.id || !selectedWeather || !outfit || outfit.clothes.length === 0) {
       toast.error('필요한 정보가 없습니다.');
       return;
