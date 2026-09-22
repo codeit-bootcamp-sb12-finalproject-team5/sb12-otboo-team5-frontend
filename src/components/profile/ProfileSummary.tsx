@@ -21,6 +21,7 @@ export default function ProfileSummary({
   const [dmModalOpen, setDmModalOpen] = useState(false);
   const [followerModalOpen, setFollowerModalOpen] = useState(false);
   const [followingModalOpen, setFollowingModalOpen] = useState(false);
+  const [profileImageError, setProfileImageError] = useState(false);
 
   const isOwnProfile = userId === currentUser?.userDto?.id;
 
@@ -60,6 +61,10 @@ export default function ProfileSummary({
     updateFollowParams({ userId });
   }, [userId, isOwnProfile, updateProfileParams, updateFollowParams]);
 
+  useEffect(() => {
+    setProfileImageError(false);
+  }, [profile?.profileImageUrl]);
+
 
 
   if (profileLoading && !isOwnProfile) {
@@ -90,11 +95,12 @@ export default function ProfileSummary({
       <div className="content-stretch flex gap-5 items-center justify-start relative shrink-0">
         {/* 프로필 이미지 */}
         <div className="bg-[#a9a9b1] relative rounded-[100px] shrink-0 size-[90px] overflow-hidden">
-          {profile?.profileImageUrl ? (
+          {profile?.profileImageUrl && !profileImageError ? (
             <img 
               src={profile.profileImageUrl}
               alt={profile.name || '프로필'}
               className="w-full h-full object-cover rounded-[100px]"
+              onError={() => setProfileImageError(true)}
             />
           ) : (
             <img 

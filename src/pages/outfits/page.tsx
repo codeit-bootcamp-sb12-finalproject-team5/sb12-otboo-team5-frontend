@@ -15,12 +15,12 @@ export default function OutfitsPage() {
   const [selectedOutfit, setSelectedOutfit] = useState<OutfitDto | null>(null);
   const selectedCardRef = useRef<HTMLButtonElement | null>(null);
   const requestedCategory = searchParams.get('category') || 'OOTD';
-  const categories = [...new Set(['OOTD', ...outfits.map(outfit => outfit.category)])];
-  // A bookmarked category may arrive on a later cursor page.
-  const selectedCategory = loading || error || categories.includes(requestedCategory)
-    ? requestedCategory
-    : 'OOTD';
-  const visibleOutfits = outfits.filter(outfit => outfit.category === selectedCategory);
+  const categories = ['OOTD', 'outfit'];
+  const selectedCategory = categories.includes(requestedCategory) ? requestedCategory : 'OOTD';
+  const visibleOutfits = outfits.filter(outfit => {
+    if (selectedCategory === 'OOTD') return outfit.category === 'OOTD';
+    return outfit.category.toLowerCase() === 'outfit';
+  });
 
   return (
     <div className="flex h-full flex-col px-10 py-2.5">

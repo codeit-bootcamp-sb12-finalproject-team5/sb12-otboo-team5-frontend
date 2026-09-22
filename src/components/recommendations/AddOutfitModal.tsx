@@ -1,20 +1,16 @@
 import {useEffect, useState} from 'react';
 import {Dialog, DialogContent} from '@/components/ui/dialog';
 import {createOutfit} from '@/lib/api/outfits';
-import type {RecommendedOutfitDto, WeatherDto} from '@/lib/api';
-import {useWeatherStore} from '@/lib/stores/useWeatherStore';
+import type {RecommendedOutfitDto} from '@/lib/api';
 import {toast} from 'sonner';
 
 interface AddOutfitModalProps {
   open: boolean;
   outfit?: RecommendedOutfitDto;
-  weather?: WeatherDto;
   onClose: () => void;
 }
 
-export default function AddOutfitModal({open, outfit, weather, onClose}: AddOutfitModalProps) {
-  const {selectedWeather} = useWeatherStore();
-  const outfitWeather = weather ?? selectedWeather;
+export default function AddOutfitModal({open, outfit, onClose}: AddOutfitModalProps) {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
@@ -27,7 +23,7 @@ export default function AddOutfitModal({open, outfit, weather, onClose}: AddOutf
   }, [open, outfit]);
 
   const handleSubmit = async () => {
-    if (!outfit || !outfitWeather || !name.trim()) {
+    if (!outfit || !name.trim()) {
       toast.error('아웃핏 이름을 입력해주세요.');
       return;
     }
@@ -37,9 +33,9 @@ export default function AddOutfitModal({open, outfit, weather, onClose}: AddOutf
       await createOutfit({
         name: name.trim(),
         description: description.trim() || undefined,
-        category: 'OOTD',
+        category: 'outfit',
         clothesIds: outfit.clothes.map(clothes => clothes.id),
-        weatherId: outfitWeather.id,
+        weatherId: undefined,
       });
       toast.success('아웃핏이 등록되었습니다.');
       onClose();
