@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, Edit, LoaderCircle, MoreVertical, RefreshCw, Trash2, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { deleteOutfit, getOutfit } from '@/lib/api/outfits';
+import { createFeed } from '@/lib/api/feeds';
+import { useAuthStore } from '@/lib/stores/useAuthStore';
 import type { OutfitDto } from '@/lib/api/types';
 import { Button } from '@/components/ui/button';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
@@ -29,7 +31,7 @@ type DetailState =
   | { id: string; status: 'loading' | 'error' }
   | { id: string; status: 'success'; data: OutfitDto };
 
-function OutfitDetails({ detail, summary }: { detail: OutfitDto; summary: OutfitDto }) {
+function OutfitDetails({ detail, summary, onRegisterFeed, isFeedRegistering }: { detail: OutfitDto; summary: OutfitDto; onRegisterFeed: () => void; isFeedRegistering: boolean }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const clothes = detail.clothes;
   const currentClothes = clothes[currentIndex];
@@ -112,7 +114,7 @@ function OutfitDetails({ detail, summary }: { detail: OutfitDto; summary: Outfit
           </div>
         )}
       </section>
-      <div className="flex min-w-0 flex-col gap-6 p-5 md:p-7 md:pt-14">
+      <div className="flex h-full min-w-0 flex-col gap-6 p-5 md:p-7 md:pt-14">
         <div>
           <h2 className="text-2xl leading-snug font-bold break-words tracking-tight text-[#373740]">
             {detail.name}
@@ -126,6 +128,13 @@ function OutfitDetails({ detail, summary }: { detail: OutfitDto; summary: Outfit
           </p>
         </div>
         {detail.weather && <OutfitWeather weather={detail.weather} />}
+        {['outfit', 'ootd'].includes(detail.category.toLowerCase()) && (
+          <div className="mt-auto pt-4">
+            <Button className="w-full bg-[#1e89f4] hover:bg-[#1479d8]" disabled={isFeedRegistering} onClick={onRegisterFeed}>
+              {isFeedRegistering ? '피드 등록 중...' : '피드 등록하기'}
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -137,6 +146,9 @@ export default function OutfitDetailModal({ outfit, onClose, onCloseAutoFocus, o
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [isFeedConfirmOpen, setIsFeedConfirmOpen] = useState(false);
+  const [feedRegistering, setFeedRegistering] = useState(false);
+  const currentUserId = useAuthStore(state => state.data?.userDto.id);
   const outfitId = outfit?.id;
 
   useEffect(() => {
@@ -185,6 +197,34 @@ export default function OutfitDetailModal({ outfit, onClose, onCloseAutoFocus, o
     }
   };
 
+  const handleRegisterFeed = async () => {
+    if (!detail || !currentUserId) {
+      toast.error('로그인 정보를 확인할 수 없습니다.');
+      return;
+    }
+
+    setFeedRegistering(true);
+    try {
+      await createFeed({
+        authorId: currentUserId,
+        outfitId: detail.id,
+        content: detail.description?.trim() || detail.name,
+      });
+      toast.success('피드로 등록되었습니다.');
+      onClose();
+    } catch (error) {
+      console.error('OOTD 피드 등록 실패:', error);
+      const status = (error as { response?: { status?: number } }).response?.status;
+      if (status === 409) {
+        toast.error('이미 피드로 등록된 아웃핏입니다.');
+      } else {
+        toast.error('피드 등록에 실패했습니다.');
+      }
+    } finally {
+      setFeedRegistering(false);
+    }
+  };
+
   return (
     <Dialog open onOpenChange={(open) => { if (!open) onClose(); }}>
       <DialogContent
@@ -223,7 +263,7 @@ export default function OutfitDetailModal({ outfit, onClose, onCloseAutoFocus, o
           </DropdownMenuContent>
         </DropdownMenu>
         {detail ? (
-          <OutfitDetails key={detail.id} detail={detail} summary={outfit} />
+          <OutfitDetails key={detail.id} detail={detail} summary={outfit} onRegisterFeed={() => setIsFeedConfirmOpen(true)} isFeedRegistering={feedRegistering} />
         ) : isError ? (
           <div className="flex min-h-80 flex-col items-center justify-center gap-4 px-6 py-16 text-center">
             <p role="alert" className="text-[#64646f]">아웃핏 정보를 불러오지 못했어요.<br />잠시 후 다시 시도해 주세요.</p>
@@ -257,6 +297,29 @@ export default function OutfitDetailModal({ outfit, onClose, onCloseAutoFocus, o
             <AlertDialogCancel disabled={deleting}>취소</AlertDialogCancel>
             <AlertDialogAction onClick={handleDelete} disabled={deleting} className="bg-red-500 hover:bg-red-600">
               {deleting ? '삭제 중...' : '삭제'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      <AlertDialog open={isFeedConfirmOpen} onOpenChange={setIsFeedConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>해당 아웃핏을 아래 내용과 함께 피드로 등록할까요?</AlertDialogTitle>
+            <AlertDialogDescription className="space-y-3 pt-2 text-left">
+              <span className="block rounded-lg bg-[#f7f7f8] p-3">
+                <span className="block text-xs font-bold text-[#808089]">이름</span>
+                <span className="mt-1 block font-semibold text-[#34343d]">{detail?.name}</span>
+              </span>
+              <span className="block rounded-lg bg-[#f7f7f8] p-3">
+                <span className="block text-xs font-bold text-[#808089]">설명</span>
+                <span className="mt-1 block whitespace-pre-wrap text-[#575765]">{detail?.description?.trim() || '등록된 설명이 없습니다.'}</span>
+              </span>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={feedRegistering}>취소</AlertDialogCancel>
+            <AlertDialogAction onClick={handleRegisterFeed} disabled={feedRegistering} className="bg-[#1e89f4] hover:bg-[#1479d8]">
+              {feedRegistering ? '등록 중...' : '피드 등록'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

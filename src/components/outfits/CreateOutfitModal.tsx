@@ -58,7 +58,7 @@ export default function CreateOutfitModal({ open, onOpenChange, onCreated }: Cre
     setSelectedIds(ids => [...ids, item.id]);
   };
 
-  const submit = async (type: 'OOTD' | 'outfit') => {
+  const submit = async (type: 'OOTD' | 'OUTFIT') => {
     if (!name.trim()) return toast.error('이름을 입력해주세요.');
     if (selectedIds.length === 0) return toast.error('옷을 한 벌 이상 선택해주세요.');
     if (type === 'OOTD' && !todayWeather) return toast.error('오늘 날씨 정보가 없어 OOTD를 등록할 수 없습니다.');
@@ -69,7 +69,7 @@ export default function CreateOutfitModal({ open, onOpenChange, onCreated }: Cre
         description: description.trim() || undefined,
         category: type,
         clothesIds: selectedIds,
-        weatherId: todayWeather?.id,
+        weatherId: type === 'OOTD' ? todayWeather?.id : undefined,
       });
       if (type === 'OOTD') {
         if (!userId) throw new Error('로그인 정보가 없습니다.');
@@ -116,7 +116,7 @@ export default function CreateOutfitModal({ open, onOpenChange, onCreated }: Cre
                 <textarea value={description} onChange={event => setDescription(event.target.value)} placeholder="설명 (선택)" className="h-20 w-full resize-none rounded-lg border border-[#d4d4d9] bg-white p-3 text-sm outline-none focus:border-[#1e89f4]" />
                 <div className="grid grid-cols-2 gap-2">
                 <button type="button" onClick={() => submit('OOTD')} disabled={loading || loadingData} className="h-11 rounded-lg border border-[#1e89f4] bg-white font-bold text-[#1e89f4] disabled:opacity-50">OOTD 등록하기</button>
-                <button type="button" onClick={() => submit('outfit')} disabled={loading || loadingData} className="h-11 rounded-lg bg-[#1e89f4] font-bold text-white disabled:opacity-50">outfit 등록하기</button>
+                <button type="button" onClick={() => submit('OUTFIT')} disabled={loading || loadingData} className="h-11 rounded-lg bg-[#1e89f4] font-bold text-white disabled:opacity-50">outfit 등록하기</button>
                 </div>
               </div>
             </aside>

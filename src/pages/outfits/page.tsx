@@ -16,12 +16,12 @@ export default function OutfitsPage() {
   const [selectedOutfit, setSelectedOutfit] = useState<OutfitDto | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const selectedCardRef = useRef<HTMLButtonElement | null>(null);
-  const requestedCategory = searchParams.get('category') || 'OOTD';
-  const categories = ['OOTD', 'outfit'];
+  const requestedCategory = (searchParams.get('category') || 'OOTD').toUpperCase();
+  const categories = ['OOTD', 'OUTFIT'];
   const selectedCategory = categories.includes(requestedCategory) ? requestedCategory : 'OOTD';
   const visibleOutfits = outfits.filter(outfit => {
     if (selectedCategory === 'OOTD') return outfit.category === 'OOTD';
-    return outfit.category.toLowerCase() === 'outfit';
+    return outfit.category.toUpperCase() === 'OUTFIT';
   });
 
   return (
