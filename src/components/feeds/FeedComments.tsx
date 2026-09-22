@@ -5,7 +5,7 @@ import { useFeedCommentStore } from '@/lib/stores/useFeedCommentStore';
 import { useAuthStore } from '@/lib/stores/useAuthStore';
 import { useInfiniteScroll } from '@/lib/hooks/useInfiniteScroll';
 import type { FeedDto } from '@/lib/api/types';
-import profileIcon from '@/assets/icons/profile.svg';
+import ProfileAvatar from '@/components/profile/ProfileAvatar';
 
 interface FeedCommentsProps {
   feed: FeedDto;
@@ -97,19 +97,7 @@ export default function FeedComments({ feed }: FeedCommentsProps) {
                   <div className="content-stretch flex gap-1.5 items-start justify-start relative shrink-0">
                     <div className="box-border content-stretch flex gap-2 items-center justify-start px-0 py-px relative shrink-0">
                       <div className="bg-[#a9a9b1] relative rounded-[100px] shrink-0 size-5">
-                        {comment.author.profileImageUrl ? (
-                          <img 
-                            src={comment.author.profileImageUrl} 
-                            alt={comment.author.name} 
-                            className="w-full h-full rounded-[100px] object-cover"
-                          />
-                        ) : (
-                          <img 
-                            src={profileIcon} 
-                            alt={comment.author.name} 
-                            className="w-full h-full rounded-[100px] object-cover"
-                          />
-                        )}
+                        <ProfileAvatar imageUrl={comment.author.profileImageUrl} alt={comment.author.name} className="w-full h-full rounded-[100px] object-cover" />
                       </div>
                     </div>
                     <div className="content-stretch flex flex-col gap-2 items-start justify-start leading-[0] not-italic relative shrink-0 w-[280px]">

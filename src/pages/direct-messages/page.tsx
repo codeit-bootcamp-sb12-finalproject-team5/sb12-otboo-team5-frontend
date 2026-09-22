@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
-import profileIcon from '@/assets/icons/profile.svg';
+import ProfileAvatar from '@/components/profile/ProfileAvatar';
 import DMModal from '@/components/profile/DMModal';
 import {getDmRooms, leaveDmRoom} from '@/lib/api/messages';
 import {AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle} from '@/components/ui/alert-dialog';
@@ -112,7 +112,7 @@ export default function DirectMessagesPage() {
         {rooms.map(room => <li key={room.roomId} className="relative overflow-hidden rounded-[14px]">
           <button onClick={() => setLeaveTarget(room)} className="absolute right-3 top-1/2 flex size-[56px] -translate-y-1/2 items-center justify-center rounded-full bg-[#f24346] text-sm font-bold text-white">나가기</button>
           <button onPointerDown={event => { swipeStartX.current = event.clientX; didSwipe.current = false; event.currentTarget.setPointerCapture(event.pointerId); }} onPointerUp={event => { const distance = event.clientX - swipeStartX.current; if (Math.abs(distance) >= 40) { didSwipe.current = true; setSwipedRoomId(distance < 0 ? room.roomId : null); } event.currentTarget.releasePointerCapture(event.pointerId); }} onClick={() => { if (didSwipe.current) { didSwipe.current = false; return; } if (swipedRoomId === room.roomId) setSwipedRoomId(null); else setSelectedRoom(room); }} className={`relative flex w-full touch-pan-y select-none items-center gap-4 rounded-[14px] bg-white px-4 py-4 text-left hover:bg-[#f7f7f8] transition-transform duration-200 ${swipedRoomId === room.roomId ? '-translate-x-[76px]' : 'translate-x-0'}`}>
-            <img src={room.opponent.profileImageUrl || profileIcon} alt="" className="size-[58px] rounded-full object-cover bg-[#a9a9b1]" />
+            <ProfileAvatar imageUrl={room.opponent.profileImageUrl} alt={room.opponent.name} className="size-[58px] rounded-full object-cover bg-[#a9a9b1]" />
             <span className="min-w-0 flex-1"><span className="block truncate text-[18px] font-bold text-[#212126]">{room.opponent.name}</span><span className="mt-1 block truncate text-[14px] text-[#808089]">{room.lastMessage.content}</span></span>
             <span className="flex flex-col items-end gap-2"><span className="text-[12px] text-[#808089]">{formatSentAt(room.lastMessage.sentAt)}</span>{room.unreadCount > 0 && <span className="flex size-5 items-center justify-center rounded-full bg-red-500 text-[11px] font-bold text-white">{room.unreadCount > 99 ? '99+' : room.unreadCount}</span>}</span>
           </button>
