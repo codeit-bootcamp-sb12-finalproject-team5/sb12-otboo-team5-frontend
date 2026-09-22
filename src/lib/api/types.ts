@@ -280,6 +280,15 @@ export interface OutfitCreateResponse {
   createdAt: string;
 }
 
+export interface RecommendationPreferenceRequest {
+  subcategories: string[];
+  colors: string[];
+  fits: string[];
+  materials: string[];
+  patterns: string[];
+  styles: string[];
+}
+
 export interface NotificationDto {
   id: string;
   createdAt: string;

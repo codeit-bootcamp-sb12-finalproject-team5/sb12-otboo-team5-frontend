@@ -2,6 +2,7 @@ import { apiClient } from './client';
 import type {
   RecommendationParams,
   RecommendationDto,
+  RecommendationPreferenceRequest,
   RecommendationUsageResponse,
 } from './types';
 
@@ -32,4 +33,10 @@ export const getOutfitRecommendation = async (params: RecommendationParams): Pro
 /** 오늘의 추천 사용량 조회 */
 export const getRecommendationUsage = async (): Promise<RecommendationUsageResponse> => {
   return apiClient.get<RecommendationUsageResponse>('/api/recommendations/usage');
+};
+
+export const updateRecommendationPreferences = async (
+  request: RecommendationPreferenceRequest,
+): Promise<void> => {
+  await apiClient.post<void>('/api/recommendations/preferences', request);
 };

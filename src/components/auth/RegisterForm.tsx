@@ -5,9 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import SocialLoginSection from "./SocialLoginSection";
 import {createUser} from "@/lib/api";
+import { useAuthStore } from "@/lib/stores/useAuthStore";
 
 export default function RegisterForm() {
   const navigate = useNavigate();
+  const { signIn } = useAuthStore();
   const [formData, setFormData] = useState({
     email: "",
     name: "",
@@ -148,9 +150,10 @@ export default function RegisterForm() {
         password: formData.password
       });
       
-      // 성공 시 로그인 페이지로 이동
-      navigate("/auth/login");
-    } catch (err) {
+      // 가입한 계정으로 바로 로그인한 뒤 선호도 조사로 이동
+      await signIn(formData.email, formData.password);
+      navigate("/recommendations/preferences", { replace: true });
+    } catch {
       // 서버 에러 처리
       setErrors({ submit: "회원가입에 실패했습니다. 다시 시도해주세요." });
     } finally {
