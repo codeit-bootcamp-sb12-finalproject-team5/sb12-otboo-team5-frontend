@@ -86,7 +86,7 @@ export default function RecommendationDetailModal({
                     onClick={onRegisterOotd}
                     className="h-[52px] rounded-[12px] bg-[#1e89f4] font-bold text-white text-[17px] transition-colors hover:bg-[#1479dd]"
                   >
-                    OOTD 피드 등록
+                    OOTD 등록
                   </button>
                 )}
                 {onRegisterOutfit && (
