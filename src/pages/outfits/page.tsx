@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -10,19 +10,39 @@ import { useOutfits } from '@/lib/hooks/useOutfits';
 import type { OutfitDto } from '@/lib/api/types';
 import hangerIcon from '@/assets/icons/il_hanger.svg';
 
+const FIXED_CATEGORIES = ['OOTD', 'OUTFIT'];
+
+const normalizeCategory = (category: string) => category.trim().toLocaleLowerCase();
+
 export default function OutfitsPage() {
   const { outfits, loading, error, reload, updateOutfit, removeOutfit } = useOutfits();
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedOutfit, setSelectedOutfit] = useState<OutfitDto | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const selectedCardRef = useRef<HTMLButtonElement | null>(null);
-  const requestedCategory = (searchParams.get('category') || 'OOTD').toUpperCase();
-  const categories = ['OOTD', 'OUTFIT'];
-  const selectedCategory = categories.includes(requestedCategory) ? requestedCategory : 'OOTD';
-  const visibleOutfits = outfits.filter(outfit => {
-    if (selectedCategory === 'OOTD') return outfit.category === 'OOTD';
-    return outfit.category.toUpperCase() === 'OUTFIT';
-  });
+  const requestedCategory = searchParams.get('category') || 'OOTD';
+  const categories = useMemo(() => {
+    const includedCategories = new Set(FIXED_CATEGORIES.map(normalizeCategory));
+    const dynamicCategories: string[] = [];
+
+    outfits.forEach(({ category }) => {
+      const trimmedCategory = category.trim();
+      const normalizedCategory = normalizeCategory(trimmedCategory);
+
+      if (!trimmedCategory || includedCategories.has(normalizedCategory)) return;
+
+      includedCategories.add(normalizedCategory);
+      dynamicCategories.push(trimmedCategory);
+    });
+
+    return [...FIXED_CATEGORIES, ...dynamicCategories];
+  }, [outfits]);
+  const selectedCategory = categories.find(
+    category => normalizeCategory(category) === normalizeCategory(requestedCategory),
+  ) || 'OOTD';
+  const visibleOutfits = outfits.filter(
+    outfit => normalizeCategory(outfit.category) === normalizeCategory(selectedCategory),
+  );
 
   return (
     <div className="flex h-full flex-col px-10 py-2.5">

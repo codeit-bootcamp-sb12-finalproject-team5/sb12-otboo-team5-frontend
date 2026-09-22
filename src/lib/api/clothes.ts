@@ -23,7 +23,7 @@ export const createClothes = async (
 ): Promise<ClothesDto> => {
   const formData = new FormData();
 
-  formData.append('request', new Blob([JSON.stringify(request)], { type: 'application/json' }));
+  formData.append('post', new Blob([JSON.stringify(request)], { type: 'application/json' }));
   
   if (image) {
     formData.append('image', image);
