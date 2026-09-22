@@ -79,7 +79,7 @@ export {
   extractByUrl,
 } from './clothes';
 
-export { getOutfitList, getOutfit, updateOutfit, deleteOutfit } from './outfits';
+export { createOutfit, getOutfitList, getOutfit, updateOutfit, deleteOutfit } from './outfits';
 
 export {
   // Clothes Attributes
@@ -107,6 +107,8 @@ export {
   // Recommendations
   getRecommendation,
   updateRecommendationPreferences,
+  getOutfitRecommendation,
+  getRecommendationUsage,
 } from './recommendations';
 
 export {

@@ -1,5 +1,13 @@
 import { apiClient } from './client';
-import type { OutfitDto, OutfitListParams, OutfitListResponse, OutfitUpdateRequest, OutfitUpdateResponse } from './types';
+import type {
+  OutfitCreateRequest,
+  OutfitCreateResponse,
+  OutfitDto,
+  OutfitListParams,
+  OutfitListResponse,
+  OutfitUpdateRequest,
+  OutfitUpdateResponse,
+} from './types';
 
 export const getOutfitList = (
   params?: OutfitListParams,
@@ -10,6 +18,10 @@ export const getOutfitList = (
 
 export const getOutfit = (outfitId: string, signal?: AbortSignal): Promise<OutfitDto> => {
   return apiClient.get<OutfitDto>(`/api/outfit/${encodeURIComponent(outfitId)}`, { signal });
+};
+
+export const createOutfit = (request: OutfitCreateRequest): Promise<OutfitCreateResponse> => {
+  return apiClient.post<OutfitCreateResponse>('/api/outfit', request);
 };
 
 export const updateOutfit = (outfitId: string, request: OutfitUpdateRequest): Promise<OutfitUpdateResponse> => {
