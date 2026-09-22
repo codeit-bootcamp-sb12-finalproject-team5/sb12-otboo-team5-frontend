@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { getClothes } from '@/lib/api/clothes';
-import { createFeed } from '@/lib/api/feeds';
 import { createOutfit } from '@/lib/api/outfits';
 import { getProfileWeather } from '@/lib/api/weather';
 import type { ClothesDto, WeatherDto } from '@/lib/api';
@@ -64,22 +63,14 @@ export default function CreateOutfitModal({ open, onOpenChange, onCreated }: Cre
     if (type === 'OOTD' && !todayWeather) return toast.error('오늘 날씨 정보가 없어 OOTD를 등록할 수 없습니다.');
     setLoading(true);
     try {
-      const createdOutfit = await createOutfit({
+      await createOutfit({
         name: name.trim(),
         description: description.trim() || undefined,
         category: type,
         clothesIds: selectedIds,
         weatherId: type === 'OOTD' ? todayWeather?.id : undefined,
       });
-      if (type === 'OOTD') {
-        if (!userId) throw new Error('로그인 정보가 없습니다.');
-        await createFeed({
-          authorId: userId,
-          outfitId: createdOutfit.id,
-          content: description.trim() || name.trim(),
-        });
-      }
-      toast.success(type === 'OOTD' ? 'OOTD 피드가 등록되었습니다.' : '아웃핏이 등록되었습니다.');
+      toast.success(type === 'OOTD' ? 'OOTD가 등록되었습니다.' : '아웃핏이 등록되었습니다.');
       onOpenChange(false);
       onCreated();
     } catch (error) {
