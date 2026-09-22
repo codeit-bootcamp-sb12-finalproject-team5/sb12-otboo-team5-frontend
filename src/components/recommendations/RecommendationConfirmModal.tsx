@@ -8,6 +8,7 @@ interface RecommendationConfirmModalProps {
   open: boolean;
   title?: string;
   showDateQuestion?: boolean;
+  finalRecommendationLabel?: string;
   dateLabel: string;
   usage?: RecommendationUsage;
   clothes: ClothesDto[];
@@ -24,6 +25,7 @@ export default function RecommendationConfirmModal({
   open,
   title = 'OOTD 추천 받기',
   showDateQuestion = true,
+  finalRecommendationLabel,
   dateLabel,
   usage,
   clothes,
@@ -106,12 +108,16 @@ export default function RecommendationConfirmModal({
             <h3 className="font-bold text-[#212126] text-[18px]">추천을 시작할까요?</h3>
             {selectedClothes.length === 0 ? (
               <p className="font-semibold leading-6 text-[#575765] text-[16px]">
-                고정한 옷 없이 {dateLabel} 날씨에 맞는 코디를 추천받을까요?
+                {finalRecommendationLabel
+                  ? `고정한 옷 없이 ${finalRecommendationLabel} 추천을 받을까요?`
+                  : `고정한 옷 없이 ${dateLabel} 날씨에 맞는 코디를 추천받을까요?`}
               </p>
             ) : (
               <>
                 <p className="font-semibold leading-6 text-[#575765] text-[16px]">
-                  선택한 옷 {selectedClothes.length}개를 기반으로 {dateLabel} 코디를 추천받을까요?
+                  {finalRecommendationLabel
+                    ? `선택한 옷 ${selectedClothes.length}개를 기반으로 ${finalRecommendationLabel} 추천을 받을까요?`
+                    : `선택한 옷 ${selectedClothes.length}개를 기반으로 ${dateLabel} 코디를 추천받을까요?`}
                 </p>
                 <div className="flex gap-3 overflow-x-auto pb-2">
                   {selectedClothes.map((clothes) => (
