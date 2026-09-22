@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import OutfitCard from '@/components/outfits/OutfitCard';
 import OutfitDetailModal from '@/components/outfits/OutfitDetailModal';
 import OutfitFilter from '@/components/outfits/OutfitFilter';
+import CreateOutfitModal from '@/components/outfits/CreateOutfitModal';
 import { useOutfits } from '@/lib/hooks/useOutfits';
 import type { OutfitDto } from '@/lib/api/types';
 import hangerIcon from '@/assets/icons/il_hanger.svg';
@@ -13,6 +14,7 @@ export default function OutfitsPage() {
   const { outfits, loading, error, reload, updateOutfit, removeOutfit } = useOutfits();
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedOutfit, setSelectedOutfit] = useState<OutfitDto | null>(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const selectedCardRef = useRef<HTMLButtonElement | null>(null);
   const requestedCategory = searchParams.get('category') || 'OOTD';
   const categories = ['OOTD', 'outfit'];
@@ -36,6 +38,7 @@ export default function OutfitsPage() {
               return next;
             });
           }}
+          onCreate={() => setIsCreateModalOpen(true)}
         />
       </div>
 
@@ -96,6 +99,11 @@ export default function OutfitsPage() {
           }}
         />
       )}
+      <CreateOutfitModal
+        open={isCreateModalOpen}
+        onOpenChange={setIsCreateModalOpen}
+        onCreated={reload}
+      />
     </div>
   );
 }
