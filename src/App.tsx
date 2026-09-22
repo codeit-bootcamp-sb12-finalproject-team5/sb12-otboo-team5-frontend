@@ -18,6 +18,7 @@ import UserManagementPage from '@/pages/admin/users/page';
 import ClothesAttributeManagementPage from '@/pages/admin/clothes-attributes/page';
 import MyProfileSettingsPage from '@/pages/settings/page';
 import DirectMessagesPage from '@/pages/direct-messages/page';
+import RecommendationPreferencesPage from '@/pages/recommendations/preferences/page';
 import NotFoundPage from '@/pages/404/page';
 import CsrfInitializer from "@/components/auth/CsrfInitializer.tsx";
 
@@ -41,6 +42,7 @@ function App() {
         <Route path="/" element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
           <Route index element={<Navigate to="/recommendations" replace />} />
           <Route path="recommendations" element={<RecommendationsPage />} />
+          <Route path="recommendations/preferences" element={<RecommendationPreferencesPage />} />
           <Route path="closet" element={<ClosetPage />} />
           <Route path="outfits" element={<OutfitsPage />} />
           <Route path="outfits/new" element={<NewOutfitPage />} />
