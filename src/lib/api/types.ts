@@ -147,6 +147,7 @@ export interface OutfitUpdateRequest {
   description?: string;
   category?: string;
   clothesIds?: string[];
+  weatherId?: string;
 }
 
 export interface OutfitUpdateResponse {

@@ -7,7 +7,7 @@ import { useFeedStore } from '@/lib/stores/useFeedStore';
 import { updateFeed, deleteFeed } from '@/lib/api/feeds';
 import type { FeedDto } from '@/lib/api/types';
 import FeedComments from './FeedComments';
-import profileIcon from '@/assets/icons/profile.svg';
+import ProfileAvatar from '@/components/profile/ProfileAvatar';
 import sunnyIcon from '@/assets/illust_logos/il_Sunny.svg';
 import overcastIcon from '@/assets/illust_logos/il_Overcast.svg';
 import cloudyIcon from '@/assets/illust_logos/il_cloudy.svg';
@@ -113,19 +113,7 @@ export default function FeedDetailRightSection({ feed, onDelete }: FeedDetailRig
           <div className="content-stretch flex gap-1.5 items-start justify-start relative shrink-0">
             <div className="box-border content-stretch flex gap-2 items-center justify-start px-0 py-[3px] relative shrink-0">
               <div className="bg-[#a9a9b1] relative rounded-[100px] shrink-0 size-5">
-                {feed.author.profileImageUrl ? (
-                  <img 
-                    src={feed.author.profileImageUrl} 
-                    alt={feed.author.name} 
-                    className="w-full h-full rounded-[100px] object-cover"
-                  />
-                ) : (
-                  <img 
-                    src={profileIcon} 
-                    alt={feed.author.name} 
-                    className="w-full h-full rounded-[100px] object-cover"
-                  />
-                )}
+                <ProfileAvatar imageUrl={feed.author.profileImageUrl} alt={feed.author.name} className="w-full h-full rounded-[100px] object-cover" />
               </div>
             </div>
             <div className="content-stretch flex flex-col gap-1 items-start justify-start relative shrink-0 w-[94px]">

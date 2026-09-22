@@ -5,9 +5,10 @@ interface OutfitFilterProps {
   categories: string[];
   selectedCategory: string;
   onCategoryChange: (category: string) => void;
+  onCreate: () => void;
 }
 
-export default function OutfitFilter({ categories, selectedCategory, onCategoryChange }: OutfitFilterProps) {
+export default function OutfitFilter({ categories, selectedCategory, onCategoryChange, onCreate }: OutfitFilterProps) {
   return (
     <div className="flex w-full items-center justify-between gap-6">
       <nav aria-label="아웃핏 카테고리" className="flex min-w-0 flex-1 gap-5 overflow-x-auto">
@@ -27,11 +28,16 @@ export default function OutfitFilter({ categories, selectedCategory, onCategoryC
           </button>
         ))}
       </nav>
-      <Button asChild>
-        <Link to={`/outfits/new?${new URLSearchParams({ category: selectedCategory })}`}>
-          아웃핏 추가하기
-        </Link>
-      </Button>
+      <div className="flex shrink-0 items-center gap-3">
+        <Button type="button" variant="outline" onClick={onCreate}>
+          OOTD/outfit 만들기
+        </Button>
+        <Button asChild>
+          <Link to={`/outfits/new?${new URLSearchParams({ category: selectedCategory })}`}>
+            아웃핏 추천받기
+          </Link>
+        </Button>
+      </div>
     </div>
   );
 }

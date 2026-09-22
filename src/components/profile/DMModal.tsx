@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {Dialog, DialogContent} from '@/components/ui/dialog';
-import profileIcon from '@/assets/icons/profile.svg';
+import ProfileAvatar from './ProfileAvatar';
 import sendIcon from '@/assets/icons/ic_send.svg';
 import {createDmRoom, getDmMessages, markDmMessagesRead} from '@/lib/api/messages';
 import type {DmMessage} from '@/lib/api/types';
@@ -113,7 +113,7 @@ export default function DMModal({open, onOpenChange, targetUser, roomId, dmKey}:
   }}>
     <DialogContent className="bg-white w-[600px] h-[600px] max-w-[min(600px,90vw)] max-h-[85vh] p-0 gap-0 rounded-[20px] border-0 flex overflow-hidden" showCloseButton={false}>
       <div className="flex flex-col h-full w-full">
-        <header className="flex gap-2 items-center px-5 py-3 border-b border-[#e7e7e9]"><img src={targetUser.profileImageUrl || profileIcon} alt="" className="size-[30px] rounded-full object-cover bg-[#a9a9b1]" /><strong className="text-[#34343d] text-[18px]">{targetUser.name}</strong></header>
+        <header className="flex gap-2 items-center px-5 py-3 border-b border-[#e7e7e9]"><ProfileAvatar imageUrl={targetUser.profileImageUrl} alt={targetUser.name} className="size-[30px] rounded-full object-cover bg-[#a9a9b1]" /><strong className="text-[#34343d] text-[18px]">{targetUser.name}</strong></header>
         <section className="flex-1 overflow-y-auto px-5 py-6">
           {loading ? <p className="text-center text-[#808089]">메시지를 불러오는 중...</p> : messages.length === 0 ? <p className="h-full flex items-center justify-center text-center text-[#a9a9b1] text-[20px] font-bold">{targetUser.name} 님과의 대화를 시작해보세요</p> : <div className="flex flex-col gap-1.5">{messages.map((message, index) => {
             const isMine = message.senderId === currentUserId;

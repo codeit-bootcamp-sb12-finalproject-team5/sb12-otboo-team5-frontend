@@ -3,18 +3,14 @@ import {useRecommendationStore} from "@/lib/stores/useRecommendationStore.ts";
 import {useState} from 'react';
 import type {RecommendedOutfitDto} from '@/lib/api';
 import RecommendationDetailModal from './RecommendationDetailModal';
-import AddFeedModal from './AddFeedModal';
 import AddOutfitModal from './AddOutfitModal';
-import FeedDetailModal from '@/components/feeds/FeedDetailModal';
-import type {FeedDto} from '@/lib/api';
 
 export default function RecommendationGrid() {
   const {data: recommendations, loading} = useRecommendationStore();
   const [selectedOutfit, setSelectedOutfit] = useState<RecommendedOutfitDto>();
-  const [isFeedModalOpen, setIsFeedModalOpen] = useState(false);
   const [isOutfitModalOpen, setIsOutfitModalOpen] = useState(false);
   const [outfitToRegister, setOutfitToRegister] = useState<RecommendedOutfitDto>();
-  const [createdFeed, setCreatedFeed] = useState<FeedDto>();
+  const [registrationCategory, setRegistrationCategory] = useState<'OOTD' | 'OUTFIT'>('OUTFIT');
 
   if (loading) {
     return (
@@ -90,41 +86,25 @@ export default function RecommendationGrid() {
         onRegisterOotd={() => {
           setOutfitToRegister(selectedOutfit);
           setSelectedOutfit(undefined);
-          setIsFeedModalOpen(true);
+          setRegistrationCategory('OOTD');
+          setIsOutfitModalOpen(true);
         }}
         onRegisterOutfit={() => {
           setOutfitToRegister(selectedOutfit);
           setSelectedOutfit(undefined);
+          setRegistrationCategory('OUTFIT');
           setIsOutfitModalOpen(true);
-        }}
-      />
-      <AddFeedModal
-        open={isFeedModalOpen}
-        outfit={outfitToRegister}
-        onClose={() => {
-          setIsFeedModalOpen(false);
-          setOutfitToRegister(undefined);
-        }}
-        onCreated={(feed) => {
-          setCreatedFeed(feed);
-          setOutfitToRegister(undefined);
         }}
       />
       <AddOutfitModal
         open={isOutfitModalOpen}
         outfit={outfitToRegister}
+        category={registrationCategory}
         onClose={() => {
           setIsOutfitModalOpen(false);
           setOutfitToRegister(undefined);
         }}
       />
-      {createdFeed && (
-        <FeedDetailModal
-          feed={createdFeed}
-          open={true}
-          onOpenChange={() => setCreatedFeed(undefined)}
-        />
-      )}
     </div>
   );
 }
