@@ -139,7 +139,7 @@ export default function ProfileSummary({
               className="content-stretch flex gap-1 items-center justify-start leading-[0] not-italic relative shrink-0 text-[18px] text-nowrap tracking-[-0.45px] hover:opacity-70 transition-opacity"
             >
               <div className="font-['SUIT:SemiBold',_sans-serif] relative shrink-0 text-[#808089]">
-                <p className="leading-[normal] text-nowrap whitespace-pre">팔로우</p>
+                <p className="leading-[normal] text-nowrap whitespace-pre">팔로잉</p>
               </div>
               <div className="font-['SUIT:ExtraBold',_sans-serif] relative shrink-0 text-[#34343d]">
                 <p className="leading-[normal] text-nowrap whitespace-pre">

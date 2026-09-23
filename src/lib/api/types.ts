@@ -494,7 +494,7 @@ export interface FollowerListParam extends CursorParams {
   nameLike?: string;
 }
 
-export interface FollowListResponse extends CursorResponse<FollowDto> {}
+export type FollowListResponse = CursorResponse<UserSummary>;
 
 export interface WeatherParams {
   longitude: number;
