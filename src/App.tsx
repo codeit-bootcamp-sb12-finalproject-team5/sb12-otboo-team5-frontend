@@ -6,6 +6,7 @@ import MainLayout from '@/components/layout/MainLayout';
 import ProtectedRoute from '@/components/layout/ProtectedRoute';
 
 import LoginPage from '@/pages/auth/login/page';
+import OAuthCallbackPage from '@/pages/auth/oauth-callback/page';
 import RegisterPage from '@/pages/auth/register/page';
 import ForgotPasswordPage from '@/pages/auth/forgot-password/page';
 import RecommendationsPage from '@/pages/recommendations/page';
@@ -34,6 +35,7 @@ function App() {
         {/* Public Routes */}
         <Route path="/auth/*" element={<AuthLayout />}>
           <Route path="login" element={<LoginPage />} />
+          <Route path="oauth/callback" element={<OAuthCallbackPage />} />
           <Route path="register" element={<RegisterPage />} />
           <Route path="forgot-password" element={<ForgotPasswordPage />} />
         </Route>
