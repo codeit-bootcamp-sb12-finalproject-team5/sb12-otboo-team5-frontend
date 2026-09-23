@@ -9,6 +9,7 @@ import {useAuthStore} from '@/lib/stores/useAuthStore';
 import RecommendationConfirmModal from './RecommendationConfirmModal';
 import type {ClothesDto, RecommendationUsage} from "@/lib/api";
 import {toast} from 'sonner';
+import {saveRecommendationSession} from '@/lib/recommendationSession';
 
 interface RecommendationHeaderProps {
   centered?: boolean;
@@ -62,6 +63,10 @@ export default function RecommendationHeader({centered = false}: RecommendationH
     try {
       setRecommendationSelectedClothesIds(selectedClothesIds);
       await fetch({throwError: true});
+      const result = useRecommendationStore.getState().data;
+      if (result && auth?.userDto.id && selectedWeather?.id) {
+        saveRecommendationSession('ootd', auth.userDto.id, selectedWeather.id, result);
+      }
     } catch (error) {
       console.error('OOTD 추천 요청 실패:', error);
       toast.error('OOTD 추천을 받지 못했습니다.');

@@ -12,6 +12,7 @@ import { getOutfitRecommendation, getRecommendationUsage } from '@/lib/api/recom
 import { getProfileWeather } from '@/lib/api/weather';
 import type { ClothesDto, RecommendationDto, RecommendationUsage, RecommendedOutfitDto, WeatherDto } from '@/lib/api';
 import { useAuthStore } from '@/lib/stores/useAuthStore';
+import {loadRecommendationSession, saveRecommendationSession} from '@/lib/recommendationSession';
 
 export default function NewOutfitPage() {
   const [searchParams] = useSearchParams();
@@ -39,6 +40,12 @@ export default function NewOutfitPage() {
       .catch((error) => console.error('오늘 날씨 조회 실패:', error))
       .finally(() => setLoadingWeather(false));
   }, [userId]);
+
+  useEffect(() => {
+    if (!userId || !todayWeather?.id) return;
+    const cachedRecommendation = loadRecommendationSession('outfit', userId, todayWeather.id);
+    if (cachedRecommendation) setRecommendations(cachedRecommendation);
+  }, [todayWeather?.id, userId]);
 
   const openRecommendation = async () => {
     if (!todayWeather) {
@@ -69,7 +76,9 @@ export default function NewOutfitPage() {
     setIsConfirmOpen(false);
     setLoading(true);
     try {
-      setRecommendations(await getOutfitRecommendation({weatherId: todayWeather.id, selectedClothesIds}));
+      const result = await getOutfitRecommendation({weatherId: todayWeather.id, selectedClothesIds});
+      setRecommendations(result);
+      if (userId) saveRecommendationSession('outfit', userId, todayWeather.id, result);
     } catch (error) {
       console.error('아웃핏 추천 요청 실패:', error);
       toast.error('아웃핏 추천을 받지 못했습니다.');

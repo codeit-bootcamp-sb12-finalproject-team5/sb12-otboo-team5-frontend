@@ -7,6 +7,7 @@ import {createBaseStoreActions} from "@/lib/stores/actions.ts";
 interface RecommendationStore extends BaseStore<RecommendationDto, RecommendationParams> {
   setWeatherId: (weatherId: string) => void;
   setSelectedClothesIds: (selectedClothesIds: string[]) => void;
+  restore: (weatherId: string, recommendation: RecommendationDto) => void;
 }
 
 export const useRecommendationStore = create<RecommendationStore>((set, get) => ({
@@ -22,4 +23,9 @@ export const useRecommendationStore = create<RecommendationStore>((set, get) => 
   setSelectedClothesIds: (selectedClothesIds) => set((state) => ({
     params: {...state.params, selectedClothesIds},
   })),
+  restore: (weatherId, recommendation) => set({
+    params: {weatherId},
+    data: recommendation,
+    error: undefined,
+  }),
 }));
