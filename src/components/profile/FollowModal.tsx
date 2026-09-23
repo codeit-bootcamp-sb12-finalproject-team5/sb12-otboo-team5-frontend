@@ -17,6 +17,8 @@ interface FollowModalProps {
 export default function FollowModal({ open, onOpenChange, type, targetUserId }: FollowModalProps) {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
+  const [sortDirection, setSortDirection] = useState<'ASC' | 'DESC'>('DESC');
+  const [sortMenuOpen, setSortMenuOpen] = useState(false);
   
   // 팔로워 스토어
   const { 
@@ -56,13 +58,22 @@ export default function FollowModal({ open, onOpenChange, type, targetUserId }: 
   // 타겟 유저 변경 시 파라미터 업데이트 및 데이터 조회
   useEffect(() => {
     if (open && targetUserId) {
-      const params = isFollowerMode 
-        ? { followeeId: targetUserId, nameLike: searchQuery || undefined }
-        : { followerId: targetUserId, nameLike: searchQuery || undefined };
+      const params = isFollowerMode
+          ? {
+            followeeId: targetUserId,
+            nameLike: searchQuery || undefined,
+            direction: sortDirection,
+          }
+          : {
+            followerId: targetUserId,
+            nameLike: searchQuery || undefined,
+            direction: sortDirection,
+          };
       currentUpdateParams(params);
       currentFetch();
     }
-  }, [open, targetUserId, type, isFollowerMode, currentUpdateParams, currentFetch, searchQuery]);
+  }, [open, targetUserId, type, isFollowerMode, currentUpdateParams, currentFetch, searchQuery,
+    sortDirection]);
 
   // 모달이 닫힐 때 데이터 정리
   useEffect(() => {
@@ -77,16 +88,25 @@ export default function FollowModal({ open, onOpenChange, type, targetUserId }: 
     const query = e.target.value;
     setSearchQuery(query);
     if (targetUserId) {
-      const params = isFollowerMode 
-        ? { followeeId: targetUserId, nameLike: query || undefined }
-        : { followerId: targetUserId, nameLike: query || undefined };
+      const params = isFollowerMode
+          ? {
+            followeeId: targetUserId,
+            nameLike: query || undefined,
+            direction: sortDirection,
+          }
+          : {
+            followerId: targetUserId,
+            nameLike: query || undefined,
+            direction: sortDirection,
+          };
       currentUpdateParams(params);
       currentFetch();
     }
-  }, [targetUserId, isFollowerMode, currentUpdateParams, currentFetch]);
+  }, [targetUserId, isFollowerMode, currentUpdateParams, currentFetch, sortDirection]);
 
 
   const title = isFollowerMode ? '팔로워' : '팔로잉';
+  const sortLabel = sortDirection === 'DESC' ? '최신순' : '오래된순';
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -102,7 +122,7 @@ export default function FollowModal({ open, onOpenChange, type, targetUserId }: 
                 <p className="leading-[normal]">{title}</p>
               </div>
             </div>
-            
+
             {/* 검색 입력 */}
             <div className="bg-[#f7f7f8] h-[44px] relative rounded-[100px] w-full">
               <div className="flex items-center h-full pl-4 pr-3 py-3">
@@ -110,14 +130,53 @@ export default function FollowModal({ open, onOpenChange, type, targetUserId }: 
                   <img src={searchIcon} alt="검색" className="block max-w-none size-full" />
                 </div>
                 <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={handleSearchChange}
-                  placeholder="사용자 검색..."
-                  className="flex-1 font-['SUIT:SemiBold',_sans-serif] text-[16px] text-[#212126] tracking-[-0.4px] bg-transparent border-none outline-none placeholder:text-[#a9a9b1]"
+                    type="text"
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    placeholder="사용자 검색..."
+                    className="flex-1 font-['SUIT:SemiBold',_sans-serif] text-[16px] text-[#212126] tracking-[-0.4px] bg-transparent border-none outline-none placeholder:text-[#a9a9b1]"
                 />
               </div>
             </div>
+
+            {/* 정렬 */}
+            <div className="flex justify-end relative">
+              <button
+                  type="button"
+                  onClick={() => setSortMenuOpen(prev => !prev)}
+                  className="flex items-center w-[140px] text-[14px] font-['SUIT:SemiBold',_sans-serif] text-[#212126]"
+              >
+                <span className="flex-1 text-left">팔로우한 날짜:</span>
+                <span className="text-right">{sortLabel}</span>
+              </button>
+
+              {sortMenuOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-[110px] rounded-[10px] bg-white border border-[#e7e7e9] shadow-md z-10">
+                    <button
+                        type="button"
+                        onClick={() => {
+                          setSortDirection('DESC');
+                          setSortMenuOpen(false);
+                        }}
+                        className="block w-full px-4 py-2 text-left text-[14px] text-[#212126] hover:bg-[#f7f7f8]"
+                    >
+                      최신순
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={() => {
+                          setSortDirection('ASC');
+                          setSortMenuOpen(false);
+                        }}
+                        className="block w-full px-4 py-2 text-left text-[14px] text-[#212126] hover:bg-[#f7f7f8]"
+                    >
+                      오래된순
+                    </button>
+                  </div>
+              )}
+            </div>
+
           </div>
 
           {/* 사용자 목록 */}

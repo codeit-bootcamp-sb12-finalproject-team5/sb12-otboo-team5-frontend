@@ -487,11 +487,13 @@ export interface ClothesAttributeDefListParams extends SortParams{
 export interface FollowingListParam extends CursorParams {
   followerId: string;
   nameLike?: string;
+  direction?: 'ASC' | 'DESC';
 }
 
 export interface FollowerListParam extends CursorParams {
   followeeId: string;
   nameLike?: string;
+  direction?: 'ASC' | 'DESC';
 }
 
 export type FollowListResponse = CursorResponse<UserSummary>;
