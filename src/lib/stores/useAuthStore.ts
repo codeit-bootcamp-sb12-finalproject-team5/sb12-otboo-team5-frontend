@@ -4,6 +4,7 @@ import {getCsrfToken, refreshToken, signIn, signOut} from '@/lib/api/auth';
 import type { BaseStore } from './types';
 import {execute} from "@/lib/stores/utils";
 import {createBaseStoreActions} from "@/lib/stores/actions.ts";
+import {clearRecommendationSessions} from '@/lib/recommendationSession';
 
 interface AuthStore extends BaseStore<JwtDto, unknown> {
   signIn: (email: string, password: string) => Promise<void>;
@@ -33,6 +34,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
         signOut,
         {
           onSuccess: (_result, _set, get) => {
+            clearRecommendationSessions();
             get().clear();
             getCsrfToken();
           },

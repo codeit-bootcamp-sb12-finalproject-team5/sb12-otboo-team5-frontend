@@ -9,6 +9,7 @@ import {useAuthStore} from '@/lib/stores/useAuthStore';
 import RecommendationConfirmModal from './RecommendationConfirmModal';
 import type {ClothesDto, RecommendationUsage} from "@/lib/api";
 import {toast} from 'sonner';
+import {saveRecommendationSession} from '@/lib/recommendationSession';
 
 interface RecommendationHeaderProps {
   centered?: boolean;
@@ -24,6 +25,7 @@ export default function RecommendationHeader({centered = false}: RecommendationH
   const [selectedClothesIds, setSelectedClothesIds] = useState<string[]>([]);
   const [loadingUsage, setLoadingUsage] = useState(false);
   const [loadingClothes, setLoadingClothes] = useState(false);
+  const [checkingUsage, setCheckingUsage] = useState(false);
 
   const handleOpenRecommendationModal = async () => {
     setIsRecommendationModalOpen(true);
@@ -33,38 +35,50 @@ export default function RecommendationHeader({centered = false}: RecommendationH
     setClothes([]);
     setSelectedClothesIds([]);
 
-    const [usageResult, clothesResult] = await Promise.allSettled([
-      getRecommendationUsage(),
-      auth?.userDto.id ? getAllClothes(auth.userDto.id) : Promise.resolve(null),
-    ]);
+    getRecommendationUsage()
+      .then(response => setUsage(response.ootd))
+      .catch(error => {
+        console.error('추천 사용량 조회 실패:', error);
+        toast.error('추천 가능 횟수를 불러오지 못했습니다.');
+      })
+      .finally(() => setLoadingUsage(false));
 
-    if (usageResult.status === 'fulfilled') {
-      setUsage(usageResult.value.ootd);
-    } else {
-      console.error('추천 사용량 조회 실패:', usageResult.reason);
-      toast.error('추천 가능 횟수를 불러오지 못했습니다.');
+    if (!auth?.userDto.id) {
+      setLoadingClothes(false);
+      return;
     }
 
-    if (clothesResult.status === 'fulfilled' && clothesResult.value) {
-      setClothes(clothesResult.value);
-    } else if (clothesResult.status === 'rejected') {
-      console.error('옷장 조회 실패:', clothesResult.reason);
-      toast.error('옷장을 불러오지 못했습니다.');
-    }
-
-    setLoadingUsage(false);
-    setLoadingClothes(false);
+    getAllClothes(auth.userDto.id)
+      .then(setClothes)
+      .catch(error => {
+        console.error('옷장 조회 실패:', error);
+        toast.error('옷장을 불러오지 못했습니다.');
+      })
+      .finally(() => setLoadingClothes(false));
   };
 
   const handleConfirmRecommendation = async () => {
-    setIsRecommendationModalOpen(false);
-
+    setCheckingUsage(true);
     try {
+      const latestUsage = await getRecommendationUsage();
+      setUsage(latestUsage.ootd);
+      if (latestUsage.ootd.remaining <= 0) {
+        toast.error('오늘 OOTD 추천 가능 횟수를 모두 사용했습니다.');
+        return;
+      }
+
+      setIsRecommendationModalOpen(false);
       setRecommendationSelectedClothesIds(selectedClothesIds);
       await fetch({throwError: true});
+      const result = useRecommendationStore.getState().data;
+      if (result && auth?.userDto.id && selectedWeather?.id) {
+        saveRecommendationSession('ootd', auth.userDto.id, selectedWeather.id, result);
+      }
     } catch (error) {
       console.error('OOTD 추천 요청 실패:', error);
       toast.error('OOTD 추천을 받지 못했습니다.');
+    } finally {
+      setCheckingUsage(false);
     }
   }
 
@@ -81,7 +95,7 @@ export default function RecommendationHeader({centered = false}: RecommendationH
       selectedClothesIds={selectedClothesIds}
       loadingUsage={loadingUsage}
       loadingClothes={loadingClothes}
-      recommending={loading}
+      recommending={loading || checkingUsage}
       onClose={() => setIsRecommendationModalOpen(false)}
       onConfirm={handleConfirmRecommendation}
       onToggleClothes={setSelectedClothesIds}

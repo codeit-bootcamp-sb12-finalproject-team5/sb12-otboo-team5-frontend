@@ -12,6 +12,7 @@ import { getOutfitRecommendation, getRecommendationUsage } from '@/lib/api/recom
 import { getProfileWeather } from '@/lib/api/weather';
 import type { ClothesDto, RecommendationDto, RecommendationUsage, RecommendedOutfitDto, WeatherDto } from '@/lib/api';
 import { useAuthStore } from '@/lib/stores/useAuthStore';
+import {loadRecommendationSession, saveRecommendationSession} from '@/lib/recommendationSession';
 
 export default function NewOutfitPage() {
   const [searchParams] = useSearchParams();
@@ -40,6 +41,12 @@ export default function NewOutfitPage() {
       .finally(() => setLoadingWeather(false));
   }, [userId]);
 
+  useEffect(() => {
+    if (!userId || !todayWeather?.id) return;
+    const cachedRecommendation = loadRecommendationSession('outfit', userId, todayWeather.id);
+    if (cachedRecommendation) setRecommendations(cachedRecommendation);
+  }, [todayWeather?.id, userId]);
+
   const openRecommendation = async () => {
     if (!todayWeather) {
       toast.error('오늘 날씨 정보를 불러온 뒤 다시 시도해주세요.');
@@ -52,24 +59,37 @@ export default function NewOutfitPage() {
     setUsage(undefined);
     setClothes([]);
     setSelectedClothesIds([]);
-    const [usageResult, clothesResult] = await Promise.allSettled([
-      getRecommendationUsage(),
-      userId ? getAllClothes(userId) : Promise.resolve([]),
-    ]);
-    if (usageResult.status === 'fulfilled') setUsage(usageResult.value.outfit);
-    else toast.error('추천 가능 횟수를 불러오지 못했습니다.');
-    if (clothesResult.status === 'fulfilled') setClothes(clothesResult.value);
-    else toast.error('옷장을 불러오지 못했습니다.');
-    setLoadingUsage(false);
-    setLoadingClothes(false);
+    getRecommendationUsage()
+      .then(response => setUsage(response.outfit))
+      .catch(() => toast.error('추천 가능 횟수를 불러오지 못했습니다.'))
+      .finally(() => setLoadingUsage(false));
+
+    if (!userId) {
+      setLoadingClothes(false);
+      return;
+    }
+
+    getAllClothes(userId)
+      .then(setClothes)
+      .catch(() => toast.error('옷장을 불러오지 못했습니다.'))
+      .finally(() => setLoadingClothes(false));
   };
 
   const requestRecommendation = async () => {
     if (!todayWeather) return;
-    setIsConfirmOpen(false);
     setLoading(true);
     try {
-      setRecommendations(await getOutfitRecommendation({weatherId: todayWeather.id, selectedClothesIds}));
+      const latestUsage = await getRecommendationUsage();
+      setUsage(latestUsage.outfit);
+      if (latestUsage.outfit.remaining <= 0) {
+        toast.error('오늘 아웃핏 추천 가능 횟수를 모두 사용했습니다.');
+        return;
+      }
+
+      setIsConfirmOpen(false);
+      const result = await getOutfitRecommendation({weatherId: todayWeather.id, selectedClothesIds});
+      setRecommendations(result);
+      if (userId) saveRecommendationSession('outfit', userId, todayWeather.id, result);
     } catch (error) {
       console.error('아웃핏 추천 요청 실패:', error);
       toast.error('아웃핏 추천을 받지 못했습니다.');

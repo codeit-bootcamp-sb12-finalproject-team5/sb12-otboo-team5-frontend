@@ -3,16 +3,23 @@ import RecommendationHeader from './RecommendationHeader';
 import RecommendationGrid from './RecommendationGrid';
 import {useRecommendationStore} from "@/lib/stores/useRecommendationStore.ts";
 import {useWeatherStore} from "@/lib/stores/useWeatherStore.ts";
+import {useAuthStore} from '@/lib/stores/useAuthStore';
+import {loadRecommendationSession} from '@/lib/recommendationSession';
 
 export default function RecommendationSection() {
   const { selectedWeather } = useWeatherStore();
-  const { data: recommendations, loading, setWeatherId } = useRecommendationStore();
+  const userId = useAuthStore(state => state.data?.userDto.id);
+  const { data: recommendations, loading, setWeatherId, restore } = useRecommendationStore();
 
   useEffect(() => {
     if (selectedWeather?.id) {
       setWeatherId(selectedWeather.id);
+      if (userId) {
+        const cachedRecommendation = loadRecommendationSession('ootd', userId, selectedWeather.id);
+        if (cachedRecommendation) restore(selectedWeather.id, cachedRecommendation);
+      }
     }
-  }, [selectedWeather?.id, setWeatherId]);
+  }, [selectedWeather?.id, setWeatherId, restore, userId]);
 
   // selectedWeather가 없으면 추천 섹션을 렌더링하지 않음
   if (!selectedWeather) {
