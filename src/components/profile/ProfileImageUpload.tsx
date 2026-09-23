@@ -37,6 +37,7 @@ export default function ProfileImageUpload({
         return;
       }
 
+      setImageError(false);
       onImageSelect(file);
     } else {
       onImageSelect(null);
