@@ -140,31 +140,37 @@ export default function FollowModal({ open, onOpenChange, type, targetUserId }: 
               /* 사용자 목록 */
               <div ref={usersContainerRef} className="h-full overflow-y-auto px-5">
                 <div className="flex flex-col py-4">
-                  {currentData.map((follow) => {
-                    const user = isFollowerMode ? follow.follower : follow.followee;
-
+                  {currentData.map((user) => {
                     return (
-                      <div key={follow.id} className="flex gap-3 items-center justify-between py-3">
-                        <div className="flex gap-3 items-center flex-1">
-                          {/* 프로필 이미지 */}
-                          <div className="bg-[#a9a9b1] relative rounded-[100px] shrink-0 size-[40px] overflow-hidden">
-                            <ProfileAvatar imageUrl={user.profileImageUrl} alt={user.name} className="w-full h-full object-cover rounded-[100px]" />
-                            <div aria-hidden="true" className="absolute border-[#a9a9b1] border-[1.5px] border-solid inset-0 pointer-events-none rounded-[100px] shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)]" />
-                          </div>
-                          
-                          {/* 사용자 이름 */}
-                          <div
-                              className="font-['SUIT:SemiBold',_sans-serif] text-[#212126] text-[16px] tracking-[-0.4px] leading-[0] not-italic cursor-pointer hover:underline"
-                              onClick={() => {
-                                onOpenChange(false);
-                                navigate(`/profiles?userId=${user.userId}`);
-                              }}
-                          >
-                            <p className="leading-[normal]">{user.name}</p>
+                        <div key={user.userId} className="flex gap-3 items-center justify-between py-3">
+                          <div className="flex gap-3 items-center flex-1">
+                            {/* 프로필 이미지 */}
+                            <div className="bg-[#a9a9b1] relative rounded-[100px] shrink-0 size-[40px] overflow-hidden">
+                              <ProfileAvatar
+                                  imageUrl={user.profileImageUrl}
+                                  alt={user.name}
+                                  className="w-full h-full object-cover rounded-[100px]"
+                              />
+
+                              <div
+                                  aria-hidden="true"
+                                  className="absolute border-[#a9a9b1] border-[1.5px] border-solid inset-0 pointer-events-none rounded-[100px] shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)]"
+                              />
+                            </div>
+
+                            {/* 사용자 이름 */}
+                            <div
+                                className="font-['SUIT:SemiBold',_sans-serif] text-[#212126] text-[16px] tracking-[-0.4px] leading-[0] not-italic cursor-pointer hover:underline"
+                                onClick={() => {
+                                  console.log('사용자 이름 클릭됨:', user.userId);
+                                  onOpenChange(false);
+                                  navigate(`/profiles?userId=${user.userId}`);
+                                }}
+                            >
+                              <p className="leading-[normal]">{user.name}</p>
+                            </div>
                           </div>
                         </div>
-
-                      </div>
                     );
                   })}
                   
