@@ -115,13 +115,9 @@ export default function LoginForm() {
     isValidEmail(formData.username) && isValidPassword(formData.password);
 
   return (
-    <div className="flex flex-col gap-[30px] w-full">
-      <h1 className="text-[var(--color-gray-700)] text-[var(--font-size-header-1)] font-[var(--font-weight-extrabold)] tracking-[-0.6px] text-center">
-        날씨에 맞는 옷을 추천해드릴게요
-      </h1>
-      
-      <form onSubmit={handleSubmit} className="flex flex-col gap-[26px] w-full">
-        <div className="flex flex-col gap-[18px] w-full">
+    <div className="w-full">
+      <form onSubmit={handleSubmit} className="flex w-full flex-col gap-5">
+        <div className="flex flex-col gap-4 w-full">
           <div className="flex flex-col gap-2.5 w-full">
             <label 
               htmlFor="username"
@@ -132,7 +128,7 @@ export default function LoginForm() {
             <Input
               id="username"
               type="email"
-              placeholder="codeit@codeit.com"
+              placeholder="아이디를 입력해주세요"
               value={formData.username}
               onChange={handleInputChange("username")}
               error={errors.username}
@@ -167,7 +163,7 @@ export default function LoginForm() {
         <Button
           type="submit"
           disabled={!isFormValid || loading}
-          className="w-full"
+          className="h-[51px] w-full rounded-[9px] bg-[#163555] text-[16px] hover:bg-[#0f2945] disabled:bg-[#aeb8c1]"
         >
           {loading ? "로그인 중..." : "로그인"}
         </Button>

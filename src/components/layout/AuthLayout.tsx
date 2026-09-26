@@ -1,8 +1,15 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import LoginBgImage from '@/assets/illust_logos/Login BG.svg';
 import LogoSvg from '@/assets/illust_logos/Logo.svg';
 
 export default function AuthLayout() {
+  const { pathname } = useLocation();
+  const isLoginPage = pathname.endsWith('/login');
+
+  if (isLoginPage) {
+    return <Outlet />;
+  }
+
   return (
     <div className="relative min-h-screen bg-white">
       {/* Background */}

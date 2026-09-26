@@ -13,7 +13,7 @@ const SocialButton = React.forwardRef<HTMLButtonElement, SocialButtonProps>(
     return (
       <button
         className={cn(
-          "w-full bg-white border border-[var(--color-gray-300)] rounded-[12px] flex items-center justify-between px-[18px] py-2.5 h-[46px] transition-colors hover:bg-[var(--color-gray-50)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+          "w-full bg-white border border-[#d5d8da] rounded-[9px] flex items-center justify-between px-[18px] py-2.5 h-[51px] transition-colors hover:bg-[#f7f4ee] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
           className
         )}
         ref={ref}
@@ -23,7 +23,7 @@ const SocialButton = React.forwardRef<HTMLButtonElement, SocialButtonProps>(
           <img src={icon} alt={iconAlt} className="w-full h-full object-contain" />
         </div>
         
-        <span className="flex-1 text-center text-[var(--color-gray-600)] text-[var(--font-size-body-2)] font-[var(--font-weight-semibold)] tracking-[-0.4px]">
+        <span className="flex-1 text-center text-[#314255] text-[var(--font-size-body-2)] font-[var(--font-weight-semibold)] tracking-[-0.4px]">
           {label}
         </span>
         
