@@ -6,7 +6,7 @@ export default function AuthLayout() {
   const { pathname } = useLocation();
   const isLoginPage = pathname.endsWith('/login');
 
-  if (isLoginPage) {
+  if (isLoginPage || pathname.endsWith('/register')) {
     return <Outlet />;
   }
 
