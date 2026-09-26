@@ -18,7 +18,7 @@ export default function RecommendationGrid() {
         {[...Array(10)].map((_, index) => (
           <div 
             key={index}
-            className="bg-white rounded-[20px] shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)] border border-[#e7e7e9] overflow-hidden animate-pulse"
+            className="bg-[#fbfaf7] rounded-[18px] shadow-[0px_2px_7px_rgba(15,42,68,0.05)] border border-[#ded6cb] overflow-hidden animate-pulse"
           >
             <div className="aspect-square bg-gray-200" />
             <div className="p-4 space-y-2">
@@ -50,17 +50,17 @@ export default function RecommendationGrid() {
             key={outfit.rank}
             type="button"
             onClick={() => setSelectedOutfit(outfit)}
-            className="flex flex-col gap-5 rounded-[18px] border border-[#e7e7e9] bg-white p-5 text-left shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)] transition-all hover:-translate-y-0.5 hover:border-[#1e89f4] hover:shadow-[0px_6px_14px_0px_rgba(30,137,244,0.12)]"
+            className="flex flex-col gap-5 rounded-[18px] border border-[#ded6cb] bg-[#fbfaf7] p-5 text-left shadow-[0px_2px_7px_rgba(15,42,68,0.05)] transition-all hover:-translate-y-0.5 hover:border-[#b08a44] hover:shadow-[0px_7px_18px_rgba(15,42,68,0.10)]"
           >
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between gap-3">
-                <h3 className="font-extrabold text-[#212126] text-[18px] tracking-[-0.45px]">
+                <h3 className="font-extrabold text-[#0f2a44] text-[18px] tracking-[-0.45px]">
                   추천 코디 {outfit.rank}
                 </h3>
                 {outfit.styleTags.length > 0 && (
                   <div className="flex max-w-[65%] gap-1 overflow-x-auto">
                     {outfit.styleTags.map((tag) => (
-                      <span key={tag} className="shrink-0 rounded-full bg-[#e8f3ff] px-2 py-1 font-semibold text-[#1e89f4] text-[12px]">
+                      <span key={tag} className="shrink-0 rounded-full bg-[#f2ede5] px-2 py-1 font-semibold text-[#b08a44] text-[12px]">
                         #{tag}
                       </span>
                     ))}
@@ -68,7 +68,7 @@ export default function RecommendationGrid() {
                 )}
               </div>
               {outfit.reason && (
-                <p className="line-clamp-2 text-[#696975] text-[14px] leading-5">{outfit.reason}</p>
+                <p className="line-clamp-2 text-[#7a8ca3] text-[14px] leading-5">{outfit.reason}</p>
               )}
             </div>
 

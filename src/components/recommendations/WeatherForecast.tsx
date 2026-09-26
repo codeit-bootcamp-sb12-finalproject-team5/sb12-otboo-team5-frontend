@@ -60,8 +60,8 @@ export default function WeatherForecast() {
 
   if (loading || !weathers || weathers.length === 0) {
     return (
-      <div className="backdrop-blur-[15px] backdrop-filter bg-white/70 box-border content-stretch flex items-start justify-between px-[60px] py-5 relative rounded-[30px] shrink-0 w-full">
-        <div className="absolute border border-gray-200 border-solid inset-0 pointer-events-none rounded-[30px]" />
+      <div className="backdrop-blur-[15px] backdrop-filter bg-[#fbfaf7]/75 box-border content-stretch flex items-start justify-between px-[60px] py-5 relative rounded-[22px] shrink-0 w-full">
+        <div className="absolute border border-[#ded6cb] border-solid inset-0 pointer-events-none rounded-[22px]" />
         
         {/* Skeleton for 5 weather items */}
         {Array.from({ length: 5 }).map((_, index) => (
@@ -98,8 +98,8 @@ export default function WeatherForecast() {
 
   return (
     <TooltipProvider>
-      <div className="backdrop-blur-[15px] backdrop-filter bg-white/70 box-border content-stretch flex items-start justify-between px-[60px] py-5 relative rounded-[30px] shrink-0 w-full">
-        <div className="absolute border border-gray-200 border-solid inset-0 pointer-events-none rounded-[30px]" />
+      <div className="backdrop-blur-[15px] backdrop-filter bg-[#fbfaf7]/75 box-border content-stretch flex items-start justify-between px-[60px] py-5 relative rounded-[22px] shrink-0 w-full">
+        <div className="absolute border border-[#ded6cb] border-solid inset-0 pointer-events-none rounded-[22px]" />
 
         {
           weathers.map((weather, dayOffset) => {
@@ -114,7 +114,7 @@ export default function WeatherForecast() {
                     className="content-stretch flex flex-col gap-1.5 items-center justify-center relative shrink-0 w-[120px] cursor-pointer hover:border-1 rounded-2xl"
                     onClick={() => selectWeather(weather)}
                 >
-                  <div className={`font-${isSelected ? 'extrabold' : 'bold'} leading-none min-w-full not-italic relative shrink-0 text-base text-center tracking-[-0.4px] ${isSelected ? 'text-blue-500' : 'text-gray-800'}`} style={{ width: "min-content" }}>
+                  <div className={`font-${isSelected ? 'extrabold' : 'bold'} leading-none min-w-full not-italic relative shrink-0 text-base text-center tracking-[-0.4px] ${isSelected ? 'text-[#b08a44]' : 'text-[#3d5570]'}`} style={{ width: "min-content" }}>
                     <p className="leading-normal">{date}</p>
                   </div>
 
@@ -122,7 +122,7 @@ export default function WeatherForecast() {
                     <div>
                       <WeatherIcon skyStatus={skyStatus} />
 
-                      <div className="font-semibold leading-none not-italic relative shrink-0 text-gray-500 text-base text-center text-nowrap tracking-[-0.4px]">
+                      <div className="font-semibold leading-none not-italic relative shrink-0 text-[#7a8ca3] text-base text-center text-nowrap tracking-[-0.4px]">
                         <p className="leading-normal whitespace-pre">{displayTemp(temperature.current)}</p>
                       </div>
                     </div>

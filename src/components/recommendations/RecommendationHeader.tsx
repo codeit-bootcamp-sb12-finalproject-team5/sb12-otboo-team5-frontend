@@ -106,7 +106,7 @@ export default function RecommendationHeader({centered = false}: RecommendationH
     return (
       <div className="flex min-h-[400px] w-full items-center justify-center">
         <button
-          className="flex h-[52px] items-center justify-center gap-2 rounded-[12px] bg-[#1e89f4] px-6 font-bold text-[18px] text-white transition-colors hover:bg-[#1479dd] disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex h-[52px] items-center justify-center gap-2 rounded-[10px] bg-[#0f2a44] px-6 font-bold text-[18px] text-white transition-colors hover:bg-[#3d5570] disabled:cursor-not-allowed disabled:opacity-50"
           onClick={handleOpenRecommendationModal}
           disabled={loading}
         >
@@ -126,12 +126,12 @@ export default function RecommendationHeader({centered = false}: RecommendationH
           <div className="overflow-clip relative shrink-0 size-6">
             <img alt="옷걸이" className="block max-w-none size-full" src={hangerIcon} />
           </div>
-          <div className="font-extrabold leading-none not-italic relative shrink-0 text-[#212126] text-[24px] text-nowrap tracking-[-0.6px]">
+          <div className="font-extrabold leading-none not-italic relative shrink-0 text-[#0f2a44] text-[24px] text-nowrap tracking-[-0.6px]">
             <p className="leading-normal whitespace-pre">#추천 OOTD</p>
           </div>
         </div>
         {hasRecommendation && (
-          <div className="font-semibold leading-none not-italic relative shrink-0 text-[#808089] text-[18px] text-nowrap tracking-[-0.45px]">
+          <div className="font-semibold leading-none not-italic relative shrink-0 text-[#7a8ca3] text-[18px] text-nowrap tracking-[-0.45px]">
             <p className="leading-normal whitespace-pre">{recommendationMessage}</p>
           </div>
         )}
@@ -141,11 +141,11 @@ export default function RecommendationHeader({centered = false}: RecommendationH
       <div className="content-stretch flex gap-3 items-center justify-start relative shrink-0">
         {/* OOTD 추천 요청 버튼 */}
         <button
-          className="bg-white box-border content-stretch flex gap-1.5 h-[46px] items-center justify-center px-[18px] py-2.5 relative rounded-[12px] shrink-0 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-[#d4d4d9] shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)]"
+          className="bg-[#fbfaf7] box-border content-stretch flex gap-1.5 h-[46px] items-center justify-center px-[18px] py-2.5 relative rounded-[10px] shrink-0 hover:bg-[#f2ede5] transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-[#b7a997] shadow-[0px_2px_6px_rgba(15,42,68,0.05)]"
           onClick={handleOpenRecommendationModal}
           disabled={loading}
         >
-          <div className="font-semibold leading-none not-italic relative shrink-0 text-[#696975] text-[16px] text-nowrap tracking-[-0.4px]">
+          <div className="font-semibold leading-none not-italic relative shrink-0 text-[#3d5570] text-[16px] text-nowrap tracking-[-0.4px]">
             <p className="leading-normal whitespace-pre">
               {loading ? '추천 중...' : hasRecommendation ? '다른 옷 추천' : 'OOTD 추천 받기'}
             </p>

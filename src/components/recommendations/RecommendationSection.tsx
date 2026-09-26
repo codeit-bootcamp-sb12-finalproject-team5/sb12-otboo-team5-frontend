@@ -29,8 +29,8 @@ export default function RecommendationSection() {
   const hasClothes = Boolean(recommendations?.outfits.some(outfit => outfit.clothes.length > 0));
 
   return (
-    <div className="relative w-full px-[100px] h-full">
-      <div className="bg-white rounded-[20px] box-border content-stretch flex flex-col gap-[34px] px-[40px] items-start justify-start py-8 relative w-full h-full shadow-[0px_-2px_10px_0px_rgba(0,0,0,0.05)]">
+    <div className="relative w-full px-[52px] h-full pb-8">
+      <div className="bg-[#fbfaf7] rounded-[22px] border border-[#ded6cb] box-border content-stretch flex flex-col gap-[34px] px-[40px] items-start justify-start py-8 relative w-full h-full shadow-[0px_8px_24px_rgba(15,42,68,0.06)]">
         {loading || hasClothes ? (
             <>
               <RecommendationHeader/>
