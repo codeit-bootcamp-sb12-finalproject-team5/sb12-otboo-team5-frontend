@@ -1,6 +1,6 @@
 import {Dialog, DialogContent} from '@/components/ui/dialog';
 import type {ClothesDto, RecommendationUsage} from '@/lib/api';
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 
 const CLOSET_CATEGORIES = ['ALL', '상의', '바지', '스커트', '아우터', '원피스/세트', '모자', '신발', '가방', '악세서리'];
 
@@ -40,6 +40,9 @@ export default function RecommendationConfirmModal({
   const [isClothesPickerOpen, setIsClothesPickerOpen] = useState(false);
   const [isFinalConfirmationOpen, setIsFinalConfirmationOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
+  const categoryListRef = useRef<HTMLDivElement>(null);
+  const categoryScrollTimerRef = useRef<number | null>(null);
+  const categoryDragRef = useRef({active: false, startX: 0, scrollLeft: 0});
   const unavailable = !usage || usage.remaining <= 0;
   const visibleClothes = selectedCategory === 'ALL'
     ? clothes
@@ -72,34 +75,75 @@ export default function RecommendationConfirmModal({
     setIsFinalConfirmationOpen(true);
   };
 
+  const stopCategoryScroll = () => {
+    if (categoryScrollTimerRef.current !== null) {
+      window.clearInterval(categoryScrollTimerRef.current);
+      categoryScrollTimerRef.current = null;
+    }
+  };
+
+  const startCategoryScroll = (direction: -1 | 1) => {
+    stopCategoryScroll();
+    categoryListRef.current?.scrollBy({left: direction * 120, behavior: 'smooth'});
+    categoryScrollTimerRef.current = window.setInterval(() => {
+      categoryListRef.current?.scrollBy({left: direction * 22, behavior: 'auto'});
+    }, 35);
+  };
+
+  const startCategoryDrag = (event: React.MouseEvent<HTMLDivElement>) => {
+    const container = categoryListRef.current;
+    if (!container) return;
+    categoryDragRef.current = {active: true, startX: event.pageX, scrollLeft: container.scrollLeft};
+  };
+
+  const moveCategoryDrag = (event: React.MouseEvent<HTMLDivElement>) => {
+    const container = categoryListRef.current;
+    if (!container || !categoryDragRef.current.active) return;
+    container.scrollLeft = categoryDragRef.current.scrollLeft - (event.pageX - categoryDragRef.current.startX);
+  };
+
+  const stopCategoryDrag = () => {
+    categoryDragRef.current.active = false;
+  };
+
+  useEffect(() => () => stopCategoryScroll(), []);
+
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent
-        className="bg-white box-border flex max-h-[calc(100vh-2rem)] flex-col gap-6 overflow-y-auto p-[30px] rounded-[30px] max-w-[calc(100%-2rem)] sm:max-w-[calc(100%-2rem)] transition-all"
+        className="box-border flex max-h-[calc(100vh-2rem)] flex-col gap-6 overflow-y-auto rounded-[18px] border border-[#e5ddd2] bg-[#fdfdfa] p-8 shadow-[0_22px_60px_rgba(15,42,68,0.26)] max-w-[calc(100%-2rem)] sm:max-w-[calc(100%-2rem)] transition-all"
         style={{width: `${modalWidth}px`}}
         showCloseButton={false}
       >
-        <div className="flex flex-col gap-3">
-          <h2 className="font-bold text-[#212126] text-[22px] tracking-[-0.55px]">
-            {title}
-          </h2>
-          {showDateQuestion && (
-            <p className="font-semibold text-[#575765] text-[17px] tracking-[-0.4px]">
-              {dateLabel} 옷 추천을 받겠습니까?
-            </p>
-          )}
+        <div className="flex items-start">
+          <div className="flex flex-col gap-2">
+            <h2 className="font-serif text-[30px] font-semibold tracking-[-0.05em] text-[#0f2a44]">
+              {title}
+            </h2>
+            {showDateQuestion && (
+              <p className="font-semibold text-[#7a8ca3] text-[16px] tracking-[-0.4px]">
+                {dateLabel} OOTD 추천을 시작할까요?
+              </p>
+            )}
+          </div>
         </div>
 
-        <div className="bg-[#f7f7f8] rounded-[12px] px-5 py-4 text-[#575765]">
+        <div className="grid grid-cols-2 gap-0">
           {loadingUsage ? (
-            <p className="font-semibold">추천 가능 횟수를 확인하고 있습니다.</p>
+            <div className="col-span-2 rounded-[10px] bg-[#f7f3ed] px-5 py-5 text-center font-semibold text-[#7a8ca3]">추천 가능 횟수를 확인하고 있습니다.</div>
           ) : usage ? (
-            <div className="flex flex-col gap-1 font-semibold">
-              <p>오늘 추천 가능 횟수: {usage.limit}회</p>
-              <p>오늘 남은 추천 횟수: {usage.remaining}회</p>
-            </div>
+            <>
+              <div className="flex items-center gap-3 px-4 py-3">
+                <span className="grid size-10 place-items-center rounded-full bg-[#f2ede5] text-[22px] text-[#3d5570]">♧</span>
+                <div><p className="text-[13px] font-semibold text-[#7a8ca3]">오늘 추천 가능 횟수</p><p className="mt-0.5 text-[23px] font-bold leading-none text-[#0f2a44]">{usage.limit}회</p></div>
+              </div>
+              <div className="flex items-center gap-3 border-l border-[#ded6cb] px-4 py-3">
+                <span className="grid size-10 place-items-center rounded-full bg-[#f2ede5] text-[22px] text-[#3d5570]">◷</span>
+                <div><p className="text-[13px] font-semibold text-[#7a8ca3]">오늘 남은 추천 횟수</p><p className="mt-0.5 text-[23px] font-bold leading-none text-[#0f2a44]">{usage.remaining}회</p></div>
+              </div>
+            </>
           ) : (
-            <p className="font-semibold">추천 가능 횟수를 불러오지 못했습니다.</p>
+            <div className="col-span-2 rounded-[10px] bg-[#f7f3ed] px-5 py-5 text-center font-semibold text-[#7a8ca3]">추천 가능 횟수를 불러오지 못했습니다.</div>
           )}
         </div>
 
@@ -142,30 +186,30 @@ export default function RecommendationConfirmModal({
             <p className="text-[#808089] text-[14px]">추천을 받으면 오늘의 추천 횟수가 1회 차감됩니다.</p>
           </section>
         ) : (
-        <section className="flex flex-col gap-3">
+        <section className="flex flex-col gap-4 border-t border-[#e5ddd2] pt-6">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-bold text-[#212126] text-[17px]">고정할 옷 선택</h3>
-              <p className="mt-1 text-[#808089] text-[14px]">선택한 옷은 추천 코디에 반드시 포함돼요.</p>
+              <h3 className="font-bold text-[#0f2a44] text-[18px]">고정할 옷 선택</h3>
+              <p className="mt-1 text-[#7a8ca3] text-[14px]">선택한 옷은 추천 코디에 반드시 포함돼요.</p>
             </div>
-            <span className="bg-[#e8f3ff] rounded-full px-3 py-1 font-semibold text-[#1e89f4] text-[13px]">
+            <span className="rounded-full bg-[#e8f1fa] px-3 py-1 font-semibold text-[#3d5570] text-[13px]">
               {selectedClothesIds.length}개 선택
             </span>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 rounded-[10px] border border-[#ded6cb] bg-white px-3 py-3">
             <button
               type="button"
               onClick={() => setIsClothesPickerOpen(true)}
               disabled={loadingClothes || clothes.length === 0}
-              className="bg-white h-[42px] rounded-[10px] border border-[#1e89f4] px-4 font-bold text-[#1e89f4] text-[15px] hover:bg-[#e8f3ff] disabled:cursor-not-allowed disabled:opacity-50"
+              className="h-[42px] rounded-[10px] bg-[#0f2a44] px-4 font-bold text-white text-[15px] hover:bg-[#3d5570] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loadingClothes ? '옷장 불러오는 중...' : '옷 선택하기'}
             </button>
             <button
               type="button"
               onClick={() => onToggleClothes([])}
-              className="h-[42px] rounded-[10px] px-3 font-semibold text-[#808089] text-[14px] hover:bg-[#f7f7f8]"
+              className="h-[42px] rounded-[10px] px-3 font-semibold text-[#7a8ca3] text-[14px] hover:bg-[#f7f3ed]"
             >
               선택 초기화
             </button>
@@ -177,31 +221,64 @@ export default function RecommendationConfirmModal({
           </div>
 
           {!loadingClothes && clothes.length === 0 && (
-            <p className="rounded-[10px] bg-[#f7f7f8] py-3 text-center font-semibold text-[#808089] text-[14px]">
+            <p className="rounded-[10px] bg-[#f7f3ed] py-3 text-center font-semibold text-[#7a8ca3] text-[14px]">
               등록된 옷이 없습니다. 고정 옷 없이 추천받을 수 있어요.
             </p>
           )}
 
           {isClothesPickerOpen && (
-            <div className="grid min-h-[360px] grid-cols-[minmax(0,1fr)_320px] gap-6 border-t border-[#e7e7e9] pt-5">
+            <div className="grid h-[420px] min-h-0 grid-cols-[minmax(0,1fr)_320px] gap-6 border-t border-[#e7e7e9] pt-5">
               <div className="min-w-0">
-                <div className="mb-4 flex gap-2 overflow-x-auto pb-1">
-                  {CLOSET_CATEGORIES.map((category) => (
-                    <button
-                      key={category}
-                      type="button"
-                      onClick={() => setSelectedCategory(category)}
-                      className={`shrink-0 rounded-full px-4 py-2 font-semibold text-[14px] ${
-                        selectedCategory === category
-                          ? 'bg-[#1e89f4] text-white'
-                          : 'bg-[#f7f7f8] text-[#696975] hover:bg-[#e8f3ff]'
-                      }`}
-                    >
-                      {categoryLabel(category)}
-                    </button>
-                  ))}
+                <div className="mb-4 flex items-center gap-2">
+                  <button
+                    type="button"
+                    aria-label="이전 카테고리"
+                    onMouseDown={() => startCategoryScroll(-1)}
+                    onMouseUp={stopCategoryScroll}
+                    onMouseLeave={stopCategoryScroll}
+                    onTouchStart={() => startCategoryScroll(-1)}
+                    onTouchEnd={stopCategoryScroll}
+                    className="grid size-8 shrink-0 place-items-center rounded-full text-[#3d5570] hover:bg-[#f2ede5]"
+                  >
+                    <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="2"><path d="m14 6-6 6 6 6" /></svg>
+                  </button>
+                  <div
+                    ref={categoryListRef}
+                    onMouseDown={startCategoryDrag}
+                    onMouseMove={moveCategoryDrag}
+                    onMouseUp={stopCategoryDrag}
+                    onMouseLeave={stopCategoryDrag}
+                    className="flex flex-1 cursor-grab gap-2 overflow-x-auto select-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden active:cursor-grabbing"
+                  >
+                    {CLOSET_CATEGORIES.map((category) => (
+                      <button
+                        key={category}
+                        type="button"
+                        onClick={() => setSelectedCategory(category)}
+                        className={`shrink-0 rounded-full px-4 py-2 font-semibold text-[14px] ${
+                          selectedCategory === category
+                            ? 'bg-[#3d5570] text-white'
+                            : 'bg-[#f7f3ed] text-[#60738d] hover:bg-[#f2ede5]'
+                        }`}
+                      >
+                        {categoryLabel(category)}
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    aria-label="다음 카테고리"
+                    onMouseDown={() => startCategoryScroll(1)}
+                    onMouseUp={stopCategoryScroll}
+                    onMouseLeave={stopCategoryScroll}
+                    onTouchStart={() => startCategoryScroll(1)}
+                    onTouchEnd={stopCategoryScroll}
+                    className="grid size-8 shrink-0 place-items-center rounded-full text-[#3d5570] hover:bg-[#f2ede5]"
+                  >
+                    <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="2"><path d="m10 6 6 6-6 6" /></svg>
+                  </button>
                 </div>
-                <div className="grid max-h-[360px] grid-cols-3 gap-3 overflow-y-auto pr-2">
+                <div className="clothes-scrollbar grid max-h-[360px] grid-cols-3 gap-3 overflow-y-auto pr-2 [scrollbar-color:#7a8ca3_#fdfdfa] [scrollbar-width:thin] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-[#fdfdfa] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#7a8ca3] [&::-webkit-scrollbar-thumb:hover]:bg-[#3d5570]">
                   {visibleClothes.map((clothes) => {
                     const selected = selectedClothesIds.includes(clothes.id);
                     const blockedReason = selected ? undefined : getSelectionBlockedReason(clothes, selectedClothes);
@@ -213,12 +290,12 @@ export default function RecommendationConfirmModal({
                         onClick={() => toggleClothes(clothes.id)}
                         disabled={Boolean(blockedReason)}
                         title={blockedReason}
-                        className={`relative overflow-hidden rounded-[12px] border text-left transition-all disabled:cursor-not-allowed ${
+                        className={`relative overflow-hidden rounded-[8px] border text-left transition-all disabled:cursor-not-allowed ${
                           selected
-                            ? 'border-[#1e89f4] ring-2 ring-[#1e89f4]'
+                            ? 'border-[#3d5570] ring-2 ring-[#3d5570]'
                             : blockedReason
                               ? 'border-[#e7e7e9] opacity-35 grayscale'
-                              : 'border-[#e7e7e9] hover:border-[#9cccfb]'
+                              : 'border-[#e5ddd2] hover:border-[#7a8ca3]'
                         }`}
                       >
                         <div className="aspect-square bg-[#f1f1f3]">
@@ -232,7 +309,7 @@ export default function RecommendationConfirmModal({
                           <p className="truncate font-bold text-[#33333a] text-[13px]">{clothes.name}</p>
                         </div>
                         {selected && (
-                          <span className="absolute right-2 top-2 rounded-full bg-[#1e89f4] px-2 py-1 font-bold text-[11px] text-white">고정</span>
+                          <span className="absolute right-2 top-2 rounded-full bg-[#3d5570] px-2 py-1 font-bold text-[11px] text-white">고정</span>
                         )}
                         {blockedReason && (
                           <span className="absolute inset-x-1 bottom-1 rounded bg-[#575765]/90 px-1 py-0.5 text-center text-[10px] text-white">
@@ -245,13 +322,13 @@ export default function RecommendationConfirmModal({
                 </div>
               </div>
 
-              <aside className="flex flex-col rounded-[16px] bg-[#f7f7f8] p-4">
+              <aside className="flex min-h-0 flex-col rounded-[16px] bg-[#f7f7f8] p-4">
                 <div className="flex items-center justify-between">
                   <h4 className="font-bold text-[#212126] text-[16px]">선택한 옷</h4>
-                  <span className="font-semibold text-[#1e89f4] text-[14px]">{selectedClothes.length}개</span>
+                  <span className="font-semibold text-[#3d5570] text-[14px]">{selectedClothes.length}개</span>
                 </div>
                 {selectedClothes.length > 0 ? (
-                  <div className="mt-3 flex flex-1 flex-col gap-2 overflow-y-auto">
+                  <div className="clothes-scrollbar mt-3 flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto [scrollbar-color:#7a8ca3_#f7f7f8] [scrollbar-width:thin] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-[#f7f7f8] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#7a8ca3] [&::-webkit-scrollbar-thumb:hover]:bg-[#3d5570]">
                     {selectedClothes.map((clothes) => (
                       <div key={clothes.id} className="flex items-center gap-3 rounded-[10px] bg-white p-2">
                         <div className="size-10 shrink-0 overflow-hidden rounded-[8px] bg-[#e7e7e9]">
@@ -261,7 +338,7 @@ export default function RecommendationConfirmModal({
                         <button
                           type="button"
                           onClick={() => toggleClothes(clothes.id)}
-                          className="shrink-0 text-[#808089] text-[13px] hover:text-[#1e89f4]"
+                          className="shrink-0 text-[#808089] text-[13px] hover:text-[#3d5570]"
                         >
                           해제
                         </button>
@@ -276,7 +353,7 @@ export default function RecommendationConfirmModal({
                 <button
                   type="button"
                   onClick={() => setIsClothesPickerOpen(false)}
-                  className="mt-4 h-[40px] rounded-[10px] bg-white font-bold text-[#1e89f4] text-[14px]"
+                  className="mt-4 h-[40px] rounded-[10px] bg-white font-bold text-[#3d5570] text-[14px]"
                 >
                   선택 완료
                 </button>
@@ -291,12 +368,12 @@ export default function RecommendationConfirmModal({
         </section>
         )}
 
-        <div className="flex gap-3 justify-end">
+        <div className="flex justify-end gap-3 border-t border-[#e5ddd2] pt-6">
           <button
             type="button"
             onClick={isFinalConfirmationOpen ? () => setIsFinalConfirmationOpen(false) : onClose}
             disabled={recommending}
-            className="bg-[#f7f7f8] h-[46px] px-[18px] rounded-[12px] font-bold text-[#575765] text-[18px] disabled:opacity-50"
+            className="h-[50px] min-w-[126px] rounded-[10px] bg-[#f2ede5] px-[18px] font-bold text-[#60738d] text-[17px] disabled:opacity-50"
           >
             {isFinalConfirmationOpen ? '이전' : '취소'}
           </button>
@@ -304,7 +381,7 @@ export default function RecommendationConfirmModal({
             type="button"
             onClick={isFinalConfirmationOpen ? onConfirm : openFinalConfirmation}
             disabled={loadingUsage || unavailable || recommending}
-            className="bg-[#1e89f4] h-[46px] px-[18px] rounded-[12px] font-bold text-white text-[18px] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="h-[50px] min-w-[170px] rounded-[10px] bg-[#0f2a44] px-[18px] font-bold text-white text-[17px] hover:bg-[#3d5570] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {recommending ? '추천 중...' : '추천받기'}
           </button>
@@ -342,7 +419,7 @@ function getSelectionBlockedReason(candidate: ClothesDto, selectedClothes: Cloth
   const candidateCategory = normalizeCategory(candidate.type);
   const selectedCategories = selectedClothes.map(clothes => normalizeCategory(clothes.type));
 
-  if (selectedCategories.includes(candidateCategory)) {
+  if (candidateCategory !== 'ACCESSORY' && selectedCategories.includes(candidateCategory)) {
     return '같은 카테고리의 옷은 한 벌만 선택할 수 있습니다.';
   }
 

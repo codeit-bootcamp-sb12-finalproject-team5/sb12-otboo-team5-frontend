@@ -91,7 +91,7 @@ export default function RecommendationHeader({centered = false}: RecommendationH
   const recommendationModal = (
     <RecommendationConfirmModal
       open={isRecommendationModalOpen}
-      dateLabel={selectedWeather ? formatDate(selectedWeather.forecastAt) : ''}
+      dateLabel={selectedWeather ? getRecommendationDateLabel(selectedWeather.forecastAt) : ''}
       usage={usage}
       clothes={clothes}
       selectedClothesIds={selectedClothesIds}
@@ -198,6 +198,19 @@ function getSelectedDayLabel(dateTime: string) {
   if (dayDifference === 1) return '내일';
   if (dayDifference === 2) return '모레';
   return `${selectedDate.getMonth() + 1}월 ${selectedDate.getDate()}일`;
+}
+
+function getRecommendationDateLabel(dateTime: string) {
+  const selectedDate = new Date(dateTime);
+  const today = new Date();
+  const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  const startOfSelected = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+  const dayDifference = Math.round((startOfSelected.getTime() - startOfToday.getTime()) / 86_400_000);
+
+  if (dayDifference <= 0) return '오늘';
+  if (dayDifference === 1) return '내일';
+  if (dayDifference === 2) return '모레';
+  return formatDate(dateTime);
 }
 
 async function getAllClothes(ownerId: string) {
