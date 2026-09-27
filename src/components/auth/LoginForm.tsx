@@ -154,7 +154,7 @@ export default function LoginForm() {
           </div>
         </div>
         
-        {error && (
+        {error && !error.includes("status code 500") && (
           <div className="text-red-500 text-sm font-semibold text-center">
             {error}
           </div>

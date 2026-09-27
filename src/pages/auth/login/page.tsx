@@ -11,7 +11,7 @@ export default function LoginPage() {
       <div className="absolute -left-20 bottom-0 h-[380px] w-[520px] rotate-[-36deg] rounded-[50%] border border-white/40" />
       <div className="absolute right-[-130px] top-[-190px] h-[420px] w-[620px] rotate-[42deg] rounded-[50%] border border-white/40" />
 
-      <section className="relative z-10 grid w-full max-w-[1325px] overflow-hidden rounded-[25px] bg-[#fbfaf7] shadow-[0_25px_55px_rgba(3,15,30,0.45)] lg:grid-cols-2">
+      <section className="relative z-10 grid w-full max-w-[1325px] overflow-hidden rounded-[12px] bg-[#fbfaf7] shadow-[0_25px_55px_rgba(3,15,30,0.45)] lg:grid-cols-2">
         <aside className="relative hidden min-h-[720px] overflow-hidden border-r border-[#d9d3c9] bg-[#f7f3eb] p-11 lg:block">
           <div className="font-serif text-[19px] font-semibold tracking-[0.42em] text-[#173252]">OTBOO</div>
           <div className="mt-4 h-px w-7 bg-[#b28c48]" />
