@@ -13,8 +13,6 @@ export default function LoginPage() {
 
       <section className="relative z-10 grid w-full max-w-[1325px] overflow-hidden rounded-[12px] bg-[#fbfaf7] shadow-[0_25px_55px_rgba(3,15,30,0.45)] lg:grid-cols-2">
         <aside className="relative hidden min-h-[720px] overflow-hidden border-r border-[#d9d3c9] bg-[#f7f3eb] p-11 lg:block">
-          <div className="font-serif text-[19px] font-semibold tracking-[0.42em] text-[#173252]">OTBOO</div>
-          <div className="mt-4 h-px w-7 bg-[#b28c48]" />
           <div className="absolute left-[10%] top-[30%] h-40 w-40 rounded-full bg-[#dbe1e4]/70 blur-[3px]" />
           <div className="absolute right-[9%] top-[43%] h-48 w-48 rounded-full bg-[#e4d9c5]/70 blur-[3px]" />
           <img
@@ -31,8 +29,8 @@ export default function LoginPage() {
         <div className="flex min-h-[720px] items-center justify-center px-7 py-14 sm:px-16 lg:px-20">
           <div className="w-full max-w-[404px]">
             <header className="mb-11 text-center">
-              <h1 className="font-serif text-[52px] leading-none tracking-[-0.07em] text-[#123052] sm:text-[60px]">OTBOO</h1>
-              <p className="mt-3 text-[11px] font-semibold tracking-[0.42em] text-[#60738d]">OUTFIT FOR A BETTER TODAY</p>
+              <h1 className="font-serif text-[33px] leading-none tracking-[0.18em] text-[#3d5570]">OTBOO</h1>
+              <p className="mt-2 text-[9px] font-semibold tracking-[0.28em] text-[#7a8ca3]">OUTFIT FOR A BETTER TODAY</p>
             </header>
 
             <div className="flex flex-col gap-7">
