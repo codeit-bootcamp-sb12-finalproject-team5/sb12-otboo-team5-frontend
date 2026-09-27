@@ -102,12 +102,6 @@ const menuItems = [
     icon: <WeatherIcon />
   },
   {
-    id: 'closet',
-    label: '옷장',
-    path: '/closet',
-    icon: <ClosetIcon />
-  },
-  {
     id: 'outfits',
     label: '아웃핏',
     path: '/outfits',
@@ -120,16 +114,22 @@ const menuItems = [
     icon: <FeedIcon />
   },
   {
-    id: 'profiles',
-    label: '프로필',
-    path: '/profiles',
-    icon: <ProfileIcon />
+    id: 'closet',
+    label: '옷장',
+    path: '/closet',
+    icon: <ClosetIcon />
   },
   {
     id: 'direct-messages',
     label: 'DM',
     path: '/direct-messages',
     icon: <DmIcon />
+  },
+  {
+    id: 'profiles',
+    label: '프로필',
+    path: '/profiles',
+    icon: <ProfileIcon />
   },
   {
     id: 'users',
