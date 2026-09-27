@@ -122,7 +122,7 @@ export default function DMModal({open, onOpenChange, targetUser, roomId, dmKey}:
               {isNewDate && <div className="py-3 text-center text-[12px] font-semibold text-[#808089]">{formatMessageDate(message.createdAt)}</div>}
               <div className={`flex items-end gap-1 ${isMine ? 'justify-end' : 'justify-start'}`}>
                 {isMine && <span className="shrink-0 text-[11px] text-[#808089]">{formatMessageTime(message.createdAt)}</span>}
-                <div className={`max-w-[75%] px-3.5 py-1.5 rounded-[10px] text-[16px] ${isMine ? 'bg-[#1e89f4] text-white' : 'bg-[#f2f2f3] text-[#212126]'}`}>{message.content}</div>
+                <div className={`max-w-[75%] px-3.5 py-1.5 rounded-[10px] text-[16px] ${isMine ? 'bg-[#3d5570] text-white' : 'bg-[#f2ede5] text-[#2a2d31]'}`}>{message.content}</div>
                 {!isMine && <span className="shrink-0 text-[11px] text-[#808089]">{formatMessageTime(message.createdAt)}</span>}
               </div>
             </div>;

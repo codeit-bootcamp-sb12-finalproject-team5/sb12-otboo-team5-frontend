@@ -15,7 +15,7 @@ export default function ClothesAttributeTag({
 }: ClothesAttributeTagProps) {
   if (variant === "selected") {
     return (
-      <div className="bg-[#f0f9ff] border border-[#99d4ff] rounded-[7px] px-1.5 py-1 flex items-center gap-1">
+      <div className="bg-[#f2ede5] border border-[#b7a997] rounded-[7px] px-1.5 py-1 flex items-center gap-1">
         <span className="text-[#575765] text-[14px] font-['SUIT:SemiBold',_sans-serif] tracking-[-0.35px]">
           {label}
         </span>

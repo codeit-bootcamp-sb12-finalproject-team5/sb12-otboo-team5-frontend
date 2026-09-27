@@ -140,16 +140,16 @@ export default function FeedDetailLeftSection({ feed }: FeedDetailLeftSectionPro
                       style={{ backgroundImage: `url('${ootd.imageUrl}')` }}
                     />
                     {isSelected && (
-                      <div aria-hidden="true" className="absolute border-4 border-[#1e89f4] border-solid inset-0 pointer-events-none rounded-[16px]" />
+                      <div aria-hidden="true" className="absolute border-4 border-[#3d5570] border-solid inset-0 pointer-events-none rounded-[16px]" />
                     )}
                   </>
                 ) : (
                   <div className={`rounded-[16px] size-full flex items-center justify-center relative ${
-                    isSelected ? 'bg-[#e3f2fd]' : 'bg-[#f7f7f8]'
+                    isSelected ? 'bg-[#f2ede5]' : 'bg-[#f7f7f8]'
                   }`}>
                     <img src={emptyImageIcon} alt="이미지 없음" className="w-8 h-8" />
                     {isSelected && (
-                      <div aria-hidden="true" className="absolute border-4 border-[#1e89f4] border-solid inset-0 pointer-events-none rounded-[16px]" />
+                      <div aria-hidden="true" className="absolute border-4 border-[#3d5570] border-solid inset-0 pointer-events-none rounded-[16px]" />
                     )}
                   </div>
                 )}

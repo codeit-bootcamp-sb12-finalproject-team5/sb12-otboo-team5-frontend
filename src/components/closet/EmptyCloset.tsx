@@ -21,7 +21,7 @@ export default function EmptyCloset({onClickRegister}: Props) {
       {onClickRegister && (
         <button
             onClick={onClickRegister}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-xl transition-colors mt-4"
+            className="bg-[#3d5570] hover:bg-[#0f2a44] text-white font-bold py-3 px-6 rounded-xl transition-colors mt-4"
         >
           옷 추가하기
         </button>

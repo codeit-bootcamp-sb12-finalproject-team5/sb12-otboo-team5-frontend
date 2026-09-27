@@ -58,7 +58,7 @@ function OutfitDetails({ detail, summary, onRegisterFeed, isFeedRegistering }: {
             changeImage(event.key === 'ArrowLeft' ? -1 : 1);
           }
         }}
-        className="min-w-0 border-b border-[#e7e7e9] outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#1e89f4] md:border-r md:border-b-0"
+        className="min-w-0 border-b border-[#ded6cb] outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#3d5570] md:border-r md:border-b-0"
       >
         <div className="relative aspect-square bg-[#f7f7f8]">
           <OutfitImage
@@ -72,7 +72,7 @@ function OutfitDetails({ detail, summary, onRegisterFeed, isFeedRegistering }: {
                 type="button"
                 aria-label="이전 의류 사진"
                 onClick={() => changeImage(-1)}
-                className="absolute top-1/2 left-4 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-[#373740] shadow-md transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-[#1e89f4]"
+                className="absolute top-1/2 left-4 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-[#3d5570] shadow-md transition-colors hover:bg-[#f2ede5] focus-visible:outline-2 focus-visible:outline-[#3d5570]"
               >
                 <ChevronLeft className="size-6" aria-hidden="true" />
               </button>
@@ -80,7 +80,7 @@ function OutfitDetails({ detail, summary, onRegisterFeed, isFeedRegistering }: {
                 type="button"
                 aria-label="다음 의류 사진"
                 onClick={() => changeImage(1)}
-                className="absolute top-1/2 right-4 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-[#373740] shadow-md transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-[#1e89f4]"
+                className="absolute top-1/2 right-4 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-[#3d5570] shadow-md transition-colors hover:bg-[#f2ede5] focus-visible:outline-2 focus-visible:outline-[#3d5570]"
               >
                 <ChevronRight className="size-6" aria-hidden="true" />
               </button>
@@ -104,8 +104,8 @@ function OutfitDetails({ detail, summary, onRegisterFeed, isFeedRegistering }: {
                 aria-label={`${getClothesName(item, index)} 사진 보기`}
                 aria-pressed={currentIndex === index}
                 onClick={() => setCurrentIndex(index)}
-                className={`relative size-20 shrink-0 overflow-hidden rounded-xl border-2 transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1e89f4] ${
-                  currentIndex === index ? 'border-[#1e89f4]' : 'border-transparent'
+                className={`relative size-20 shrink-0 overflow-hidden rounded-xl border-2 transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3d5570] ${
+                  currentIndex === index ? 'border-[#3d5570]' : 'border-transparent'
                 }`}
               >
                 <OutfitImage imageUrl={item.imageUrl} alt="" className="size-full object-cover" />
@@ -130,7 +130,7 @@ function OutfitDetails({ detail, summary, onRegisterFeed, isFeedRegistering }: {
         {detail.weather && <OutfitWeather weather={detail.weather} />}
         {['outfit', 'ootd'].includes(detail.category.toLowerCase()) && (
           <div className="mt-auto pt-4">
-            <Button className="w-full bg-[#1e89f4] hover:bg-[#1479d8]" disabled={isFeedRegistering} onClick={onRegisterFeed}>
+            <Button className="w-full bg-[#3d5570] hover:bg-[#0f2a44]" disabled={isFeedRegistering} onClick={onRegisterFeed}>
               {isFeedRegistering ? '피드 등록 중...' : '피드 등록하기'}
             </Button>
           </div>
@@ -239,7 +239,7 @@ export default function OutfitDetailModal({ outfit, onClose, onCloseAutoFocus, o
         <DialogDescription className="sr-only">아웃핏을 구성하는 의류 사진과 설명, 날씨를 확인하세요.</DialogDescription>
         <DialogClose
           aria-label="아웃핏 상세 닫기"
-          className="absolute top-3 right-3 z-10 flex size-9 items-center justify-center rounded-full bg-white/95 text-[#64646f] shadow-sm hover:bg-[#f7f7f8] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1e89f4]"
+          className="absolute top-3 right-3 z-10 flex size-9 items-center justify-center rounded-full bg-white/95 text-[#64646f] shadow-sm hover:bg-[#f2ede5] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3d5570]"
         >
           <X className="size-5" aria-hidden="true" />
         </DialogClose>
@@ -248,7 +248,7 @@ export default function OutfitDetailModal({ outfit, onClose, onCloseAutoFocus, o
             <button
               type="button"
               aria-label="아웃핏 메뉴"
-              className="absolute top-3 right-14 z-10 flex size-9 items-center justify-center rounded-full bg-white/95 text-[#64646f] shadow-sm hover:bg-[#f7f7f8] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1e89f4]"
+              className="absolute top-3 right-14 z-10 flex size-9 items-center justify-center rounded-full bg-white/95 text-[#64646f] shadow-sm hover:bg-[#f2ede5] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3d5570]"
             >
               <MoreVertical className="size-5" aria-hidden="true" />
             </button>
@@ -274,7 +274,7 @@ export default function OutfitDetailModal({ outfit, onClose, onCloseAutoFocus, o
           </div>
         ) : (
           <div role="status" className="flex min-h-80 flex-col items-center justify-center gap-3 px-6 py-16 text-[#808089]">
-            <LoaderCircle className="size-7 animate-spin text-[#1e89f4]" aria-hidden="true" />
+            <LoaderCircle className="size-7 animate-spin text-[#3d5570]" aria-hidden="true" />
             <p>아웃핏을 불러오는 중이에요.</p>
           </div>
         )}
@@ -318,7 +318,7 @@ export default function OutfitDetailModal({ outfit, onClose, onCloseAutoFocus, o
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={feedRegistering}>취소</AlertDialogCancel>
-            <AlertDialogAction onClick={handleRegisterFeed} disabled={feedRegistering} className="bg-[#1e89f4] hover:bg-[#1479d8]">
+            <AlertDialogAction onClick={handleRegisterFeed} disabled={feedRegistering} className="bg-[#3d5570] hover:bg-[#0f2a44]">
               {feedRegistering ? '등록 중...' : '피드 등록'}
             </AlertDialogAction>
           </AlertDialogFooter>

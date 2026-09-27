@@ -189,7 +189,7 @@ export default function FeedDetailRightSection({ feed, onDelete }: FeedDetailRig
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="w-full min-h-[80px] p-2 border border-gray-300 rounded-md resize-none font-['SUIT:SemiBold',_sans-serif] text-[16px] tracking-[-0.4px] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full min-h-[80px] p-2 border border-gray-300 rounded-md resize-none font-['SUIT:SemiBold',_sans-serif] text-[16px] tracking-[-0.4px] focus:outline-none focus:ring-2 focus:ring-[#3d5570] focus:border-transparent"
               placeholder="내용을 입력하세요..."
               disabled={loading}
             />
@@ -203,7 +203,7 @@ export default function FeedDetailRightSection({ feed, onDelete }: FeedDetailRig
               </button>
               <button
                 onClick={handleEdit}
-                className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors disabled:opacity-50"
+                className="px-3 py-1 text-sm bg-[#3d5570] text-white rounded hover:bg-[#0f2a44] transition-colors disabled:opacity-50"
                 disabled={loading || content.trim() === ''}
               >
                 {loading ? '저장 중...' : '저장'}

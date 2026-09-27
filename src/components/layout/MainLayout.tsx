@@ -7,11 +7,10 @@ import Sse from "@/components/layout/Sse.tsx";
 export default function MainLayout() {
   const location = useLocation();
 
-  const bgColor = location.pathname.includes("/recommendations") ? 'bg-[#fcfaf6]' : 'bg-white';
   const isRecommendations = location.pathname.includes('/recommendations');
 
   return (
-    <div className={`h-full overflow-hidden ${bgColor} flex`}>
+    <div className="h-full overflow-hidden bg-[#fcfaf6] flex">
       {/* 사이드 메뉴 - 280px 고정폭 */}
       <div className="w-[268px] h-full flex-shrink-0">
         <SideMenu />
@@ -27,7 +26,7 @@ export default function MainLayout() {
           </>
         )}
         {/* GNB - 60px 높이 */}
-        <div className="relative z-10 h-[76px] flex-shrink-0">
+        <div className="relative z-30 h-[76px] flex-shrink-0">
           <GNB />
         </div>
         

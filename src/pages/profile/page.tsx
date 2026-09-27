@@ -28,7 +28,7 @@ export default function ProfilePage() {
   }
   
   return (
-    <div className="relative flex h-screen bg-white overflow-hidden">
+    <div className="relative flex h-screen bg-[#fcfaf6] overflow-hidden">
       {/* 메인 콘텐츠 영역 - 고정 너비와 중앙 정렬 */}
       <div className="flex-1 flex justify-center">
         <div 

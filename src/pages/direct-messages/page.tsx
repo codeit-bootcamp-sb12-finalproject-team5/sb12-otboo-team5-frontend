@@ -105,7 +105,7 @@ export default function DirectMessagesPage() {
     }
   };
 
-  return <div className="h-full overflow-y-auto bg-white px-8 py-10">
+  return <div className="h-full overflow-y-auto bg-[#fcfaf6] px-8 py-10">
     <div className="mx-auto w-full max-w-[760px]">
       <h1 className="mb-7 text-[24px] font-extrabold text-[#212126]">DM</h1>
       {loading ? <p className="py-10 text-center text-[#808089]">DM 목록을 불러오는 중...</p> : rooms.length === 0 ? <p className="py-16 text-center text-[#808089]">아직 대화한 DM이 없습니다.</p> : <ul className="flex flex-col gap-1">

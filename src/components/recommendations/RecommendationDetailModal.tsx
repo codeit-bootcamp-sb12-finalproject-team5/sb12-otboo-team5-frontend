@@ -26,7 +26,7 @@ export default function RecommendationDetailModal({
           <div className="flex flex-col gap-6">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="font-bold text-[#1e89f4] text-[14px]">{recommendationType} RECOMMENDATION</p>
+                <p className="font-bold text-[#3d5570] text-[14px]">{recommendationType} RECOMMENDATION</p>
                 <h2 className="mt-1 font-extrabold text-[#212126] text-[26px] tracking-[-0.65px]">
                   추천 코디 {outfit.rank}
                 </h2>
@@ -50,7 +50,7 @@ export default function RecommendationDetailModal({
             {outfit.styleTags.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {outfit.styleTags.map((tag) => (
-                  <span key={tag} className="rounded-full bg-[#e8f3ff] px-3 py-1.5 font-bold text-[#1e89f4] text-[14px]">
+                  <span key={tag} className="rounded-full bg-[#f2ede5] px-3 py-1.5 font-bold text-[#3d5570] text-[14px]">
                     #{tag}
                   </span>
                 ))}
@@ -84,7 +84,7 @@ export default function RecommendationDetailModal({
                   <button
                     type="button"
                     onClick={onRegisterOotd}
-                    className="h-[52px] rounded-[12px] bg-[#1e89f4] font-bold text-white text-[17px] transition-colors hover:bg-[#1479dd]"
+                    className="h-[52px] rounded-[12px] bg-[#3d5570] font-bold text-white text-[17px] transition-colors hover:bg-[#0f2a44]"
                   >
                     OOTD 등록
                   </button>
@@ -93,7 +93,7 @@ export default function RecommendationDetailModal({
                   <button
                     type="button"
                     onClick={onRegisterOutfit}
-                    className="h-[52px] rounded-[12px] border border-[#1e89f4] bg-white font-bold text-[#1e89f4] text-[17px] transition-colors hover:bg-[#e8f3ff]"
+                    className="h-[52px] rounded-[12px] border border-[#3d5570] bg-white font-bold text-[#3d5570] text-[17px] transition-colors hover:bg-[#f2ede5]"
                   >
                     아웃핏 등록
                   </button>

@@ -65,15 +65,15 @@ export default function AddOutfitModal({open, outfit, onClose, category = 'OUTFI
           <p className="text-[#696975] text-[14px]">현재 추천 코디의 옷 {outfit?.clothes.length ?? 0}개가 {category === 'OOTD' ? 'OOTD' : '아웃핏'}으로 저장됩니다.</p>
           <label className="flex flex-col gap-2 font-bold text-[#33333a] text-[15px]">
             {category === 'OOTD' ? 'OOTD' : '아웃핏'} 이름
-            <input value={name} onChange={(event) => setName(event.target.value)} maxLength={100} className="h-[46px] rounded-[10px] border border-[#d4d4d9] px-3 font-semibold outline-none focus:border-[#1e89f4]" />
+            <input value={name} onChange={(event) => setName(event.target.value)} maxLength={100} className="h-[46px] rounded-[10px] border border-[#ded6cb] px-3 font-semibold outline-none focus:border-[#3d5570]" />
           </label>
           <label className="flex flex-col gap-2 font-bold text-[#33333a] text-[15px]">
             설명 <span className="font-medium text-[#a9a9b1]">(선택)</span>
-            <textarea value={description} onChange={(event) => setDescription(event.target.value)} className="h-[100px] resize-none rounded-[10px] border border-[#d4d4d9] p-3 font-medium outline-none focus:border-[#1e89f4]" />
+            <textarea value={description} onChange={(event) => setDescription(event.target.value)} className="h-[100px] resize-none rounded-[10px] border border-[#ded6cb] p-3 font-medium outline-none focus:border-[#3d5570]" />
           </label>
           <div className="flex justify-end gap-3">
             <button type="button" onClick={onClose} disabled={loading} className="h-[46px] rounded-[10px] bg-[#f7f7f8] px-5 font-bold text-[#575765] disabled:opacity-50">취소</button>
-            <button type="button" onClick={handleSubmit} disabled={loading || !name.trim()} className="h-[46px] rounded-[10px] bg-[#1e89f4] px-5 font-bold text-white disabled:opacity-50">{loading ? '등록 중...' : `${category === 'OOTD' ? 'OOTD' : '아웃핏'} 등록`}</button>
+            <button type="button" onClick={handleSubmit} disabled={loading || !name.trim()} className="h-[46px] rounded-[10px] bg-[#3d5570] px-5 font-bold text-white hover:bg-[#0f2a44] disabled:opacity-50">{loading ? '등록 중...' : `${category === 'OOTD' ? 'OOTD' : '아웃핏'} 등록`}</button>
           </div>
         </div>
       </DialogContent>

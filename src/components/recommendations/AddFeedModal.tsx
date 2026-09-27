@@ -118,7 +118,7 @@ export default function AddFeedModal({ open, onClose, onCreated, outfit }: AddFe
           <button
             onClick={handleSubmit}
             disabled={loading || !content.trim()}
-            className="bg-[#1e89f4] box-border content-stretch flex gap-1.5 h-[46px] items-center justify-center px-[18px] py-2.5 relative rounded-[12px] shrink-0 hover:bg-[#1e89f4]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-[#3d5570] box-border content-stretch flex gap-1.5 h-[46px] items-center justify-center px-[18px] py-2.5 relative rounded-[12px] shrink-0 hover:bg-[#0f2a44] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <div className="font-bold leading-[0] not-italic relative shrink-0 text-[18px] text-nowrap text-white tracking-[-0.45px]">
               <p className="leading-[normal] whitespace-pre">{loading ? '등록 중...' : '등록'}</p>

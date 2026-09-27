@@ -20,7 +20,7 @@ export default function OutfitCard({ outfit, onClick }: OutfitCardProps) {
       type="button"
       onClick={onClick}
       aria-label={`${outfit.name} 상세보기`}
-      className="flex w-full min-w-0 cursor-pointer flex-col gap-4 rounded-[20px] border border-zinc-200 bg-white px-3 py-4 text-left transition-shadow hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+      className="flex w-full min-w-0 cursor-pointer flex-col gap-4 rounded-[20px] border border-[#ded6cb] bg-white px-3 py-4 text-left transition-shadow hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3d5570] focus-visible:ring-offset-2"
     >
       <div className="flex min-h-9 w-full items-start justify-between gap-2 px-1.5">
         <div className="min-w-0">

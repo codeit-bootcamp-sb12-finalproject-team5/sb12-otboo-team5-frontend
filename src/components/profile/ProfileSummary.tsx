@@ -160,7 +160,7 @@ export default function ProfileSummary({
             className={`box-border content-stretch flex gap-1.5 h-[46px] items-center justify-center px-[18px] py-2.5 relative rounded-[12px] shrink-0 transition-colors ${
               followSummary?.followedByMe 
                 ? 'bg-[#f7f7f8] hover:bg-[#eeeeef]' 
-                : 'bg-[#1e89f4] hover:bg-[#1a7ae6]'
+                : 'bg-[#3d5570] hover:bg-[#0f2a44]'
             }`}
           >
             <div className={`font-['SUIT:Bold',_sans-serif] leading-[0] not-italic relative shrink-0 text-[18px] text-nowrap tracking-[-0.45px] ${

@@ -18,10 +18,10 @@ export default function OutfitFilter({ categories, selectedCategory, onCategoryC
             type="button"
             aria-pressed={selectedCategory === category}
             onClick={() => onCategoryChange(category)}
-            className={`shrink-0 cursor-pointer border-b-4 px-[18px] py-4 text-lg font-bold tracking-[-0.45px] whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500 ${
+            className={`shrink-0 cursor-pointer border-b-4 px-[18px] py-4 text-lg font-bold tracking-[-0.45px] whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#3d5570] ${
               selectedCategory === category
-                ? 'border-blue-500 text-blue-500'
-                : 'border-transparent text-gray-700 hover:text-blue-500'
+                ? 'border-[#3d5570] text-[#3d5570]'
+                : 'border-transparent text-gray-700 hover:text-[#3d5570]'
             }`}
           >
             {category}

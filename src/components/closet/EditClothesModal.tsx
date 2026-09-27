@@ -183,7 +183,7 @@ export default function EditClothesModal({ open, onClose, clothes }: EditClothes
               </div>
               <button 
                 onClick={() => fileInputRef.current?.click()}
-                className="bg-blue-500 hover:bg-blue-600 box-border content-stretch flex flex-col gap-2 items-center justify-center mb-[-26px] overflow-clip px-3 py-1.5 relative rounded-[100px] shrink-0 transition-colors"
+                className="bg-[#3d5570] hover:bg-[#0f2a44] box-border content-stretch flex flex-col gap-2 items-center justify-center mb-[-26px] overflow-clip px-3 py-1.5 relative rounded-[100px] shrink-0 transition-colors"
               >
                 <div className="flex flex-col font-bold justify-center leading-none not-italic relative shrink-0 text-[16px] text-white tracking-[-0.4px] w-full">
                   <p className="leading-normal">변경</p>
@@ -310,7 +310,7 @@ export default function EditClothesModal({ open, onClose, clothes }: EditClothes
               <div className="content-stretch flex flex-col gap-2.5 items-start justify-start relative shrink-0 w-full">
                 <div className="flex items-center justify-between w-full">
                   <label htmlFor="edit-clothes-preference" className="font-bold text-gray-500 text-[14px] tracking-[-0.35px]">선호도</label>
-                  <span className="font-semibold text-blue-500 text-[14px]">{formData.preference} / 5</span>
+                  <span className="font-semibold text-[#3d5570] text-[14px]">{formData.preference} / 5</span>
                 </div>
                 <input
                   id="edit-clothes-preference"

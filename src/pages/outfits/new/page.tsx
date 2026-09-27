@@ -104,12 +104,12 @@ export default function NewOutfitPage() {
   return (
     <div className="flex h-full flex-col overflow-y-auto px-10 py-2.5">
       <header className="flex shrink-0 items-center gap-4 border-b border-gray-200 py-4">
-        <Button variant="ghost" size="icon" asChild><Link to={listPath} aria-label="아웃핏 목록으로 돌아가기"><ArrowLeft /></Link></Button>
+        <Button variant="ghost" size="icon" asChild><Link to={listPath} aria-label="아웃핏 목록으로 돌아가기"><ArrowLeft className="text-[#3d5570]" /></Link></Button>
         <div className="min-w-0 flex-1">
           <h1 className="text-[22px] font-bold text-gray-900">아웃핏 제작</h1>
           <p className="mt-1 text-[14px] text-gray-500">오늘 날씨에 맞는 아웃핏을 추천해드릴게요.</p>
         </div>
-        <button type="button" onClick={openRecommendation} disabled={loading} className="flex h-[44px] shrink-0 items-center gap-2 rounded-[11px] border border-[#1e89f4] bg-white px-4 font-bold text-[#1e89f4] hover:bg-[#e8f3ff] disabled:cursor-not-allowed disabled:opacity-50">
+        <button type="button" onClick={openRecommendation} disabled={loading} className="flex h-[44px] shrink-0 items-center gap-2 rounded-[11px] border border-[#3d5570] bg-white px-4 font-bold text-[#3d5570] hover:bg-[#f2ede5] disabled:cursor-not-allowed disabled:opacity-50">
           <RefreshCw className={`size-4 ${loading ? 'animate-spin' : ''}`} />
           {loading ? '추천 중...' : outfits.length > 0 ? '다른 아웃핏 추천' : '아웃핏 추천 받기'}
         </button>
@@ -127,14 +127,14 @@ export default function NewOutfitPage() {
       ) : outfits.length === 0 && !loading ? (
         <div className="flex flex-1 flex-col items-center justify-center gap-5 py-16 text-center">
           <p className="text-gray-500">내 옷장에서 고정할 옷을 고르고, 날씨에 맞는 아웃핏 3가지를 받아보세요.</p>
-          <button type="button" onClick={openRecommendation} className="h-[52px] rounded-[12px] bg-[#1e89f4] px-6 font-bold text-[17px] text-white hover:bg-[#1479dd]">아웃핏 추천 받기</button>
+          <button type="button" onClick={openRecommendation} className="h-[52px] rounded-[12px] bg-[#3d5570] px-6 font-bold text-[17px] text-white hover:bg-[#0f2a44]">아웃핏 추천 받기</button>
         </div>
       ) : loading ? (
         <div className="grid grid-cols-1 gap-5 py-8 xl:grid-cols-3">{[1, 2, 3].map(index => <div key={index} className="h-[300px] animate-pulse rounded-[18px] bg-gray-100" />)}</div>
       ) : (
         <main className="grid grid-cols-1 gap-5 py-8 xl:grid-cols-3">
           {outfits.map(outfit => (
-            <button key={outfit.rank} type="button" onClick={() => setSelectedOutfit(outfit)} className="flex flex-col gap-5 rounded-[18px] border border-[#e7e7e9] bg-white p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-[#1e89f4]">
+            <button key={outfit.rank} type="button" onClick={() => setSelectedOutfit(outfit)} className="flex flex-col gap-5 rounded-[18px] border border-[#ded6cb] bg-white p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-[#b08a44]">
               <div><h2 className="font-extrabold text-[18px] text-[#212126]">추천 아웃핏 {outfit.rank}</h2>{outfit.reason && <p className="mt-2 line-clamp-2 text-[14px] leading-5 text-[#696975]">{outfit.reason}</p>}</div>
               <div className="grid grid-cols-2 gap-4">{outfit.clothes.map(item => <RecommendationItem key={item.id} item={item} />)}</div>
             </button>

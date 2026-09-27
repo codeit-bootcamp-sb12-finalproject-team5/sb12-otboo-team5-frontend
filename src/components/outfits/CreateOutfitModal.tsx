@@ -91,23 +91,23 @@ export default function CreateOutfitModal({ open, onOpenChange, onCreated }: Cre
           </div>
           <div className="grid min-h-0 overflow-hidden grid-cols-[minmax(0,1fr)_280px] gap-6">
             <section className="flex h-full min-h-0 flex-col">
-              <div className="mb-3 flex gap-2 overflow-x-auto pb-1">{CATEGORIES.map(category => <button key={category} type="button" onClick={() => setSelectedCategory(category)} className={`shrink-0 rounded-full px-3 py-2 text-[13px] font-bold ${selectedCategory === category ? 'bg-[#1e89f4] text-white' : 'bg-[#f7f7f8] text-[#696975]'}`}>{category === 'ALL' ? '전체' : category}</button>)}</div>
+              <div className="mb-3 flex gap-2 overflow-x-auto pb-1">{CATEGORIES.map(category => <button key={category} type="button" onClick={() => setSelectedCategory(category)} className={`shrink-0 rounded-full px-3 py-2 text-[13px] font-bold ${selectedCategory === category ? 'bg-[#3d5570] text-white' : 'bg-[#f2ede5] text-[#2a2d31]'}`}>{category === 'ALL' ? '전체' : category}</button>)}</div>
               <div className="grid min-h-0 flex-1 grid-cols-3 gap-3 overflow-y-auto pb-3 pr-2">
                 {loadingData ? <p className="col-span-3 py-12 text-center text-[#808089]">옷장을 불러오는 중...</p> : visibleClothes.map(item => {
                   const selected = selectedIds.includes(item.id);
-                  return <button key={item.id} type="button" onClick={() => toggle(item)} className={`min-h-[184px] overflow-hidden rounded-xl border text-left ${selected ? 'border-[#1e89f4] ring-2 ring-[#1e89f4]' : 'border-[#e7e7e9]'}`}><div className="h-36 bg-[#f1f1f3] sm:h-40">{item.imageUrl ? <img src={item.imageUrl} alt={item.name} className="size-full object-cover" /> : null}</div><p className="truncate p-2 text-[13px] font-bold">{item.name}</p></button>;
+                  return <button key={item.id} type="button" onClick={() => toggle(item)} className={`min-h-[184px] overflow-hidden rounded-xl border text-left ${selected ? 'border-[#3d5570] ring-2 ring-[#3d5570]' : 'border-[#ded6cb]'}`}><div className="h-36 bg-[#f2ede5] sm:h-40">{item.imageUrl ? <img src={item.imageUrl} alt={item.name} className="size-full object-cover" /> : null}</div><p className="truncate p-2 text-[13px] font-bold">{item.name}</p></button>;
                 })}
               </div>
             </section>
             <aside className="flex h-full min-h-0 flex-col gap-3 overflow-hidden rounded-2xl bg-[#f7f7f8] p-4">
               <p className="shrink-0 font-bold text-[#212126]">선택한 옷 {selectedClothes.length}개</p>
-              <div className="min-h-0 flex-1 space-y-2 overflow-y-auto pr-1">{selectedClothes.map(item => <div key={item.id} className="flex items-center gap-2 rounded-lg bg-white p-2"><div className="size-10 overflow-hidden rounded bg-[#e7e7e9]">{item.imageUrl && <img src={item.imageUrl} alt="" className="size-full object-cover" />}</div><span className="min-w-0 flex-1 truncate text-sm font-semibold">{item.name}</span><button type="button" onClick={() => toggle(item)} className="text-xs text-[#1e89f4]">해제</button></div>)}</div>
+              <div className="min-h-0 flex-1 space-y-2 overflow-y-auto pr-1">{selectedClothes.map(item => <div key={item.id} className="flex items-center gap-2 rounded-lg bg-white p-2"><div className="size-10 overflow-hidden rounded bg-[#f2ede5]">{item.imageUrl && <img src={item.imageUrl} alt="" className="size-full object-cover" />}</div><span className="min-w-0 flex-1 truncate text-sm font-semibold">{item.name}</span><button type="button" onClick={() => toggle(item)} className="text-xs text-[#3d5570]">해제</button></div>)}</div>
               <div className="shrink-0 space-y-3">
-                <input value={name} onChange={event => setName(event.target.value)} placeholder="이름 입력" maxLength={100} className="h-10 w-full rounded-lg border border-[#d4d4d9] bg-white px-3 text-sm outline-none focus:border-[#1e89f4]" />
-                <textarea value={description} onChange={event => setDescription(event.target.value)} placeholder="설명 (선택)" className="h-20 w-full resize-none rounded-lg border border-[#d4d4d9] bg-white p-3 text-sm outline-none focus:border-[#1e89f4]" />
+                <input value={name} onChange={event => setName(event.target.value)} placeholder="이름 입력" maxLength={100} className="h-10 w-full rounded-lg border border-[#ded6cb] bg-white px-3 text-sm outline-none focus:border-[#3d5570]" />
+                <textarea value={description} onChange={event => setDescription(event.target.value)} placeholder="설명 (선택)" className="h-20 w-full resize-none rounded-lg border border-[#ded6cb] bg-white p-3 text-sm outline-none focus:border-[#3d5570]" />
                 <div className="grid grid-cols-2 gap-2">
-                <button type="button" onClick={() => submit('OOTD')} disabled={loading || loadingData} className="h-11 rounded-lg border border-[#1e89f4] bg-white font-bold text-[#1e89f4] disabled:opacity-50">OOTD 등록하기</button>
-                <button type="button" onClick={() => submit('OUTFIT')} disabled={loading || loadingData} className="h-11 rounded-lg bg-[#1e89f4] font-bold text-white disabled:opacity-50">outfit 등록하기</button>
+                <button type="button" onClick={() => submit('OOTD')} disabled={loading || loadingData} className="h-11 rounded-lg border border-[#3d5570] bg-white font-bold text-[#3d5570] disabled:opacity-50">OOTD 등록하기</button>
+                <button type="button" onClick={() => submit('OUTFIT')} disabled={loading || loadingData} className="h-11 rounded-lg bg-[#3d5570] font-bold text-white disabled:opacity-50">outfit 등록하기</button>
                 </div>
               </div>
             </aside>
