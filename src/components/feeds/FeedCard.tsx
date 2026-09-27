@@ -102,7 +102,7 @@ function ImageLayout({ ootds }: { ootds: FeedDto['ootds'] }) {
             style={{ backgroundImage: `url('${images[2]?.imageUrl || images[1].imageUrl}')` }} 
           />
           {images.length > 3 && (
-            <div className="absolute bg-[rgba(33,33,38,0.9)] box-border content-stretch flex gap-2 items-center justify-center px-2 py-1 right-2 rounded-[100px] top-2">
+            <div className="absolute bottom-2 right-2 flex items-center justify-center rounded-[100px] bg-[rgba(33,33,38,0.9)] px-2 py-1">
               <div className="font-[var(--font-weight-semibold)] leading-[0] not-italic relative shrink-0 text-[14px] text-nowrap text-white tracking-[-0.35px]">
                 <p className="leading-[normal] whitespace-pre">+{images.length - 3}</p>
               </div>
