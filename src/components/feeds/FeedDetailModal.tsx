@@ -6,6 +6,7 @@ import {
 } from '@/components/ui/dialog';
 import FeedDetailLeftSection from './FeedDetailLeftSection';
 import FeedDetailRightSection from './FeedDetailRightSection';
+import { useFeedStore } from '@/lib/stores/useFeedStore';
 
 interface FeedDetailModalProps {
   feed: FeedDto | null;
@@ -14,22 +15,24 @@ interface FeedDetailModalProps {
 }
 
 export default function FeedDetailModal({ feed, open, onOpenChange }: FeedDetailModalProps) {
+  const feeds = useFeedStore(state => state.data);
   if (!feed) return null;
+  const currentFeed = feeds.find(item => item.id === feed.id) ?? feed;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTitle/>
       <DialogContent 
-        className="max-w-none sm:max-w-none w-[918px] h-[800px] p-0 bg-white rounded-[12px] border border-[#e7e7e9] overflow-hidden"
+        className="h-[700px] w-[1000px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-[12px] border border-[#e7e7e9] bg-white p-4 sm:max-w-[calc(100vw-2rem)]"
         showCloseButton={false}
       >
-        <div className="box-border content-stretch flex gap-5 items-start justify-start overflow-clip pl-0 pr-5 py-0 relative w-[918px] h-[800px] bg-white">
+        <div className="flex size-full min-h-0 gap-5 overflow-hidden">
           {/* 왼쪽 섹션 - OOTD 캐러셀 (531px) */}
-          <FeedDetailLeftSection feed={feed} />
+          <FeedDetailLeftSection feed={currentFeed} />
           {/* 오른쪽 섹션 - 피드 정보 & 댓글 (367px) */}
-          <FeedDetailRightSection feed={feed} onDelete={() => onOpenChange(false)} />
+          <FeedDetailRightSection feed={currentFeed} onDelete={() => onOpenChange(false)} />
         </div>
-        <div aria-hidden="true" className="absolute border border-[#e7e7e9] border-solid inset-0 pointer-events-none rounded-[12px]" />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 rounded-[12px] border border-[#e7e7e9]" />
       </DialogContent>
     </Dialog>
   );

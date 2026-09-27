@@ -3,13 +3,12 @@ import { likeFeed, unlikeFeed } from '@/lib/api/feeds';
 import { useFeedStore } from '@/lib/stores/useFeedStore';
 import { toast } from 'sonner';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Heart } from 'lucide-react';
 
 import sunnyIcon from '@/assets/illust_logos/il_Sunny.svg';
 import overcastIcon from '@/assets/illust_logos/il_Overcast.svg';
 import cloudyIcon from '@/assets/illust_logos/il_cloudy.svg';
 import ProfileAvatar from '@/components/profile/ProfileAvatar';
-import heartIcon from '@/assets/icons/ic_heart.svg';
-import heartFilledIcon from '@/assets/icons/ic_heart_filled.svg';
 import commentIcon from '@/assets/icons/ic_comment.svg';
 import emptyImageIcon from '@/assets/icons/empty image.svg';
 import {useNavigate} from "react-router-dom";
@@ -193,7 +192,7 @@ export default function FeedCard({ feed, onClick }: FeedCardProps) {
             >
               <p className="leading-[normal] truncate">{feed.author.name}</p>
             </div>
-            <div className="content-stretch flex font-[var(--font-weight-semibold)] gap-1 items-center justify-start leading-[0] not-italic relative shrink-0 text-[var(--color-gray-500)] text-[14px] text-nowrap tracking-[-0.35px] w-full">
+            <div className="content-stretch flex font-[var(--font-weight-semibold)] gap-1 items-center justify-start leading-[0] not-italic relative shrink-0 text-[var(--color-gray-500)] text-[12px] text-nowrap tracking-[-0.35px] w-full">
               <div className="relative shrink-0">
                 <p className="leading-[normal] text-nowrap whitespace-pre">{date}</p>
               </div>
@@ -242,12 +241,12 @@ export default function FeedCard({ feed, onClick }: FeedCardProps) {
       {/* 내용 */}
       <div className="box-border content-stretch flex gap-2 items-center justify-start px-0.5 py-0 relative shrink-0 w-full">
         <div className="font-[var(--font-weight-semibold)] leading-[0] not-italic relative text-[var(--color-gray-700)] text-[16px] tracking-[-0.4px] w-full">
-          <p className="leading-[normal] line-clamp-3">{feed.content}</p>
+          <p className="leading-[normal] line-clamp-1">{feed.content}</p>
         </div>
       </div>
 
       {/* 하단 액션 */}
-      <div className="box-border content-stretch flex gap-3.5 items-center justify-start pb-2 pt-1 px-0.5 relative shrink-0 w-full">
+      <div className="box-border content-stretch -mt-1 flex gap-3.5 items-center justify-start px-0.5 py-0 relative shrink-0 w-full">
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -255,15 +254,8 @@ export default function FeedCard({ feed, onClick }: FeedCardProps) {
           }}
           className="content-stretch flex gap-0.5 items-end justify-start relative shrink-0 hover:opacity-70 transition-opacity"
         >
-          <div className="overflow-clip relative shrink-0 size-4">
-            <img 
-              src={feed.likedByMe ? heartFilledIcon : heartIcon} 
-              alt="좋아요" 
-              className="block max-w-none size-full" 
-            />
-          </div>
-          <div className="font-[var(--font-weight-semibold)] leading-[0] not-italic relative shrink-0 text-[var(--color-gray-400)] text-[14px] text-nowrap tracking-[-0.35px]">
-            <p className="leading-[normal] whitespace-pre">좋아요</p>
+          <div className="relative shrink-0 size-4">
+            <Heart aria-label="좋아요" className={`size-full ${feed.likedByMe ? 'fill-[#e76f51] text-[#e76f51]' : 'text-[var(--color-gray-400)]'}`} />
           </div>
           <div className="font-[var(--font-weight-semibold)] leading-[0] not-italic relative shrink-0 text-[var(--color-gray-400)] text-[14px] text-nowrap tracking-[-0.35px]">
             <p className="leading-[normal] whitespace-pre">{feed.likeCount}</p>
@@ -273,9 +265,6 @@ export default function FeedCard({ feed, onClick }: FeedCardProps) {
         <div className="content-stretch flex gap-0.5 items-center justify-start relative shrink-0">
           <div className="overflow-clip relative shrink-0 size-4">
             <img src={commentIcon} alt="댓글" className="block max-w-none size-full" />
-          </div>
-          <div className="font-[var(--font-weight-semibold)] leading-[0] not-italic relative shrink-0 text-[var(--color-gray-400)] text-[14px] text-nowrap tracking-[-0.35px]">
-            <p className="leading-[normal] whitespace-pre">댓글</p>
           </div>
           <div className="font-[var(--font-weight-semibold)] leading-[0] not-italic relative shrink-0 text-[var(--color-gray-400)] text-[14px] text-nowrap tracking-[-0.35px]">
             <p className="leading-[normal] whitespace-pre">{feed.commentCount}</p>
