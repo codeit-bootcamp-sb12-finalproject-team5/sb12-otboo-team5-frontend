@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ChevronLeft, ChevronRight, Edit, LoaderCircle, MoreVertical, RefreshCw, Trash2, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Edit, LoaderCircle, MoreVertical, RefreshCw, Shirt, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { deleteOutfit, getOutfit } from '@/lib/api/outfits';
 import { createFeed } from '@/lib/api/feeds';
@@ -10,7 +10,6 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogTitle,
@@ -119,11 +118,14 @@ function OutfitDetails({ detail, summary, onRegisterFeed, isFeedRegistering }: {
           <h2 className="text-2xl leading-snug font-bold break-words tracking-tight text-[#373740]">
             {detail.name}
           </h2>
-          <p className="mt-3 text-sm font-medium text-[#808089]">의류 {clothes.length}개</p>
+          <p className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#f2ede5] px-3 py-1.5 text-sm font-semibold text-[#7a8ca3]">
+            <Shirt className="size-4 text-[#b7a997]" aria-hidden="true" />
+            의류 {clothes.length}개
+          </p>
         </div>
-        <div>
-          <h3 className="text-sm font-bold text-[#808089]">설명</h3>
-          <p className="mt-2 leading-relaxed break-words whitespace-pre-wrap text-[#64646f]">
+        <div className="border-t border-[#ded6cb] pt-5">
+          <h3 className="text-[18px] font-bold text-[#0f2a44]">코디 설명</h3>
+          <p className="mt-2 leading-relaxed break-words whitespace-pre-wrap text-[15px] text-[#3d5570]">
             {detail.description || '등록된 설명이 없습니다.'}
           </p>
         </div>
@@ -237,18 +239,12 @@ export default function OutfitDetailModal({ outfit, onClose, onCloseAutoFocus, o
       >
         <DialogTitle className="sr-only">{detail ? `${detail.name} 상세` : '아웃핏 상세'}</DialogTitle>
         <DialogDescription className="sr-only">아웃핏을 구성하는 의류 사진과 설명, 날씨를 확인하세요.</DialogDescription>
-        <DialogClose
-          aria-label="아웃핏 상세 닫기"
-          className="absolute top-3 right-3 z-10 flex size-9 items-center justify-center rounded-full bg-white/95 text-[#64646f] shadow-sm hover:bg-[#f2ede5] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3d5570]"
-        >
-          <X className="size-5" aria-hidden="true" />
-        </DialogClose>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
               type="button"
               aria-label="아웃핏 메뉴"
-              className="absolute top-3 right-14 z-10 flex size-9 items-center justify-center rounded-full bg-white/95 text-[#64646f] shadow-sm hover:bg-[#f2ede5] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3d5570]"
+              className="absolute top-3 right-3 z-10 flex size-9 items-center justify-center rounded-full bg-white/95 text-[#64646f] shadow-sm hover:bg-[#f2ede5] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3d5570]"
             >
               <MoreVertical className="size-5" aria-hidden="true" />
             </button>

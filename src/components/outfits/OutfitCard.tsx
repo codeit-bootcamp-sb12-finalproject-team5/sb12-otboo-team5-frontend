@@ -20,11 +20,11 @@ export default function OutfitCard({ outfit, onClick }: OutfitCardProps) {
       type="button"
       onClick={onClick}
       aria-label={`${outfit.name} 상세보기`}
-      className="flex w-full min-w-0 cursor-pointer flex-col gap-4 rounded-[20px] border border-[#ded6cb] bg-white px-3 py-4 text-left transition-shadow hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3d5570] focus-visible:ring-offset-2"
+      className="flex h-[310px] w-full min-w-0 cursor-pointer flex-col gap-4 overflow-hidden rounded-[20px] border border-[#ded6cb] bg-white px-3 py-4 text-left transition-shadow hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3d5570] focus-visible:ring-offset-2"
     >
       <div className="flex min-h-9 w-full items-start justify-between gap-2 px-1.5">
         <div className="min-w-0">
-          <h2 className="line-clamp-2 break-words text-lg font-bold tracking-[-0.45px] text-gray-900">
+          <h2 className="truncate text-lg font-bold tracking-[-0.45px] text-gray-900">
             {outfit.name}
           </h2>
           {formattedCreatedAt && (
@@ -57,7 +57,7 @@ export default function OutfitCard({ outfit, onClick }: OutfitCardProps) {
       </div>
 
       <div className="w-full min-w-0 px-0.5">
-        <p className="line-clamp-3 whitespace-pre-line break-words text-base leading-normal tracking-[-0.4px] text-gray-700">
+        <p className="line-clamp-2 whitespace-pre-line break-words text-base leading-normal tracking-[-0.4px] text-gray-700">
           {outfit.description}
         </p>
       </div>

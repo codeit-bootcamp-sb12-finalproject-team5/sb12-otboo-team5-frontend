@@ -1,3 +1,4 @@
+import { type PointerEvent, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 
@@ -9,9 +10,38 @@ interface OutfitFilterProps {
 }
 
 export default function OutfitFilter({ categories, selectedCategory, onCategoryChange, onCreate }: OutfitFilterProps) {
+  const categoryListRef = useRef<HTMLElement>(null);
+  const dragStartRef = useRef({ x: 0, scrollLeft: 0, active: false });
+
+  const handlePointerDown = (event: PointerEvent<HTMLElement>) => {
+    const list = categoryListRef.current;
+    if (!list || event.button !== 0) return;
+
+    dragStartRef.current = { x: event.clientX, scrollLeft: list.scrollLeft, active: true };
+  };
+
+  const handlePointerMove = (event: PointerEvent<HTMLElement>) => {
+    const list = categoryListRef.current;
+    if (!list || !dragStartRef.current.active) return;
+    list.scrollLeft = dragStartRef.current.scrollLeft - (event.clientX - dragStartRef.current.x);
+  };
+
+  const handlePointerEnd = (event: PointerEvent<HTMLElement>) => {
+    dragStartRef.current.active = false;
+  };
+
   return (
     <div className="flex w-full items-center justify-between gap-6">
-      <nav aria-label="아웃핏 카테고리" className="flex min-w-0 flex-1 gap-5 overflow-x-auto">
+      <nav
+        ref={categoryListRef}
+        aria-label="아웃핏 카테고리"
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerEnd}
+        onPointerCancel={handlePointerEnd}
+        onPointerLeave={handlePointerEnd}
+        className="flex min-w-0 flex-1 touch-pan-y select-none gap-5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
         {categories.map(category => (
           <button
             key={category}
@@ -30,7 +60,7 @@ export default function OutfitFilter({ categories, selectedCategory, onCategoryC
       </nav>
       <div className="flex shrink-0 items-center gap-3">
         <Button type="button" variant="outline" onClick={onCreate}>
-          OOTD/outfit 만들기
+          OOTD/OUTFIT 만들기
         </Button>
         <Button asChild>
           <Link to={`/outfits/new?${new URLSearchParams({ category: selectedCategory })}`}>

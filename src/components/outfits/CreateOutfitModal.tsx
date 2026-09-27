@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { type PointerEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { getClothes } from '@/lib/api/clothes';
 import { createOutfit } from '@/lib/api/outfits';
@@ -25,6 +25,8 @@ export default function CreateOutfitModal({ open, onOpenChange, onCreated }: Cre
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(false);
+  const categoryListRef = useRef<HTMLDivElement>(null);
+  const categoryDragStartRef = useRef<{ x: number; scrollLeft: number } | null>(null);
 
   useEffect(() => {
     if (!open || !userId) return;
@@ -57,6 +59,16 @@ export default function CreateOutfitModal({ open, onOpenChange, onCreated }: Cre
     setSelectedIds(ids => [...ids, item.id]);
   };
 
+  const scrollCategories = (direction: number) => categoryListRef.current?.scrollBy({ left: direction * 180, behavior: 'smooth' });
+  const startCategoryDrag = (event: PointerEvent<HTMLDivElement>) => {
+    categoryDragStartRef.current = { x: event.clientX, scrollLeft: event.currentTarget.scrollLeft };
+  };
+  const dragCategories = (event: PointerEvent<HTMLDivElement>) => {
+    const start = categoryDragStartRef.current;
+    if (start) event.currentTarget.scrollLeft = start.scrollLeft - (event.clientX - start.x);
+  };
+  const endCategoryDrag = () => { categoryDragStartRef.current = null; };
+
   const submit = async (type: 'OOTD' | 'OUTFIT') => {
     if (!name.trim()) return toast.error('이름을 입력해주세요.');
     if (selectedIds.length === 0) return toast.error('옷을 한 벌 이상 선택해주세요.');
@@ -85,17 +97,20 @@ export default function CreateOutfitModal({ open, onOpenChange, onCreated }: Cre
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="h-[min(760px,calc(100vh-2rem))] w-[980px] max-w-[calc(100%-2rem)] overflow-hidden rounded-[12px] bg-white p-7 sm:max-w-[calc(100%-2rem)]" showCloseButton={false}>
         <div className="grid h-full min-h-0 grid-rows-[auto_minmax(0,1fr)] gap-5">
-          <div className="flex items-start justify-between gap-4">
-            <div><h2 className="text-[23px] font-extrabold text-[#212126]">OOTD/outfit 만들기</h2><p className="mt-1 text-[14px] text-[#808089]">내 옷장에서 직접 조합해 저장하세요.</p></div>
-            <button type="button" onClick={() => onOpenChange(false)} className="rounded-lg px-3 py-2 font-semibold text-[#696975] hover:bg-[#f7f7f8]">닫기</button>
+          <div className="flex items-start">
+            <div><h2 className="text-[23px] font-extrabold text-[#212126]">OOTD/OUTFIT 만들기</h2><p className="mt-1 text-[14px] text-[#808089]">내 옷장에서 직접 조합해 저장하세요.</p></div>
           </div>
           <div className="grid min-h-0 overflow-hidden grid-cols-[minmax(0,1fr)_280px] gap-6">
             <section className="flex h-full min-h-0 flex-col">
-              <div className="mb-3 flex gap-2 overflow-x-auto pb-1">{CATEGORIES.map(category => <button key={category} type="button" onClick={() => setSelectedCategory(category)} className={`shrink-0 rounded-full px-3 py-2 text-[13px] font-bold ${selectedCategory === category ? 'bg-[#3d5570] text-white' : 'bg-[#f2ede5] text-[#2a2d31]'}`}>{category === 'ALL' ? '전체' : category}</button>)}</div>
-              <div className="grid min-h-0 flex-1 grid-cols-3 gap-3 overflow-y-auto pb-3 pr-2">
+              <div className="mb-3 flex items-center gap-2">
+                <button type="button" aria-label="이전 카테고리" onClick={() => scrollCategories(-1)} className="shrink-0 px-1 text-xl leading-none text-[#3d5570]">‹</button>
+                <div ref={categoryListRef} onPointerDown={startCategoryDrag} onPointerMove={dragCategories} onPointerUp={endCategoryDrag} onPointerCancel={endCategoryDrag} onPointerLeave={endCategoryDrag} className="flex min-w-0 flex-1 gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden touch-pan-y select-none">{CATEGORIES.map(category => <button key={category} type="button" onClick={() => setSelectedCategory(category)} className={`shrink-0 rounded-full px-3 py-2 text-[13px] font-bold ${selectedCategory === 'ALL' && category === 'ALL' || selectedCategory === category ? 'bg-[#3d5570] text-white' : 'bg-[#f2ede5] text-[#2a2d31]'}`}>{category === 'ALL' ? '전체' : category}</button>)}</div>
+                <button type="button" aria-label="다음 카테고리" onClick={() => scrollCategories(1)} className="shrink-0 px-1 text-xl leading-none text-[#3d5570]">›</button>
+              </div>
+              <div className="grid min-h-0 flex-1 grid-cols-3 gap-3 overflow-y-auto pb-3 pr-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 {loadingData ? <p className="col-span-3 py-12 text-center text-[#808089]">옷장을 불러오는 중...</p> : visibleClothes.map(item => {
                   const selected = selectedIds.includes(item.id);
-                  return <button key={item.id} type="button" onClick={() => toggle(item)} className={`min-h-[184px] overflow-hidden rounded-xl border text-left ${selected ? 'border-[#3d5570] ring-2 ring-[#3d5570]' : 'border-[#ded6cb]'}`}><div className="h-36 bg-[#f2ede5] sm:h-40">{item.imageUrl ? <img src={item.imageUrl} alt={item.name} className="size-full object-cover" /> : null}</div><p className="truncate p-2 text-[13px] font-bold">{item.name}</p></button>;
+                  return <button key={item.id} type="button" onClick={() => toggle(item)} className={`min-h-[190px] overflow-hidden rounded-[8px] border text-left ${selected ? 'border-[#3d5570] ring-2 ring-[#3d5570]' : 'border-[#ded6cb]'}`}><div className="h-36 bg-[#f2ede5] sm:h-40">{item.imageUrl ? <img src={item.imageUrl} alt={item.name} className="size-full object-cover" /> : null}</div><p className="line-clamp-2 break-words p-2 text-[12px] font-bold leading-4">{item.name}</p></button>;
                 })}
               </div>
             </section>
@@ -106,8 +121,8 @@ export default function CreateOutfitModal({ open, onOpenChange, onCreated }: Cre
                 <input value={name} onChange={event => setName(event.target.value)} placeholder="이름 입력" maxLength={100} className="h-10 w-full rounded-lg border border-[#ded6cb] bg-white px-3 text-sm outline-none focus:border-[#3d5570]" />
                 <textarea value={description} onChange={event => setDescription(event.target.value)} placeholder="설명 (선택)" className="h-20 w-full resize-none rounded-lg border border-[#ded6cb] bg-white p-3 text-sm outline-none focus:border-[#3d5570]" />
                 <div className="grid grid-cols-2 gap-2">
-                <button type="button" onClick={() => submit('OOTD')} disabled={loading || loadingData} className="h-11 rounded-lg border border-[#3d5570] bg-white font-bold text-[#3d5570] disabled:opacity-50">OOTD 등록하기</button>
-                <button type="button" onClick={() => submit('OUTFIT')} disabled={loading || loadingData} className="h-11 rounded-lg bg-[#3d5570] font-bold text-white disabled:opacity-50">outfit 등록하기</button>
+                <button type="button" onClick={() => submit('OOTD')} disabled={loading || loadingData} className="h-11 rounded-lg border border-[#3d5570] text-[13px] font-bold text-[#3d5570] disabled:opacity-50">OOTD 등록하기</button>
+                <button type="button" onClick={() => submit('OUTFIT')} disabled={loading || loadingData} className="h-11 rounded-lg bg-[#3d5570] text-[13px] font-bold text-white disabled:opacity-50">OUTFIT 등록하기</button>
                 </div>
               </div>
             </aside>
