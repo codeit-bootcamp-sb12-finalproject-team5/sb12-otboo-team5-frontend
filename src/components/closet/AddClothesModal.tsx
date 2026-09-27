@@ -1,5 +1,5 @@
 import {useState, useRef, useEffect, useCallback} from 'react';
-import { Dialog, DialogContent, DialogOverlay, DialogTitle, DialogClose } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogOverlay, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useImageUpload } from '@/hooks/useImageUpload';
 import { useAuthStore } from '@/lib/stores/useAuthStore';
@@ -9,7 +9,6 @@ import { createClothes, extractByUrl } from '@/lib/api/clothes';
 import { toast } from 'sonner';
 import type { ClothesType, ClothesAttributeDto } from '@/lib/api/types';
 
-import closeIcon from '@/assets/icons/ic_X.svg'
 import emptyImageIcon from '@/assets/icons/empty image.svg'
 import leftArrowIcon from '@/assets/icons/ic_left.svg'
 
@@ -178,20 +177,12 @@ export default function AddClothesModal({ open, onClose }: AddClothesModalProps)
       <DialogContent className="max-w-[550px] p-0 bg-transparent border-none" showCloseButton={false}>
         {mode === 'form' ? (
           // 옷 추가 폼
-          <div className="bg-white box-border content-stretch flex flex-col gap-6 items-center justify-start p-[30px] relative rounded-[20px] shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)] w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white box-border content-stretch flex flex-col gap-6 items-center justify-start p-[30px] relative rounded-[12px] shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)] w-full max-h-[90vh] overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {/* 헤더 */}
-            <div className="content-stretch flex items-center justify-between relative shrink-0 w-full">
-              <div className="w-[30px]" />
+            <div className="content-stretch flex items-center justify-center relative shrink-0 w-full">
               <DialogTitle className="font-bold leading-none not-italic relative shrink-0 text-gray-800 text-[22px] text-nowrap tracking-[-0.55px]">
                 옷 추가
               </DialogTitle>
-              <DialogClose asChild>
-                <button className="overflow-clip relative shrink-0 size-[30px] hover:bg-gray-100 rounded transition-colors">
-                  <div className="absolute inset-[20.834%]">
-                    <img alt="닫기" className="block max-w-none size-full" src={closeIcon} />
-                  </div>
-                </button>
-              </DialogClose>
             </div>
 
             {/* 이미지 업로드 */}
@@ -419,7 +410,7 @@ export default function AddClothesModal({ open, onClose }: AddClothesModalProps)
           </div>
         ) : (
           // URL 불러오기 폼
-          <div className="bg-white box-border content-stretch flex flex-col gap-6 items-center justify-start p-[30px] relative rounded-[20px] shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)] w-full">
+          <div className="bg-white box-border content-stretch flex flex-col gap-6 items-center justify-start p-[30px] relative rounded-[12px] shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)] w-full">
             {/* 헤더 */}
             <div className="content-stretch flex items-center relative shrink-0 w-full">
               <button onClick={() => setMode('form')} className="content-stretch flex gap-2 items-center justify-start relative shrink-0 size-[30px] hover:bg-gray-100 rounded transition-colors">
@@ -432,13 +423,6 @@ export default function AddClothesModal({ open, onClose }: AddClothesModalProps)
               <DialogTitle className="font-bold leading-none not-italic absolute left-1/2 transform -translate-x-1/2 text-gray-800 text-[22px] text-nowrap tracking-[-0.55px]">
                 링크로 의상 불러오기
               </DialogTitle>
-              <DialogClose asChild>
-                <button className="overflow-clip relative shrink-0 size-[30px] hover:bg-gray-100 rounded transition-colors ml-auto">
-                  <div className="absolute inset-[20.834%]">
-                    <img alt="닫기" className="block max-w-none size-full" src={closeIcon} />
-                  </div>
-                </button>
-              </DialogClose>
             </div>
 
             <form onSubmit={handleUrlSubmit} className="w-full flex flex-col gap-6">

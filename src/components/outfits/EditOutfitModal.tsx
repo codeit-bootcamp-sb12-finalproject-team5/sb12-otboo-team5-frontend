@@ -129,7 +129,7 @@ export default function EditOutfitModal({ outfit, open, onOpenChange, onSaved }:
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90dvh] max-w-[calc(100%-2rem)] overflow-y-auto p-6 sm:max-w-[680px]" showCloseButton={!saving}>
+      <DialogContent className="max-h-[90dvh] max-w-[calc(100%-2rem)] overflow-y-auto rounded-[12px] p-6 sm:max-w-[680px]" showCloseButton={!saving}>
         <DialogTitle className="text-[22px] font-bold tracking-[-0.55px]">아웃핏 수정</DialogTitle>
         <DialogDescription>이름, 설명, 카테고리와 포함할 의류를 변경할 수 있습니다.</DialogDescription>
         <form onSubmit={handleSave} className="mt-2 space-y-5">

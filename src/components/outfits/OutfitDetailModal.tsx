@@ -233,7 +233,7 @@ export default function OutfitDetailModal({ outfit, onClose, onCloseAutoFocus, o
           event.preventDefault();
           onCloseAutoFocus();
         }}
-        className="max-h-[90dvh] w-[calc(100%-2rem)] max-w-[918px] gap-0 overflow-y-auto rounded-[20px] border-[#e7e7e9] bg-white p-0 sm:max-w-[918px]"
+        className="max-h-[90dvh] w-[calc(100%-2rem)] max-w-[918px] gap-0 overflow-y-auto rounded-[12px] border-[#e7e7e9] bg-white p-0 sm:max-w-[918px]"
       >
         <DialogTitle className="sr-only">{detail ? `${detail.name} 상세` : '아웃핏 상세'}</DialogTitle>
         <DialogDescription className="sr-only">아웃핏을 구성하는 의류 사진과 설명, 날씨를 확인하세요.</DialogDescription>

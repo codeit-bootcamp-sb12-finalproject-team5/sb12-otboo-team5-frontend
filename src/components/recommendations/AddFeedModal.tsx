@@ -80,7 +80,7 @@ export default function AddFeedModal({ open, onClose, onCreated, outfit }: AddFe
   return (
     <Dialog open={open} onOpenChange={handleCancel}>
       <DialogOverlay className="bg-[rgba(19,19,22,0.5)]" />
-      <DialogContent className="bg-white box-border content-stretch flex flex-col gap-6 items-center justify-center overflow-clip p-[30px] rounded-[30px] w-[733px] max-w-none" showCloseButton={false}>
+      <DialogContent className="bg-white box-border content-stretch flex flex-col gap-6 items-center justify-center overflow-clip p-[30px] rounded-[12px] w-[733px] max-w-none" showCloseButton={false}>
         {/* 헤더 */}
         <div className="content-stretch flex items-center justify-between relative shrink-0 w-full">
           <div className="content-stretch flex gap-2 items-center justify-start shrink-0" />

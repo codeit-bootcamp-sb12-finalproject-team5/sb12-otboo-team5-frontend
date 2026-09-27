@@ -111,7 +111,7 @@ export default function RecommendationConfirmModal({
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent
-        className="box-border flex max-h-[calc(100vh-2rem)] flex-col gap-6 overflow-y-auto rounded-[18px] border border-[#e5ddd2] bg-[#fdfdfa] p-8 shadow-[0_22px_60px_rgba(15,42,68,0.26)] max-w-[calc(100%-2rem)] sm:max-w-[calc(100%-2rem)] transition-all"
+        className="box-border flex max-h-[calc(100vh-2rem)] flex-col gap-6 overflow-y-auto rounded-[12px] border border-[#e5ddd2] bg-[#fdfdfa] p-8 shadow-[0_22px_60px_rgba(15,42,68,0.26)] max-w-[calc(100%-2rem)] sm:max-w-[calc(100%-2rem)] transition-all"
         style={{width: `${modalWidth}px`}}
         showCloseButton={false}
       >

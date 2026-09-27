@@ -127,7 +127,7 @@ export default function EditClothesAttributeModal({ isOpen, attribute, onClose }
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="w-[550px] p-[30px] gap-[23px]" showCloseButton={false}>
+      <DialogContent className="w-[550px] rounded-[12px] p-[30px] gap-[23px]" showCloseButton={false}>
         {/* 헤더 */}
         <DialogHeader className="flex flex-row items-center justify-between space-y-0">
           <div />

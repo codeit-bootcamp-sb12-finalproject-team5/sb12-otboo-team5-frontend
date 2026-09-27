@@ -83,7 +83,7 @@ export default function CreateOutfitModal({ open, onOpenChange, onCreated }: Cre
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="h-[min(760px,calc(100vh-2rem))] w-[980px] max-w-[calc(100%-2rem)] overflow-hidden rounded-[28px] bg-white p-7 sm:max-w-[calc(100%-2rem)]" showCloseButton={false}>
+      <DialogContent className="h-[min(760px,calc(100vh-2rem))] w-[980px] max-w-[calc(100%-2rem)] overflow-hidden rounded-[12px] bg-white p-7 sm:max-w-[calc(100%-2rem)]" showCloseButton={false}>
         <div className="grid h-full min-h-0 grid-rows-[auto_minmax(0,1fr)] gap-5">
           <div className="flex items-start justify-between gap-4">
             <div><h2 className="text-[23px] font-extrabold text-[#212126]">OOTD/outfit 만들기</h2><p className="mt-1 text-[14px] text-[#808089]">내 옷장에서 직접 조합해 저장하세요.</p></div>

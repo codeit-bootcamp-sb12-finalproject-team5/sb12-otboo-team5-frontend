@@ -19,7 +19,7 @@ export default function RecommendationDetailModal({
   return (
     <Dialog open={Boolean(outfit)} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
-        className="max-h-[calc(100vh-2rem)] w-[760px] max-w-[calc(100%-2rem)] overflow-y-auto rounded-[14px] bg-white p-8 sm:max-w-[calc(100%-2rem)]"
+        className="max-h-[calc(100vh-2rem)] w-[760px] max-w-[calc(100%-2rem)] overflow-y-auto rounded-[12px] bg-white p-8 sm:max-w-[calc(100%-2rem)]"
         showCloseButton={false}
       >
         {outfit && (

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Dialog, DialogContent, DialogOverlay, DialogTitle, DialogClose } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogOverlay, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { useImageUpload } from '@/hooks/useImageUpload';
@@ -9,7 +9,6 @@ import { updateClothes } from '@/lib/api/clothes';
 import { toast } from 'sonner';
 import type { ClothesDto, ClothesType, ClothesAttributeDto } from '@/lib/api/types';
 
-import closeIcon from '@/assets/icons/ic_X.svg'
 import emptyImageIcon from '@/assets/icons/empty image.svg'
 
 const CLOTHES_TYPES = [
@@ -148,20 +147,12 @@ export default function EditClothesModal({ open, onClose, clothes }: EditClothes
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogOverlay className="bg-black/50" />
       <DialogContent className="max-w-[550px] p-0 bg-transparent border-none" showCloseButton={false}>
-        <div className="bg-white box-border content-stretch flex flex-col gap-6 items-center justify-start p-[30px] relative rounded-[20px] shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)] w-full max-h-[90vh] overflow-y-auto">
+        <div className="bg-white box-border content-stretch flex flex-col gap-6 items-center justify-start p-[30px] relative rounded-[12px] shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)] w-full max-h-[90vh] overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {/* 헤더 */}
-            <div className="content-stretch flex items-center justify-between relative shrink-0 w-full">
-              <div className="w-[30px]" />
+            <div className="content-stretch flex items-center justify-center relative shrink-0 w-full">
               <DialogTitle className="font-bold leading-none not-italic relative shrink-0 text-gray-800 text-[22px] text-nowrap tracking-[-0.55px]">
                 옷 수정
               </DialogTitle>
-              <DialogClose asChild>
-                <button className="overflow-clip relative shrink-0 size-[30px] hover:bg-gray-100 rounded transition-colors">
-                  <div className="absolute inset-[20.834%]">
-                    <img alt="닫기" className="block max-w-none size-full" src={closeIcon} />
-                  </div>
-                </button>
-              </DialogClose>
             </div>
 
             {/* 이미지 업로드 */}

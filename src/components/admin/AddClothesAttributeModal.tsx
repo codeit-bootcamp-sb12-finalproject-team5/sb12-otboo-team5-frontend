@@ -93,7 +93,7 @@ export default function AddClothesAttributeModal({ isOpen, onClose }: AddClothes
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="w-[550px] p-[30px] gap-[23px]" showCloseButton={false}>
+      <DialogContent className="w-[550px] rounded-[12px] p-[30px] gap-[23px]" showCloseButton={false}>
         {/* 헤더 */}
         <div className="flex items-center justify-between">
           <div />
