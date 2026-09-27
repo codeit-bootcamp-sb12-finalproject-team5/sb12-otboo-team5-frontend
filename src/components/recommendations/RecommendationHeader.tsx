@@ -154,7 +154,7 @@ export default function RecommendationHeader({centered = false}: RecommendationH
       <div className="content-stretch flex gap-3 items-center justify-start relative shrink-0">
         {/* OOTD 추천 요청 버튼 */}
         <button
-          className="bg-[#fbfaf7] box-border content-stretch flex gap-1.5 h-[46px] items-center justify-center px-[18px] py-2.5 relative rounded-[10px] shrink-0 hover:bg-[#f2ede5] transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-[#b7a997] shadow-[0px_2px_6px_rgba(15,42,68,0.05)]"
+          className="bg-[#fbfaf7] box-border content-stretch flex gap-1.5 h-[46px] items-center justify-center px-[18px] py-2.5 relative rounded-[10px] shrink-0 hover:bg-[#f2ede5] transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-[#7a8ca3] shadow-[0px_2px_6px_rgba(15,42,68,0.05)]"
           onClick={handleOpenRecommendationModal}
           disabled={loading}
         >

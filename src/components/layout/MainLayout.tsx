@@ -20,9 +20,9 @@ export default function MainLayout() {
       <div className="relative flex-1 flex flex-col h-full min-w-0 overflow-hidden">
         {isRecommendations && (
           <>
-            <div className="pointer-events-none absolute -right-[120px] -top-[185px] z-0 size-[570px] rounded-full border border-[#b7a997]/40" />
-            <div className="pointer-events-none absolute -right-[72px] -top-[145px] z-0 size-[500px] rounded-full bg-[#b7a997]/10" />
-            <div className="pointer-events-none absolute -right-[30px] -top-[105px] z-0 size-[420px] rounded-full bg-[#b08a44]/[0.06]" />
+            <div className="pointer-events-none absolute -right-[120px] -top-[185px] z-0 size-[570px] rounded-full border border-[#7a8ca3]/40" />
+            <div className="pointer-events-none absolute -right-[72px] -top-[145px] z-0 size-[500px] rounded-full bg-[#7a8ca3]/10" />
+            <div className="pointer-events-none absolute -right-[30px] -top-[105px] z-0 size-[420px] rounded-full bg-[#7a8ca3]/[0.06]" />
           </>
         )}
         {/* GNB - 60px 높이 */}

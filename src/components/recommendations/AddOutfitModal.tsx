@@ -56,11 +56,10 @@ export default function AddOutfitModal({open, outfit, onClose, category = 'OUTFI
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="w-[520px] max-w-[calc(100%-2rem)] rounded-[24px] bg-white p-7 sm:max-w-[calc(100%-2rem)]" showCloseButton={false}>
+      <DialogContent className="w-[520px] max-w-[calc(100%-2rem)] rounded-[12px] bg-white p-7 sm:max-w-[calc(100%-2rem)]" showCloseButton={false}>
         <div className="flex flex-col gap-5">
-          <div className="flex items-center justify-between">
+          <div>
             <h2 className="font-extrabold text-[#212126] text-[22px]">{category === 'OOTD' ? 'OOTD 등록하기' : '아웃핏 등록하기'}</h2>
-            <button type="button" onClick={onClose} className="rounded-[8px] px-2 py-1 font-semibold text-[#808089] hover:bg-[#f7f7f8]">닫기</button>
           </div>
           <p className="text-[#696975] text-[14px]">현재 추천 코디의 옷 {outfit?.clothes.length ?? 0}개가 {category === 'OOTD' ? 'OOTD' : '아웃핏'}으로 저장됩니다.</p>
           <label className="flex flex-col gap-2 font-bold text-[#33333a] text-[15px]">
@@ -68,7 +67,7 @@ export default function AddOutfitModal({open, outfit, onClose, category = 'OUTFI
             <input value={name} onChange={(event) => setName(event.target.value)} maxLength={100} className="h-[46px] rounded-[10px] border border-[#ded6cb] px-3 font-semibold outline-none focus:border-[#3d5570]" />
           </label>
           <label className="flex flex-col gap-2 font-bold text-[#33333a] text-[15px]">
-            설명 <span className="font-medium text-[#a9a9b1]">(선택)</span>
+            <span className="flex items-center gap-1">설명 <span className="font-medium text-[#a9a9b1]">(선택)</span></span>
             <textarea value={description} onChange={(event) => setDescription(event.target.value)} className="h-[100px] resize-none rounded-[10px] border border-[#ded6cb] p-3 font-medium outline-none focus:border-[#3d5570]" />
           </label>
           <div className="flex justify-end gap-3">

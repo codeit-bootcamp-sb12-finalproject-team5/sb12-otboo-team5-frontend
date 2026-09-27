@@ -60,8 +60,8 @@ export default function WeatherForecast() {
 
   if (loading || !weathers || weathers.length === 0) {
     return (
-      <div className="backdrop-blur-[15px] backdrop-filter bg-[#fbfaf7]/75 box-border content-stretch flex items-start justify-between px-[60px] py-5 relative rounded-[22px] shrink-0 w-full">
-        <div className="absolute border border-[#ded6cb] border-solid inset-0 pointer-events-none rounded-[22px]" />
+      <div className="backdrop-blur-[15px] backdrop-filter bg-[#fdfdfa] box-border content-stretch flex items-start justify-between px-[60px] py-5 relative rounded-[12px] shrink-0 w-full">
+        <div className="absolute border-[0.2px] border-[#7a8ca3] border-solid inset-0 pointer-events-none rounded-[12px]" />
         
         {/* Skeleton for 5 weather items */}
         {Array.from({ length: 5 }).map((_, index) => (
@@ -98,8 +98,8 @@ export default function WeatherForecast() {
 
   return (
     <TooltipProvider>
-      <div className="backdrop-blur-[15px] backdrop-filter bg-[#fbfaf7]/75 box-border content-stretch flex items-start justify-between px-[60px] py-5 relative rounded-[22px] shrink-0 w-full">
-        <div className="absolute border border-[#ded6cb] border-solid inset-0 pointer-events-none rounded-[22px]" />
+      <div className="backdrop-blur-[15px] backdrop-filter bg-[#fdfdfa] box-border content-stretch flex items-start justify-between px-[60px] py-5 relative rounded-[12px] shrink-0 w-full">
+        <div className="absolute border-[0.2px] border-[#7a8ca3] border-solid inset-0 pointer-events-none rounded-[12px]" />
 
         {
           weathers.map((weather, dayOffset) => {
