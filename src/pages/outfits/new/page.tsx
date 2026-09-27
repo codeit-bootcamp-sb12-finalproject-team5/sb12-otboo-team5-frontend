@@ -13,6 +13,7 @@ import { getProfileWeather } from '@/lib/api/weather';
 import type { ClothesDto, RecommendationDto, RecommendationUsage, RecommendedOutfitDto, WeatherDto } from '@/lib/api';
 import { useAuthStore } from '@/lib/stores/useAuthStore';
 import {loadRecommendationSession, saveRecommendationSession} from '@/lib/recommendationSession';
+import outfitRecommendationIllustration from '@/assets/illust_logos/outfit-recommendation.png';
 
 export default function NewOutfitPage() {
   const [searchParams] = useSearchParams();
@@ -106,7 +107,7 @@ export default function NewOutfitPage() {
       <header className="flex shrink-0 items-center gap-4 border-b border-gray-200 py-4">
         <Button variant="ghost" size="icon" asChild><Link to={listPath} aria-label="아웃핏 목록으로 돌아가기"><ArrowLeft className="text-[#3d5570]" /></Link></Button>
         <div className="min-w-0 flex-1">
-          <h1 className="text-[22px] font-bold text-gray-900">아웃핏 제작</h1>
+          <h1 className="text-[22px] font-bold text-gray-900">OUTFIT 추천</h1>
           <p className="mt-1 text-[14px] text-gray-500">오늘 날씨에 맞는 아웃핏을 추천해드릴게요.</p>
         </div>
         <button type="button" onClick={openRecommendation} disabled={loading} className="flex h-[44px] shrink-0 items-center gap-2 rounded-[11px] border border-[#3d5570] bg-white px-4 font-bold text-[#3d5570] hover:bg-[#f2ede5] disabled:cursor-not-allowed disabled:opacity-50">
@@ -125,7 +126,8 @@ export default function NewOutfitPage() {
           <p className="text-gray-500">프로필 위치를 확인한 뒤 다시 시도해주세요.</p>
         </div>
       ) : outfits.length === 0 && !loading ? (
-        <div className="flex flex-1 flex-col items-center justify-center gap-5 py-16 text-center">
+        <div className="flex flex-1 -translate-y-12 flex-col items-center justify-center gap-5 py-16 text-center">
+          <img src={outfitRecommendationIllustration} alt="옷걸이에 걸린 의류 일러스트" className="h-[280px] w-auto object-contain" />
           <p className="text-gray-500">내 옷장에서 고정할 옷을 고르고, 날씨에 맞는 아웃핏 3가지를 받아보세요.</p>
           <button type="button" onClick={openRecommendation} className="h-[52px] rounded-[12px] bg-[#3d5570] px-6 font-bold text-[17px] text-white hover:bg-[#0f2a44]">아웃핏 추천 받기</button>
         </div>
@@ -135,7 +137,7 @@ export default function NewOutfitPage() {
         <main className="grid grid-cols-1 gap-5 py-8 xl:grid-cols-3">
           {outfits.map(outfit => (
             <button key={outfit.rank} type="button" onClick={() => setSelectedOutfit(outfit)} className="flex flex-col gap-5 rounded-[18px] border border-[#ded6cb] bg-white p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-[#b08a44]">
-              <div><h2 className="font-extrabold text-[18px] text-[#212126]">추천 아웃핏 {outfit.rank}</h2>{outfit.reason && <p className="mt-2 line-clamp-2 text-[14px] leading-5 text-[#696975]">{outfit.reason}</p>}</div>
+              <div><h2 className="font-extrabold text-[18px] text-[#212126]">OUTFIT #{outfit.rank}</h2>{outfit.reason && <p className="mt-2 line-clamp-2 text-[14px] leading-5 text-[#696975]">{outfit.reason}</p>}</div>
               <div className="grid grid-cols-2 gap-4">{outfit.clothes.map(item => <RecommendationItem key={item.id} item={item} />)}</div>
             </button>
           ))}

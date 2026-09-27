@@ -26,7 +26,7 @@ export default function OutfitFilter({ categories, selectedCategory, onCategoryC
     list.scrollLeft = dragStartRef.current.scrollLeft - (event.clientX - dragStartRef.current.x);
   };
 
-  const handlePointerEnd = (event: PointerEvent<HTMLElement>) => {
+  const handlePointerEnd = () => {
     dragStartRef.current.active = false;
   };
 

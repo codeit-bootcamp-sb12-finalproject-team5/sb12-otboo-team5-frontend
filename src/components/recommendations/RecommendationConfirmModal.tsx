@@ -1,8 +1,10 @@
 import {Dialog, DialogContent} from '@/components/ui/dialog';
 import type {ClothesDto, RecommendationUsage} from '@/lib/api';
 import {useEffect, useRef, useState} from 'react';
+import {toast} from 'sonner';
 
 const CLOSET_CATEGORIES = ['ALL', '상의', '바지', '스커트', '아우터', '원피스/세트', '모자', '신발', '가방', '악세서리'];
+const MAX_SELECTED_CLOTHES = 10;
 
 interface RecommendationConfirmModalProps {
   open: boolean;
@@ -63,6 +65,10 @@ export default function RecommendationConfirmModal({
   }, [open]);
 
   const toggleClothes = (clothesId: string) => {
+    if (!selectedClothesIds.includes(clothesId) && selectedClothesIds.length >= MAX_SELECTED_CLOTHES) {
+      toast.error(`옷은 최대 ${MAX_SELECTED_CLOTHES}개까지 선택할 수 있습니다.`);
+      return;
+    }
     onToggleClothes(
       selectedClothesIds.includes(clothesId)
         ? selectedClothesIds.filter(id => id !== clothesId)
@@ -278,7 +284,7 @@ export default function RecommendationConfirmModal({
                     <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="2"><path d="m10 6 6 6-6 6" /></svg>
                   </button>
                 </div>
-                <div className="clothes-scrollbar grid max-h-[360px] grid-cols-3 gap-3 overflow-y-auto pr-2 [scrollbar-color:#7a8ca3_#fdfdfa] [scrollbar-width:thin] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-[#fdfdfa] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#7a8ca3] [&::-webkit-scrollbar-thumb:hover]:bg-[#3d5570]">
+                <div className="grid max-h-[360px] grid-cols-3 gap-3 overflow-y-auto pr-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                   {visibleClothes.map((clothes) => {
                     const selected = selectedClothesIds.includes(clothes.id);
                     const blockedReason = selected ? undefined : getSelectionBlockedReason(clothes, selectedClothes);
@@ -328,7 +334,7 @@ export default function RecommendationConfirmModal({
                   <span className="font-semibold text-[#3d5570] text-[14px]">{selectedClothes.length}개</span>
                 </div>
                 {selectedClothes.length > 0 ? (
-                  <div className="clothes-scrollbar mt-3 flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto [scrollbar-color:#7a8ca3_#f7f7f8] [scrollbar-width:thin] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-[#f7f7f8] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#7a8ca3] [&::-webkit-scrollbar-thumb:hover]:bg-[#3d5570]">
+                  <div className="mt-3 flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                     {selectedClothes.map((clothes) => (
                       <div key={clothes.id} className="flex items-center gap-3 rounded-[10px] bg-white p-2">
                         <div className="size-10 shrink-0 overflow-hidden rounded-[8px] bg-[#e7e7e9]">

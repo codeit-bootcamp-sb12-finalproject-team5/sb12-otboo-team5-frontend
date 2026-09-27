@@ -14,8 +14,9 @@ export default function RecommendationDetailModal({
   onClose,
   onRegisterOotd,
   onRegisterOutfit,
-  recommendationType: _recommendationType = 'OOTD',
+  recommendationType = 'OOTD',
 }: RecommendationDetailModalProps) {
+  const recommendationLabel = recommendationType === 'OUTFIT' ? 'OUTFIT' : 'OOTD';
   return (
     <Dialog open={Boolean(outfit)} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
@@ -26,13 +27,13 @@ export default function RecommendationDetailModal({
           <div className="flex flex-col gap-6">
             <div>
               <h2 className="font-extrabold text-[#3d5570] text-[26px] tracking-[-0.65px]">
-                추천 OOTD #{outfit.rank}
+                추천 {recommendationLabel} #{outfit.rank}
               </h2>
             </div>
 
             {outfit.reason && (
               <section className="rounded-[16px] bg-[#f7f7f8] p-5">
-                <h3 className="font-bold text-[#33333a] text-[16px]">OOTD 추천 이유</h3>
+                <h3 className="font-bold text-[#33333a] text-[16px]">{recommendationLabel} 추천 이유</h3>
                 <p className="mt-2 whitespace-pre-wrap text-[#575765] text-[15px] leading-6">{outfit.reason}</p>
               </section>
             )}
@@ -48,7 +49,7 @@ export default function RecommendationDetailModal({
             )}
 
             <section>
-              <h3 className="mb-3 font-bold text-[#212126] text-[18px]">OOTD 구성</h3>
+              <h3 className="mb-3 font-bold text-[#212126] text-[18px]">{recommendationLabel} 구성</h3>
               <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
                 {outfit.clothes.map((clothes) => (
                   <div key={clothes.id} className="overflow-hidden rounded-[8px] border border-[#e7e7e9] bg-white">
@@ -85,7 +86,7 @@ export default function RecommendationDetailModal({
                     onClick={onRegisterOutfit}
                     className="h-[52px] rounded-[12px] border border-[#3d5570] bg-white font-bold text-[#3d5570] text-[17px] transition-colors hover:bg-[#f2ede5]"
                   >
-                    아웃핏 등록
+                    OUTFIT 등록
                   </button>
                 )}
               </div>
