@@ -71,7 +71,7 @@ export default function FeedFilters() {
   };
 
   return (
-    <div className="flex gap-3.5 items-center justify-between px-0 py-2.5">
+    <div className="flex gap-3.5 items-center justify-between pb-2.5 pl-4 pr-5 pt-2.5">
       {/* 왼쪽 필터들 */}
       <div className="flex gap-3.5 items-center">
         {/* 검색바 */}
@@ -88,13 +88,13 @@ export default function FeedFilters() {
               />
             }
             onChange={(e) => handleSearchChange(e.target.value)}
-            className="w-full h-[36px] pl-[54px] pr-[22px] py-3.5 bg-white border border-[#d4d4d9] rounded-[100px] text-[16px] font-['SUIT:SemiBold',_sans-serif] text-[#575765] placeholder:text-[#a9a9b1] focus:border-[#d4d4d9] focus:ring-0 shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)]"
+            className="w-full h-[36px] pl-[54px] pr-[22px] py-3.5 bg-white border border-[#ded6cb] rounded-[100px] text-[16px] font-['SUIT:SemiBold',_sans-serif] text-[#575765] placeholder:text-[#a9a9b1] focus:border-[#ded6cb] focus:ring-0 shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)]"
           />
         </div>
 
         {/* 날씨 필터 */}
         <Select value={params.skyStatusEqual || '전체'} onValueChange={handleWeatherChange}>
-          <SelectTrigger className="w-[102px] h-[46px] px-[22px] pr-[18px] bg-white border border-[#d4d4d9] rounded-[100px] text-[16px] font-['SUIT:SemiBold',_sans-serif] text-[#575765] focus:border-[#d4d4d9] focus:ring-0 shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)]">
+          <SelectTrigger className="w-[102px] h-[46px] px-[22px] pr-[18px] bg-white border border-[#ded6cb] rounded-[100px] text-[16px] font-['SUIT:SemiBold',_sans-serif] text-[#575765] focus:border-[#ded6cb] focus:ring-0 shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)]">
             <SelectValue placeholder="날씨" />
           </SelectTrigger>
           <SelectContent>
@@ -108,7 +108,7 @@ export default function FeedFilters() {
 
         {/* 강수 필터 */}
         <Select value={params.precipitationTypeEqual || '전체'} onValueChange={handlePrecipitationChange}>
-          <SelectTrigger className="w-[102px] h-[46px] px-[22px] pr-[18px] bg-white border border-[#d4d4d9] rounded-[100px] text-[16px] font-['SUIT:SemiBold',_sans-serif] text-[#575765] focus:border-[#d4d4d9] focus:ring-0 shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)]">
+          <SelectTrigger className="w-[102px] h-[46px] px-[22px] pr-[18px] bg-white border border-[#ded6cb] rounded-[100px] text-[16px] font-['SUIT:SemiBold',_sans-serif] text-[#575765] focus:border-[#ded6cb] focus:ring-0 shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)]">
             <SelectValue placeholder="강수" />
           </SelectTrigger>
           <SelectContent>
@@ -123,7 +123,7 @@ export default function FeedFilters() {
 
       {/* 정렬 옵션 */}
       <Select value={params.sortBy} onValueChange={handleSortChange}>
-        <SelectTrigger className="w-auto h-[46px] px-[22px] pr-[18px] bg-white border border-[#d4d4d9] rounded-[100px] text-[16px] font-['SUIT:SemiBold',_sans-serif] text-[#575765] focus:border-[#d4d4d9] focus:ring-0 shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)]">
+        <SelectTrigger className="w-auto h-[46px] px-[22px] pr-[18px] bg-white border border-[#ded6cb] rounded-[100px] text-[16px] font-['SUIT:SemiBold',_sans-serif] text-[#575765] focus:border-[#ded6cb] focus:ring-0 shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)]">
           <SelectValue placeholder="최신순" />
         </SelectTrigger>
         <SelectContent>

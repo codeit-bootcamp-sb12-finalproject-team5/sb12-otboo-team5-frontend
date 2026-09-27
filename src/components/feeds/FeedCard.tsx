@@ -172,7 +172,7 @@ export default function FeedCard({ feed, onClick }: FeedCardProps) {
       className="bg-white box-border content-stretch flex flex-col gap-4 items-start justify-start px-3 py-4 relative rounded-[20px] w-full cursor-pointer hover:shadow-lg transition-shadow"
       onClick={onClick}
     >
-      <div aria-hidden="true" className="absolute border border-solid border-zinc-200 inset-0 pointer-events-none rounded-[20px]" />
+      <div aria-hidden="true" className="absolute inset-0 rounded-[20px] border border-solid border-[#ded6cb] pointer-events-none" />
       
       {/* 헤더 */}
       <div className="box-border content-stretch flex items-center justify-between px-1.5 py-0 relative shrink-0 w-full">

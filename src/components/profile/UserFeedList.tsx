@@ -39,7 +39,7 @@ export default function UserFeedList({ userId }: UserFeedListProps) {
   }, [userId, updateParams, fetch]);
 
   return (
-    <div className="h-full overflow-y-auto">
+    <div className="h-full overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       {loading && feeds.length === 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
           {Array.from({ length: 6 }).map((_, index) => (
