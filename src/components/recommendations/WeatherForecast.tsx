@@ -60,7 +60,7 @@ export default function WeatherForecast() {
 
   if (loading || !weathers || weathers.length === 0) {
     return (
-      <div className="backdrop-blur-[15px] backdrop-filter bg-[#fdfdfa] box-border content-stretch flex items-start justify-between px-[60px] py-5 relative rounded-[12px] shrink-0 w-full">
+      <div className="backdrop-blur-[15px] backdrop-filter bg-[#fdfdfa] box-border content-stretch flex items-start justify-between px-[60px] py-3 relative rounded-[12px] shrink-0 w-full">
         <div className="absolute border-[0.2px] border-[#7a8ca3] border-solid inset-0 pointer-events-none rounded-[12px]" />
         
         {/* Skeleton for 5 weather items */}
@@ -98,7 +98,7 @@ export default function WeatherForecast() {
 
   return (
     <TooltipProvider>
-      <div className="backdrop-blur-[15px] backdrop-filter bg-[#fdfdfa] box-border content-stretch flex items-start justify-between px-[60px] py-5 relative rounded-[12px] shrink-0 w-full">
+      <div className="backdrop-blur-[15px] backdrop-filter bg-[#fdfdfa] box-border content-stretch flex items-start justify-between px-[60px] py-3 relative rounded-[12px] shrink-0 w-full">
         <div className="absolute border-[0.2px] border-[#7a8ca3] border-solid inset-0 pointer-events-none rounded-[12px]" />
 
         {

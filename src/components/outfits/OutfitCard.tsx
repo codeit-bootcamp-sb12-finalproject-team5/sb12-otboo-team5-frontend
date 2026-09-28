@@ -46,7 +46,7 @@ export default function OutfitCard({ outfit, onClick }: OutfitCardProps) {
               <div key={item.id} className="relative min-h-0 min-w-0">
                 <OutfitImage imageUrl={item.imageUrl} alt={item.name || `의류 ${index + 2}`} />
                 {index === 1 && clothes.length > 3 && (
-                  <span className="absolute right-2 top-2 rounded-full bg-gray-900/90 px-2 py-1 text-sm font-semibold text-white">
+                  <span className="absolute bottom-2 right-2 rounded-full bg-gray-900/90 px-2 py-1 text-sm font-semibold text-white">
                     +{clothes.length - 3}
                   </span>
                 )}

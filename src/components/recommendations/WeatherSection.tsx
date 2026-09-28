@@ -32,7 +32,7 @@ export default function WeatherSection() {
   }, [profile?.userId, setData]);
 
   return (
-    <div className="box-border content-stretch flex flex-col gap-6 items-start justify-start px-[52px] py-2 relative w-full z-10 mb-4">
+    <div className="box-border content-stretch flex flex-col gap-4 items-start justify-start px-[52px] py-2 relative w-full z-10 mb-2">
       {/* CurrentWeather에 위치 정보를 props로 전달 */}
       <CurrentWeather
           fetchLocation={refetchLocation}
