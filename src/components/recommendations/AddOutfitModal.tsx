@@ -10,9 +10,10 @@ interface AddOutfitModalProps {
   outfit?: RecommendedOutfitDto;
   onClose: () => void;
   category?: 'OOTD' | 'OUTFIT';
+  generationMode?: 'FITTING' | 'COMPOSITION';
 }
 
-export default function AddOutfitModal({open, outfit, onClose, category = 'OUTFIT'}: AddOutfitModalProps) {
+export default function AddOutfitModal({open, outfit, onClose, category = 'OUTFIT', generationMode}: AddOutfitModalProps) {
   const selectedWeather = useWeatherStore(state => state.selectedWeather);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -56,8 +57,17 @@ export default function AddOutfitModal({open, outfit, onClose, category = 'OUTFI
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="w-[520px] max-w-[calc(100%-2rem)] rounded-[12px] bg-white p-7 sm:max-w-[calc(100%-2rem)]" showCloseButton={false}>
-        <div className="flex flex-col gap-5">
+      <DialogContent className={`${generationMode ? 'w-[900px]' : 'w-[520px]'} max-w-[calc(100%-2rem)] rounded-[12px] bg-white p-7 sm:max-w-[calc(100%-2rem)]`} showCloseButton={false}>
+        <div className={`${generationMode ? 'grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-7' : ''}`}>
+          {generationMode && (
+            <aside className="flex min-h-[430px] flex-col rounded-[10px] bg-[#f7f7f8] p-5">
+              <h2 className="text-[20px] font-extrabold text-[#3d5570]">{generationMode} 결과</h2>
+              <div className="mt-4 flex flex-1 items-center justify-center rounded-[8px] border border-dashed border-[#b7a997] bg-white p-6 text-center text-[14px] leading-6 text-[#7a8ca3]">
+                {generationMode} 생성 결과가<br />여기에 표시됩니다.
+              </div>
+            </aside>
+          )}
+          <div className={`flex flex-col gap-5 ${generationMode ? 'h-full' : ''}`}>
           <div>
             <h2 className="font-extrabold text-[#212126] text-[22px]">{category === 'OOTD' ? 'OOTD 등록하기' : '아웃핏 등록하기'}</h2>
           </div>
@@ -66,13 +76,13 @@ export default function AddOutfitModal({open, outfit, onClose, category = 'OUTFI
             {category === 'OOTD' ? 'OOTD' : '아웃핏'} 이름
             <input value={name} onChange={(event) => setName(event.target.value)} maxLength={100} className="h-[46px] rounded-[10px] border border-[#ded6cb] px-3 font-semibold outline-none focus:border-[#3d5570]" />
           </label>
-          <label className="flex flex-col gap-2 font-bold text-[#33333a] text-[15px]">
+          <label className={`flex flex-col gap-2 font-bold text-[#33333a] text-[15px] ${generationMode ? 'flex-1' : ''}`}>
             <span className="flex items-center gap-1">설명 <span className="font-medium text-[#a9a9b1]">(선택)</span></span>
-            <textarea value={description} onChange={(event) => setDescription(event.target.value)} className="h-[100px] resize-none rounded-[10px] border border-[#ded6cb] p-3 font-medium outline-none focus:border-[#3d5570]" />
+            <textarea value={description} onChange={(event) => setDescription(event.target.value)} className={`${generationMode ? 'min-h-[100px] flex-1' : 'h-[100px]'} resize-none rounded-[10px] border border-[#ded6cb] p-3 font-medium outline-none focus:border-[#3d5570]`} />
           </label>
           <div className="flex justify-end gap-3">
-            <button type="button" onClick={onClose} disabled={loading} className="h-[46px] rounded-[10px] bg-[#f7f7f8] px-5 font-bold text-[#575765] disabled:opacity-50">취소</button>
-            <button type="button" onClick={handleSubmit} disabled={loading || !name.trim()} className="h-[46px] rounded-[10px] bg-[#3d5570] px-5 font-bold text-white hover:bg-[#0f2a44] disabled:opacity-50">{loading ? '등록 중...' : `${category === 'OOTD' ? 'OOTD' : '아웃핏'} 등록`}</button>
+            <button type="button" onClick={handleSubmit} disabled={loading || !name.trim()} className="h-[36px] rounded-[8px] bg-[#3d5570] px-5 text-[14px] font-bold text-white hover:bg-[#0f2a44] disabled:opacity-50">{loading ? '등록 중...' : `${category === 'OOTD' ? 'OOTD' : '아웃핏'} 등록`}</button>
+          </div>
           </div>
         </div>
       </DialogContent>

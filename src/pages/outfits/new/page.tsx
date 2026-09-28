@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import RecommendationConfirmModal from '@/components/recommendations/RecommendationConfirmModal';
 import RecommendationDetailModal from '@/components/recommendations/RecommendationDetailModal';
 import RecommendationItem from '@/components/recommendations/RecommendationItem';
@@ -14,6 +15,8 @@ import type { ClothesDto, RecommendationDto, RecommendationUsage, RecommendedOut
 import { useAuthStore } from '@/lib/stores/useAuthStore';
 import {loadRecommendationSession, saveRecommendationSession} from '@/lib/recommendationSession';
 import outfitRecommendationIllustration from '@/assets/illust_logos/outfit-recommendation.png';
+import fittingIllustration from '@/assets/illust_logos/recommendation-fitting.png';
+import compositionIllustration from '@/assets/illust_logos/recommendation-composition.png';
 
 export default function NewOutfitPage() {
   const [searchParams] = useSearchParams();
@@ -32,6 +35,27 @@ export default function NewOutfitPage() {
   const [loading, setLoading] = useState(false);
   const [selectedOutfit, setSelectedOutfit] = useState<RecommendedOutfitDto>();
   const [outfitToRegister, setOutfitToRegister] = useState<RecommendedOutfitDto>();
+  const [isRegistrationConfirmOpen, setIsRegistrationConfirmOpen] = useState(false);
+  const [isOutfitModalOpen, setIsOutfitModalOpen] = useState(false);
+  const [generationMode, setGenerationMode] = useState<'FITTING' | 'COMPOSITION'>();
+
+  const openRegistrationConfirm = () => {
+    setOutfitToRegister(selectedOutfit);
+    setSelectedOutfit(undefined);
+    setIsRegistrationConfirmOpen(true);
+  };
+
+  const continueRegistration = () => {
+    setGenerationMode(undefined);
+    setIsRegistrationConfirmOpen(false);
+    setIsOutfitModalOpen(true);
+  };
+
+  const openGeneratedRegistration = (mode: 'FITTING' | 'COMPOSITION') => {
+    setGenerationMode(mode);
+    setIsRegistrationConfirmOpen(false);
+    setIsOutfitModalOpen(true);
+  };
 
   useEffect(() => {
     if (!userId) return;
@@ -145,8 +169,36 @@ export default function NewOutfitPage() {
       )}
 
       <RecommendationConfirmModal open={isConfirmOpen} title="아웃핏 추천 받기" showDateQuestion={false} finalRecommendationLabel="아웃핏" dateLabel={dateLabel} usage={usage} clothes={clothes} selectedClothesIds={selectedClothesIds} loadingUsage={loadingUsage} loadingClothes={loadingClothes} recommending={loading} onClose={() => setIsConfirmOpen(false)} onConfirm={requestRecommendation} onToggleClothes={setSelectedClothesIds} />
-      <RecommendationDetailModal outfit={selectedOutfit} recommendationType="OUTFIT" onClose={() => setSelectedOutfit(undefined)} onRegisterOutfit={() => { setOutfitToRegister(selectedOutfit); setSelectedOutfit(undefined); }} />
-      <AddOutfitModal open={Boolean(outfitToRegister)} outfit={outfitToRegister} onClose={() => setOutfitToRegister(undefined)} />
+      <RecommendationDetailModal outfit={selectedOutfit} recommendationType="OUTFIT" onClose={() => setSelectedOutfit(undefined)} onRegisterOutfit={openRegistrationConfirm} />
+      <Dialog open={isRegistrationConfirmOpen} onOpenChange={(open) => {
+        if (!open) {
+          setIsRegistrationConfirmOpen(false);
+          setOutfitToRegister(undefined);
+        }
+      }}>
+        <DialogContent className="w-[680px] max-w-[calc(100%-2rem)] rounded-[12px] bg-white p-7 sm:max-w-[calc(100%-2rem)]" showCloseButton={false}>
+          <div className="flex flex-col gap-5">
+            <div>
+              <h2 className="text-[22px] font-extrabold text-[#3d5570]">OUTFIT 등록</h2>
+              <p className="mt-2 text-[15px] text-[#696975]">아래 항목을 추가해서 OUTFIT 등록을 하시겠습니까?</p>
+            </div>
+            <div className="grid grid-cols-2 gap-5">
+              <button type="button" onClick={() => openGeneratedRegistration('FITTING')} className="flex flex-col items-center rounded-[10px] bg-[#f7f7f8] p-3 transition-colors hover:bg-[#f2ede5]">
+                <div className="flex h-[180px] w-full items-center justify-center"><img src={fittingIllustration} alt="피팅 일러스트" className="h-[180px] w-full object-contain" /></div>
+                <p className="mt-2 text-[13px] font-bold tracking-[0.08em] text-[#3d5570]">FITTING</p>
+              </button>
+              <button type="button" onClick={() => openGeneratedRegistration('COMPOSITION')} className="flex flex-col items-center rounded-[10px] bg-[#f7f7f8] p-3 transition-colors hover:bg-[#f2ede5]">
+                <div className="flex h-[180px] w-full items-center justify-center"><img src={compositionIllustration} alt="조합 일러스트" className="h-[150px] w-full object-contain" /></div>
+                <p className="mt-2 text-[13px] font-bold tracking-[0.08em] text-[#3d5570]">COMPOSITION</p>
+              </button>
+            </div>
+            <div className="flex justify-end">
+              <button type="button" onClick={continueRegistration} className="h-[36px] rounded-[8px] bg-[#3d5570] px-5 text-[14px] font-bold text-white hover:bg-[#0f2a44]">추가하지 않고 등록</button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+      <AddOutfitModal open={isOutfitModalOpen} outfit={outfitToRegister} category="OUTFIT" generationMode={generationMode} onClose={() => { setIsOutfitModalOpen(false); setOutfitToRegister(undefined); setGenerationMode(undefined); }} />
     </div>
   );
 }
