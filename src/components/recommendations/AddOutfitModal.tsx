@@ -1,7 +1,8 @@
 import {useEffect, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 import {Dialog, DialogContent} from '@/components/ui/dialog';
 import {createOutfit} from '@/lib/api/outfits';
-import type {RecommendedOutfitDto} from '@/lib/api';
+import type {OutfitCreateResponse, RecommendedOutfitDto} from '@/lib/api';
 import {toast} from 'sonner';
 import {useWeatherStore} from '@/lib/stores/useWeatherStore';
 
@@ -9,11 +10,14 @@ interface AddOutfitModalProps {
   open: boolean;
   outfit?: RecommendedOutfitDto;
   onClose: () => void;
+  onSuccess?: (outfit: OutfitCreateResponse) => void;
   category?: 'OOTD' | 'OUTFIT';
   generationMode?: 'FITTING' | 'COMPOSITION';
+  generatedImageUrl?: string;
 }
 
-export default function AddOutfitModal({open, outfit, onClose, category = 'OUTFIT', generationMode}: AddOutfitModalProps) {
+export default function AddOutfitModal({open, outfit, onClose, onSuccess, category = 'OUTFIT', generationMode, generatedImageUrl}: AddOutfitModalProps) {
+  const navigate = useNavigate();
   const selectedWeather = useWeatherStore(state => state.selectedWeather);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -38,7 +42,7 @@ export default function AddOutfitModal({open, outfit, onClose, category = 'OUTFI
 
     setLoading(true);
     try {
-      await createOutfit({
+      const createdOutfit = await createOutfit({
         name: name.trim(),
         description: description.trim() || undefined,
         category,
@@ -46,7 +50,8 @@ export default function AddOutfitModal({open, outfit, onClose, category = 'OUTFI
         weatherId: category === 'OOTD' ? selectedWeather?.id : undefined,
       });
       toast.success(`${category === 'OOTD' ? 'OOTD' : '아웃핏'}가 등록되었습니다.`);
-      onClose();
+      if (onSuccess) onSuccess(createdOutfit);
+      else onClose();
     } catch (error) {
       console.error('아웃핏 등록 실패:', error);
       toast.error(`${category === 'OOTD' ? 'OOTD' : '아웃핏'} 등록에 실패했습니다.`);
@@ -55,19 +60,30 @@ export default function AddOutfitModal({open, outfit, onClose, category = 'OUTFI
     }
   };
 
+  const finishGeneration = () => {
+    onClose();
+    navigate(`/outfits?category=${category}`);
+  };
+
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className={`${generationMode ? 'w-[900px]' : 'w-[520px]'} max-w-[calc(100%-2rem)] rounded-[12px] bg-white p-7 sm:max-w-[calc(100%-2rem)]`} showCloseButton={false}>
-        <div className={`${generationMode ? 'grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-7' : ''}`}>
-          {generationMode && (
-            <aside className="flex min-h-[430px] flex-col rounded-[10px] bg-[#f7f7f8] p-5">
-              <h2 className="text-[20px] font-extrabold text-[#3d5570]">{generationMode} 결과</h2>
-              <div className="mt-4 flex flex-1 items-center justify-center rounded-[8px] border border-dashed border-[#b7a997] bg-white p-6 text-center text-[14px] leading-6 text-[#7a8ca3]">
-                {generationMode} 생성 결과가<br />여기에 표시됩니다.
-              </div>
-            </aside>
-          )}
-          <div className={`flex flex-col gap-5 ${generationMode ? 'h-full' : ''}`}>
+      <DialogContent className={`${generationMode ? 'w-[620px]' : 'w-[520px]'} max-w-[calc(100%-2rem)] rounded-[12px] bg-white p-7 sm:max-w-[calc(100%-2rem)]`} showCloseButton={false}>
+        {generationMode ? (
+          <section className="flex min-h-[430px] flex-col rounded-[10px] bg-[#f7f7f8] p-5">
+            <h2 className="text-[20px] font-extrabold text-[#3d5570]">{generationMode} 결과</h2>
+            <div className="mt-4 flex flex-1 items-center justify-center overflow-hidden rounded-[8px] border border-dashed border-[#b7a997] bg-white p-3 text-center text-[14px] leading-6 text-[#7a8ca3]">
+              {generatedImageUrl ? (
+                <img src={generatedImageUrl} alt={`${generationMode} 생성 결과`} className="h-full w-full object-contain" />
+              ) : (
+                <span>{generationMode} 생성 결과를 불러오지 못했습니다.</span>
+              )}
+            </div>
+            <button type="button" onClick={finishGeneration} className="mt-5 h-[38px] rounded-[8px] bg-[#3d5570] px-5 text-[14px] font-bold text-white transition-colors hover:bg-[#0f2a44]">
+              {generationMode} 결과까지 완료하고 {category} 페이지로 이동
+            </button>
+          </section>
+        ) : (
+          <div className="flex flex-col gap-5">
           <div>
             <h2 className="font-extrabold text-[#212126] text-[22px]">{category === 'OOTD' ? 'OOTD 등록하기' : '아웃핏 등록하기'}</h2>
           </div>
@@ -84,7 +100,7 @@ export default function AddOutfitModal({open, outfit, onClose, category = 'OUTFI
             <button type="button" onClick={handleSubmit} disabled={loading || !name.trim()} className="h-[36px] rounded-[8px] bg-[#3d5570] px-5 text-[14px] font-bold text-white hover:bg-[#0f2a44] disabled:opacity-50">{loading ? '등록 중...' : `${category === 'OOTD' ? 'OOTD' : '아웃핏'} 등록`}</button>
           </div>
           </div>
-        </div>
+        )}
       </DialogContent>
     </Dialog>
   );

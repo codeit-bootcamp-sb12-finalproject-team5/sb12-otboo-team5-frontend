@@ -33,14 +33,17 @@ type DetailState =
 function OutfitDetails({ detail, summary, onRegisterFeed, isFeedRegistering }: { detail: OutfitDto; summary: OutfitDto; onRegisterFeed: () => void; isFeedRegistering: boolean }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const clothes = detail.clothes;
-  const currentClothes = clothes[currentIndex];
+  const visualItems: OutfitDto['clothes'] = detail.image
+    ? [{ id: `generated-${detail.id}`, name: `${detail.name} 생성 이미지`, imageUrl: detail.image }, ...clothes]
+    : clothes;
+  const currentClothes = visualItems[currentIndex];
   const summaryNames = new Map(summary.clothes.map((item) => [item.id, item.name]));
   const getClothesName = (item: OutfitDto['clothes'][number], index: number) => (
     item.name || summaryNames.get(item.id) || `의류 ${index + 1}`
   );
   const changeImage = (direction: number) => {
-    if (clothes.length > 1) {
-      setCurrentIndex((index) => (index + direction + clothes.length) % clothes.length);
+    if (visualItems.length > 1) {
+      setCurrentIndex((index) => (index + direction + visualItems.length) % visualItems.length);
     }
   };
 
@@ -65,7 +68,7 @@ function OutfitDetails({ detail, summary, onRegisterFeed, isFeedRegistering }: {
             alt={currentClothes ? getClothesName(currentClothes, currentIndex) : '등록된 의류가 없습니다'}
             className="size-full object-contain"
           />
-          {clothes.length > 1 && (
+          {visualItems.length > 1 && (
             <>
               <button
                 type="button"
@@ -90,13 +93,13 @@ function OutfitDetails({ detail, summary, onRegisterFeed, isFeedRegistering }: {
           <p className="min-w-0 break-words text-base font-bold text-[#373740]">
             {currentClothes ? getClothesName(currentClothes, currentIndex) : '등록된 의류가 없습니다'}
           </p>
-          {clothes.length > 0 && (
-            <span className="shrink-0 text-sm text-[#808089]">{currentIndex + 1} / {clothes.length}</span>
+          {visualItems.length > 0 && (
+            <span className="shrink-0 text-sm text-[#808089]">{currentIndex + 1} / {visualItems.length}</span>
           )}
         </div>
-        {clothes.length > 0 && (
+        {visualItems.length > 0 && (
           <div className="flex gap-2.5 overflow-x-auto px-5 pt-4 pb-5" aria-label="의류 선택">
-            {clothes.map((item, index) => (
+            {visualItems.map((item, index) => (
               <button
                 type="button"
                 key={item.id}

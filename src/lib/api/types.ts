@@ -128,6 +128,7 @@ export interface OutfitDto {
   name: string;
   description: string;
   category: string;
+  image?: string;
   clothes: OutfitClothesDto[];
   weather: OutfitWeatherDto | null;
   createdAt?: string;
@@ -279,6 +280,11 @@ export interface OutfitCreateResponse {
   description?: string;
   clothes: Array<{id: string; name: string; imageUrl?: string}>;
   createdAt: string;
+}
+
+export interface OutfitImageResponse {
+  outfitId: string;
+  imageUrl: string;
 }
 
 export interface RecommendationPreferenceRequest {

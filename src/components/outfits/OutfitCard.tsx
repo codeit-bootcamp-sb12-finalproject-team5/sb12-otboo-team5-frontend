@@ -10,6 +10,11 @@ interface OutfitCardProps {
 
 export default function OutfitCard({ outfit, onClick }: OutfitCardProps) {
   const clothes = outfit.clothes.filter(item => item.imageUrl);
+  const hasGeneratedImage = Boolean(outfit.image);
+  const primaryImageUrl = outfit.image ?? clothes[0]?.imageUrl;
+  const primaryImageAlt = outfit.image ? `${outfit.name} 생성 이미지` : clothes[0]?.name || outfit.name;
+  const secondaryClothes = hasGeneratedImage ? clothes.slice(0, 2) : clothes.slice(1, 3);
+  const remainingClothesCount = hasGeneratedImage ? clothes.length - 2 : clothes.length - 3;
   const createdAt = outfit.createdAt ? new Date(outfit.createdAt) : null;
   const formattedCreatedAt = createdAt && !Number.isNaN(createdAt.getTime())
     ? `${createdAt.getMonth() + 1}월 ${createdAt.getDate()}일 ${createdAt.getHours().toString().padStart(2, '0')}:${createdAt.getMinutes().toString().padStart(2, '0')}`
@@ -36,18 +41,18 @@ export default function OutfitCard({ outfit, onClick }: OutfitCardProps) {
         {outfit.weather && <OutfitWeather weather={outfit.weather} compact />}
       </div>
 
-      <div className={`grid aspect-[307.5/206] w-full gap-0.5 overflow-hidden rounded bg-gray-100 ${clothes.length > 1 ? 'grid-cols-[3fr_2fr]' : 'grid-cols-1'}`}>
+      <div className={`grid aspect-[307.5/206] w-full gap-0.5 overflow-hidden rounded bg-gray-100 ${secondaryClothes.length > 0 ? 'grid-cols-[3fr_2fr]' : 'grid-cols-1'}`}>
         <div className="relative min-h-0 min-w-0">
-          <OutfitImage imageUrl={clothes[0]?.imageUrl} alt={clothes[0]?.name || outfit.name} />
+          <OutfitImage imageUrl={primaryImageUrl} alt={primaryImageAlt} />
         </div>
-        {clothes.length > 1 && (
-          <div className={`grid min-h-0 min-w-0 gap-0.5 ${clothes.length > 2 ? 'grid-rows-2' : 'grid-rows-1'}`}>
-            {clothes.slice(1, 3).map((item, index) => (
+        {secondaryClothes.length > 0 && (
+          <div className={`grid min-h-0 min-w-0 gap-0.5 ${secondaryClothes.length > 1 ? 'grid-rows-2' : 'grid-rows-1'}`}>
+            {secondaryClothes.map((item, index) => (
               <div key={item.id} className="relative min-h-0 min-w-0">
-                <OutfitImage imageUrl={item.imageUrl} alt={item.name || `의류 ${index + 2}`} />
-                {index === 1 && clothes.length > 3 && (
+                <OutfitImage imageUrl={item.imageUrl} alt={item.name || `의류 ${index + (hasGeneratedImage ? 1 : 2)}`} />
+                {index === 1 && remainingClothesCount > 0 && (
                   <span className="absolute bottom-2 right-2 rounded-full bg-gray-900/90 px-2 py-1 text-sm font-semibold text-white">
-                    +{clothes.length - 3}
+                    +{remainingClothesCount}
                   </span>
                 )}
               </div>
