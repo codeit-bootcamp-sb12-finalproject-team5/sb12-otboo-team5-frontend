@@ -154,7 +154,7 @@ export default function LoginForm() {
           </div>
         </div>
         
-        {error && !error.includes("status code 500") && (
+        {error && !/status code 500|invalid\s*token|token\s*is\s*invalid|유효하지 않은.*토큰/i.test(error) && (
           <div className="text-red-500 text-sm font-semibold text-center">
             {error}
           </div>
