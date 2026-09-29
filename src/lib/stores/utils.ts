@@ -28,7 +28,7 @@ export async function execute<T>(
     options: ExecuteOptions<T> = {}
 ): Promise<T | undefined> {
   const {
-    onSuccess = (_result, _set, _get) => {_set({data: _result})},
+    onSuccess = (result, setState) => {setState({data: result})},
     shouldThrow = false,
   } = options;
 
