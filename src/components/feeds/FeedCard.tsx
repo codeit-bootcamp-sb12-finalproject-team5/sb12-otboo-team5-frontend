@@ -3,13 +3,12 @@ import { likeFeed, unlikeFeed } from '@/lib/api/feeds';
 import { useFeedStore } from '@/lib/stores/useFeedStore';
 import { toast } from 'sonner';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Heart } from 'lucide-react';
 
 import sunnyIcon from '@/assets/illust_logos/il_Sunny.svg';
 import overcastIcon from '@/assets/illust_logos/il_Overcast.svg';
 import cloudyIcon from '@/assets/illust_logos/il_cloudy.svg';
-import profileIcon from '@/assets/icons/profile.svg';
-import heartIcon from '@/assets/icons/ic_heart.svg';
-import heartFilledIcon from '@/assets/icons/ic_heart_filled.svg';
+import ProfileAvatar from '@/components/profile/ProfileAvatar';
 import commentIcon from '@/assets/icons/ic_comment.svg';
 import emptyImageIcon from '@/assets/icons/empty image.svg';
 import {useNavigate} from "react-router-dom";
@@ -103,7 +102,7 @@ function ImageLayout({ ootds }: { ootds: FeedDto['ootds'] }) {
             style={{ backgroundImage: `url('${images[2]?.imageUrl || images[1].imageUrl}')` }} 
           />
           {images.length > 3 && (
-            <div className="absolute bg-[rgba(33,33,38,0.9)] box-border content-stretch flex gap-2 items-center justify-center px-2 py-1 right-2 rounded-[100px] top-2">
+            <div className="absolute bottom-2 right-2 flex items-center justify-center rounded-[100px] bg-[rgba(33,33,38,0.9)] px-2 py-1">
               <div className="font-[var(--font-weight-semibold)] leading-[0] not-italic relative shrink-0 text-[14px] text-nowrap text-white tracking-[-0.35px]">
                 <p className="leading-[normal] whitespace-pre">+{images.length - 3}</p>
               </div>
@@ -173,26 +172,14 @@ export default function FeedCard({ feed, onClick }: FeedCardProps) {
       className="bg-white box-border content-stretch flex flex-col gap-4 items-start justify-start px-3 py-4 relative rounded-[20px] w-full cursor-pointer hover:shadow-lg transition-shadow"
       onClick={onClick}
     >
-      <div aria-hidden="true" className="absolute border border-solid border-zinc-200 inset-0 pointer-events-none rounded-[20px]" />
+      <div aria-hidden="true" className="absolute inset-0 rounded-[20px] border border-solid border-[#ded6cb] pointer-events-none" />
       
       {/* 헤더 */}
       <div className="box-border content-stretch flex items-center justify-between px-1.5 py-0 relative shrink-0 w-full">
         <div className="content-stretch flex gap-1.5 items-start justify-start relative shrink-0">
           <div className="box-border content-stretch flex gap-2 items-center justify-start px-0 py-[3px] relative shrink-0">
             <div className="bg-[var(--color-gray-400)] relative rounded-[100px] shrink-0 size-5">
-              {feed.author.profileImageUrl ? (
-                <img 
-                  src={feed.author.profileImageUrl} 
-                  alt={feed.author.name} 
-                  className="w-full h-full rounded-[100px] object-cover"
-                />
-              ) : (
-                <img 
-                  src={profileIcon} 
-                  alt={feed.author.name} 
-                  className="w-full h-full rounded-[100px] object-cover"
-                />
-              )}
+              <ProfileAvatar imageUrl={feed.author.profileImageUrl} alt={feed.author.name} className="w-full h-full rounded-[100px] object-cover" />
             </div>
           </div>
           <div className="content-stretch flex flex-col gap-1 items-start justify-start relative shrink-0 w-[94px]">
@@ -205,7 +192,7 @@ export default function FeedCard({ feed, onClick }: FeedCardProps) {
             >
               <p className="leading-[normal] truncate">{feed.author.name}</p>
             </div>
-            <div className="content-stretch flex font-[var(--font-weight-semibold)] gap-1 items-center justify-start leading-[0] not-italic relative shrink-0 text-[var(--color-gray-500)] text-[14px] text-nowrap tracking-[-0.35px] w-full">
+            <div className="content-stretch flex font-[var(--font-weight-semibold)] gap-1 items-center justify-start leading-[0] not-italic relative shrink-0 text-[var(--color-gray-500)] text-[12px] text-nowrap tracking-[-0.35px] w-full">
               <div className="relative shrink-0">
                 <p className="leading-[normal] text-nowrap whitespace-pre">{date}</p>
               </div>
@@ -215,35 +202,36 @@ export default function FeedCard({ feed, onClick }: FeedCardProps) {
             </div>
           </div>
         </div>
-        <TooltipProvider>
-          <Tooltip key={feed.id}>
-            <TooltipTrigger asChild>
-            <div className="bg-[var(--color-gray-100)] box-border content-stretch flex gap-[3px] items-center justify-start pl-2.5 pr-3.5 py-1.5 relative rounded-[10px] shrink-0">
-              <div className="overflow-clip relative shrink-0 size-6">
-                <WeatherIcon skyStatus={feed.weather.skyStatus} />
-              </div>
-              <div className="font-[var(--font-weight-bold)] leading-[0] not-italic relative shrink-0 text-[var(--color-gray-800)] text-[14px] text-center text-nowrap tracking-[-0.35px]">
-                <p className="leading-[normal] whitespace-pre">
-                  {displayTemp(feed.weather.temperature.current)}
-                </p>
-              </div>
-            </div>
-            </TooltipTrigger>
-            <TooltipContent
-                side="right"
-                sideOffset={-10}
-                align="start"
-                alignOffset={25}
-
-                className="bg-[rgba(12,12,13,0.74)] text-[#f7f7f8] font-semibold text-[14px] tracking-[-0.35px] px-3.5 py-3 rounded-[10px] flex flex-col gap-2 leading-none border-0"
-            >
-              <div className="whitespace-pre">날씨: {getSkyStatusText(feed.weather.skyStatus)}</div>
-              <div className="whitespace-pre">평균: {displayTemp(feed.weather.temperature.current)}</div>
-              <div className="whitespace-pre">최저: {displayTemp(feed.weather.temperature.min)}</div>
-              <div className="whitespace-pre">최고: {displayTemp(feed.weather.temperature.max)}</div>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        {feed.weather && (
+          <TooltipProvider>
+            <Tooltip key={feed.id}>
+              <TooltipTrigger asChild>
+                <div className="bg-[var(--color-gray-100)] box-border content-stretch flex gap-[3px] items-center justify-start pl-2.5 pr-3.5 py-1.5 relative rounded-[10px] shrink-0">
+                  <div className="overflow-clip relative shrink-0 size-6">
+                    <WeatherIcon skyStatus={feed.weather.skyStatus} />
+                  </div>
+                  <div className="font-[var(--font-weight-bold)] leading-[0] not-italic relative shrink-0 text-[var(--color-gray-800)] text-[14px] text-center text-nowrap tracking-[-0.35px]">
+                    <p className="leading-[normal] whitespace-pre">
+                      {displayTemp(feed.weather.temperature.current)}
+                    </p>
+                  </div>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent
+                  side="right"
+                  sideOffset={-10}
+                  align="start"
+                  alignOffset={25}
+                  className="bg-[rgba(12,12,13,0.74)] text-[#f7f7f8] font-semibold text-[14px] tracking-[-0.35px] px-3.5 py-3 rounded-[10px] flex flex-col gap-2 leading-none border-0"
+              >
+                <div className="whitespace-pre">날씨: {getSkyStatusText(feed.weather.skyStatus)}</div>
+                <div className="whitespace-pre">평균: {displayTemp(feed.weather.temperature.current)}</div>
+                <div className="whitespace-pre">최저: {displayTemp(feed.weather.temperature.min)}</div>
+                <div className="whitespace-pre">최고: {displayTemp(feed.weather.temperature.max)}</div>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
 
       </div>
 
@@ -253,12 +241,12 @@ export default function FeedCard({ feed, onClick }: FeedCardProps) {
       {/* 내용 */}
       <div className="box-border content-stretch flex gap-2 items-center justify-start px-0.5 py-0 relative shrink-0 w-full">
         <div className="font-[var(--font-weight-semibold)] leading-[0] not-italic relative text-[var(--color-gray-700)] text-[16px] tracking-[-0.4px] w-full">
-          <p className="leading-[normal] line-clamp-3">{feed.content}</p>
+          <p className="leading-[normal] line-clamp-1">{feed.content}</p>
         </div>
       </div>
 
       {/* 하단 액션 */}
-      <div className="box-border content-stretch flex gap-3.5 items-center justify-start pb-2 pt-1 px-0.5 relative shrink-0 w-full">
+      <div className="box-border content-stretch -mt-1 flex gap-3.5 items-center justify-start px-0.5 py-0 relative shrink-0 w-full">
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -266,15 +254,8 @@ export default function FeedCard({ feed, onClick }: FeedCardProps) {
           }}
           className="content-stretch flex gap-0.5 items-end justify-start relative shrink-0 hover:opacity-70 transition-opacity"
         >
-          <div className="overflow-clip relative shrink-0 size-4">
-            <img 
-              src={feed.likedByMe ? heartFilledIcon : heartIcon} 
-              alt="좋아요" 
-              className="block max-w-none size-full" 
-            />
-          </div>
-          <div className="font-[var(--font-weight-semibold)] leading-[0] not-italic relative shrink-0 text-[var(--color-gray-400)] text-[14px] text-nowrap tracking-[-0.35px]">
-            <p className="leading-[normal] whitespace-pre">좋아요</p>
+          <div className="relative shrink-0 size-4">
+            <Heart aria-label="좋아요" className={`size-full ${feed.likedByMe ? 'fill-[#e76f51] text-[#e76f51]' : 'text-[var(--color-gray-400)]'}`} />
           </div>
           <div className="font-[var(--font-weight-semibold)] leading-[0] not-italic relative shrink-0 text-[var(--color-gray-400)] text-[14px] text-nowrap tracking-[-0.35px]">
             <p className="leading-[normal] whitespace-pre">{feed.likeCount}</p>
@@ -284,9 +265,6 @@ export default function FeedCard({ feed, onClick }: FeedCardProps) {
         <div className="content-stretch flex gap-0.5 items-center justify-start relative shrink-0">
           <div className="overflow-clip relative shrink-0 size-4">
             <img src={commentIcon} alt="댓글" className="block max-w-none size-full" />
-          </div>
-          <div className="font-[var(--font-weight-semibold)] leading-[0] not-italic relative shrink-0 text-[var(--color-gray-400)] text-[14px] text-nowrap tracking-[-0.35px]">
-            <p className="leading-[normal] whitespace-pre">댓글</p>
           </div>
           <div className="font-[var(--font-weight-semibold)] leading-[0] not-italic relative shrink-0 text-[var(--color-gray-400)] text-[14px] text-nowrap tracking-[-0.35px]">
             <p className="leading-[normal] whitespace-pre">{feed.commentCount}</p>

@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import { createFeedComment } from '@/lib/api/feeds';
 import { toast } from 'sonner';
 import { useFeedCommentStore } from '@/lib/stores/useFeedCommentStore';
+import { useFeedStore } from '@/lib/stores/useFeedStore';
 import { useAuthStore } from '@/lib/stores/useAuthStore';
 import { useInfiniteScroll } from '@/lib/hooks/useInfiniteScroll';
 import type { FeedDto } from '@/lib/api/types';
-import profileIcon from '@/assets/icons/profile.svg';
+import ProfileAvatar from '@/components/profile/ProfileAvatar';
+import { MessageCircle, Send } from 'lucide-react';
 
 interface FeedCommentsProps {
   feed: FeedDto;
@@ -13,6 +15,7 @@ interface FeedCommentsProps {
 
 export default function FeedComments({ feed }: FeedCommentsProps) {
   const { data: comments, loading, add, updateParams, fetchMore, hasNext } = useFeedCommentStore();
+  const { update: updateFeed } = useFeedStore();
   const { data: auth } = useAuthStore();
   const [commentText, setCommentText] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -43,6 +46,7 @@ export default function FeedComments({ feed }: FeedCommentsProps) {
       });
       
       add(newComment);
+      updateFeed(feed.id, { commentCount: feed.commentCount + 1 });
       setCommentText('');
       toast.success('댓글이 등록되었습니다.');
     } catch (error) {
@@ -71,53 +75,34 @@ export default function FeedComments({ feed }: FeedCommentsProps) {
 
   return (
     <div className="flex flex-col h-full w-full">
-      {/* 좋아요 개수 */}
-      <div className="content-stretch flex gap-3 items-start justify-start relative shrink-0">
-        <div className="box-border content-stretch flex font-['SUIT:Bold',_sans-serif] gap-1 items-start justify-start leading-[0] not-italic pb-3.5 pt-1 px-0 relative shrink-0 text-[#34343d] text-[16px] text-nowrap tracking-[-0.4px]">
-          <div className="relative shrink-0">
-            <p className="leading-[normal] text-nowrap whitespace-pre">좋아요</p>
-          </div>
-          <div className="relative shrink-0">
-            <p className="leading-[normal] text-nowrap whitespace-pre">{feed.likeCount}개</p>
-          </div>
-        </div>
+      <div className="shrink-0 pb-2">
+        <p className="text-[15px] font-bold text-[#0f2a44]">댓글 {feed.commentCount}</p>
       </div>
 
       {/* 댓글 목록 */}
-      <div className="flex flex-col w-full overflow-y-auto min-h-[200px] mb-2.5" style={{maxHeight: 'calc(100% - 80px)'}}>
+      <div className="mb-2.5 flex min-h-0 w-full flex-1 flex-col overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" >
         {comments.length === 0 ? (
-          <div className="flex items-center justify-center py-4">
-            <span className="text-[#a9a9b1] text-[14px]">첫 댓글을 작성해보세요!</span>
+          <div className="flex flex-1 flex-col items-center justify-center gap-4 py-4 text-center">
+            <div className="flex size-20 items-center justify-center rounded-full bg-[#f7f7f8]"><MessageCircle className="size-9 text-[#7a8ca3]" /></div>
+            <p className="font-semibold text-[#3d5570]">첫 댓글을 작성해보세요!</p>
           </div>
         ) : (
           <>
             {comments.map((comment) => (
-              <div key={comment.id} className="box-border content-stretch flex items-center justify-between pb-5 pt-0 px-1.5 relative shrink-0 w-full">
-                <div className="content-stretch flex gap-2.5 items-center justify-start relative shrink-0">
-                  <div className="content-stretch flex gap-1.5 items-start justify-start relative shrink-0">
-                    <div className="box-border content-stretch flex gap-2 items-center justify-start px-0 py-px relative shrink-0">
-                      <div className="bg-[#a9a9b1] relative rounded-[100px] shrink-0 size-5">
-                        {comment.author.profileImageUrl ? (
-                          <img 
-                            src={comment.author.profileImageUrl} 
-                            alt={comment.author.name} 
-                            className="w-full h-full rounded-[100px] object-cover"
-                          />
-                        ) : (
-                          <img 
-                            src={profileIcon} 
-                            alt={comment.author.name} 
-                            className="w-full h-full rounded-[100px] object-cover"
-                          />
-                        )}
+              <div key={comment.id} className="box-border content-stretch flex items-start justify-between pb-5 pt-0 px-1.5 relative shrink-0 w-full">
+                <div className="content-stretch flex w-full gap-2.5 items-start justify-start relative">
+                  <div className="content-stretch flex w-full gap-2.5 items-start justify-start relative">
+                    <div className="flex shrink-0 items-center">
+                      <div className="relative size-9 shrink-0 rounded-full bg-[#a9a9b1]">
+                        <ProfileAvatar imageUrl={comment.author.profileImageUrl} alt={comment.author.name} className="w-full h-full rounded-[100px] object-cover" />
                       </div>
                     </div>
-                    <div className="content-stretch flex flex-col gap-2 items-start justify-start leading-[0] not-italic relative shrink-0 w-[280px]">
-                      <div className="content-stretch flex gap-1 items-center justify-start relative shrink-0">
-                        <div className="font-['SUIT:Bold',_sans-serif] relative shrink-0 text-[#575765] text-[16px] tracking-[-0.4px]">
+                    <div className="content-stretch flex min-w-0 flex-1 flex-col gap-1 items-start justify-start leading-[0] not-italic relative">
+                      <div className="flex w-full items-center justify-between gap-3">
+                        <div className="font-['SUIT:Bold',_sans-serif] relative shrink-0 font-bold text-[#575765] text-[16px] tracking-[-0.4px]">
                           <p className="leading-[normal] text-nowrap whitespace-pre">{comment.author.name}</p>
                         </div>
-                        <div className="font-['SUIT:SemiBold',_sans-serif] relative shrink-0 text-[#808089] text-[14px] tracking-[-0.35px]">
+                        <div className="font-['SUIT:SemiBold',_sans-serif] relative shrink-0 text-[#808089] text-[11px] tracking-[-0.25px]">
                           <p className="leading-[normal] text-nowrap whitespace-pre">{formatDate(comment.createdAt)}</p>
                         </div>
                       </div>
@@ -138,18 +123,16 @@ export default function FeedComments({ feed }: FeedCommentsProps) {
                 ) : (
                   <div className="h-4 text-[#a9a9b1] text-[12px]">트리거 (hasNext: true)</div>
                 )
-              ) : (
-                <div className="h-4 text-[#a9a9b1] text-[12px]">더 이상 댓글이 없습니다</div>
-              )}
+              ) : null}
             </div>
           </>
         )}
       </div>
 
       {/* 댓글 입력 - 50px 고정 높이, 하단 고정 */}
-      <div className="box-border content-stretch flex flex-col gap-2 items-start justify-center pb-5 pt-0 px-0 relative shrink-0 w-full mt-auto">
-        <div className="bg-[#f7f7f8] h-[50px] relative rounded-[10px] shrink-0 w-full">
-          <div className="box-border content-stretch flex gap-2 items-center justify-start overflow-clip px-5 py-[18px] relative size-full">
+      <div className="mt-auto w-full shrink-0">
+        <div className="flex h-[64px] items-center gap-3 rounded-[16px] border border-[#e7e7e9] bg-[#fdfdfa] px-3">
+          <div className="flex h-[48px] flex-1 items-center rounded-full border border-[#ded6cb] bg-white px-4">
             <input
               type="text"
               value={commentText}
@@ -157,19 +140,10 @@ export default function FeedComments({ feed }: FeedCommentsProps) {
               onKeyPress={handleKeyPress}
               placeholder="댓글을 입력해주세요"
               disabled={submitting}
-              className="flex-1 bg-transparent border-none outline-none font-['SUIT:SemiBold',_sans-serif] text-[16px] text-[#131316] placeholder:text-[#808089] tracking-[-0.4px] focus:ring-0 shadow-none"
+              className="flex-1 border-none bg-transparent text-[16px] text-[#131316] shadow-none outline-none placeholder:text-[#808089] focus:ring-0"
             />
-            {commentText.trim() && (
-              <button
-                onClick={handleSubmitComment}
-                disabled={submitting}
-                className="text-[#1e89f4] font-['SUIT:SemiBold',_sans-serif] text-[14px] hover:text-[#1570cc] disabled:opacity-50"
-              >
-                {submitting ? '등록 중...' : '등록'}
-              </button>
-            )}
           </div>
-          <div aria-hidden="true" className="absolute border border-[#e7e7e9] border-solid inset-0 pointer-events-none rounded-[10px] shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)]" />
+          <button onClick={handleSubmitComment} disabled={submitting || !commentText.trim()} aria-label="댓글 등록" className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#0f2a44] text-white disabled:opacity-40"><Send className="size-5 -translate-x-0.5" /></button>
         </div>
       </div>
     </div>

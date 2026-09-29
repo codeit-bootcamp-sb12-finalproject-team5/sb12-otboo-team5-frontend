@@ -69,6 +69,9 @@ export default function ProfileMenu({ isOpen, onClose, anchorElement }: ProfileM
       case 'profile':
         navigate('/settings');
         break;
+      case 'preferences':
+        navigate('/recommendations/preferences');
+        break;
       case 'logout':
         // 로그아웃 처리
         signOut();
@@ -102,6 +105,13 @@ export default function ProfileMenu({ isOpen, onClose, anchorElement }: ProfileM
         className="font-semibold leading-none not-italic text-gray-700 text-base text-nowrap tracking-[-0.4px] hover:text-gray-900 transition-colors"
       >
         <p className="leading-normal whitespace-pre">프로필 수정</p>
+      </button>
+
+      <button
+        onClick={() => handleMenuClick('preferences')}
+        className="font-semibold leading-none not-italic text-gray-700 text-base text-nowrap tracking-[-0.4px] hover:text-gray-900 transition-colors"
+      >
+        <p className="leading-normal whitespace-pre">선호도 조사</p>
       </button>
 
       {/* 로그아웃 */}

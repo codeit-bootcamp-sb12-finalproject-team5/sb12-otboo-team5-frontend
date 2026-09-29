@@ -21,6 +21,7 @@ export default function ProfileSummary({
   const [dmModalOpen, setDmModalOpen] = useState(false);
   const [followerModalOpen, setFollowerModalOpen] = useState(false);
   const [followingModalOpen, setFollowingModalOpen] = useState(false);
+  const [profileImageError, setProfileImageError] = useState(false);
 
   const isOwnProfile = userId === currentUser?.userDto?.id;
 
@@ -60,11 +61,15 @@ export default function ProfileSummary({
     updateFollowParams({ userId });
   }, [userId, isOwnProfile, updateProfileParams, updateFollowParams]);
 
+  useEffect(() => {
+    setProfileImageError(false);
+  }, [profile?.profileImageUrl]);
+
 
 
   if (profileLoading && !isOwnProfile) {
     return (
-      <div className="box-border content-stretch flex items-center justify-between pb-5 pt-0 px-5 relative w-full">
+      <div className="box-border content-stretch flex items-center justify-between pb-0 pt-0 px-5 relative w-full">
         {/* 프로필 스켈레톤 */}
         <div className="content-stretch flex gap-5 items-center justify-start relative shrink-0">
           <div className="bg-gray-200 relative rounded-[100px] shrink-0 size-[90px] animate-pulse" />
@@ -86,15 +91,16 @@ export default function ProfileSummary({
   }
 
   return (
-    <div className="box-border content-stretch flex items-center justify-between pb-5 pt-0 px-5 relative w-full">
+    <div className="box-border content-stretch flex items-center justify-between pb-0 pt-0 px-5 relative w-full">
       <div className="content-stretch flex gap-5 items-center justify-start relative shrink-0">
         {/* 프로필 이미지 */}
         <div className="bg-[#a9a9b1] relative rounded-[100px] shrink-0 size-[90px] overflow-hidden">
-          {profile?.profileImageUrl ? (
+          {profile?.profileImageUrl && !profileImageError ? (
             <img 
               src={profile.profileImageUrl}
               alt={profile.name || '프로필'}
               className="w-full h-full object-cover rounded-[100px]"
+              onError={() => setProfileImageError(true)}
             />
           ) : (
             <img 
@@ -133,7 +139,7 @@ export default function ProfileSummary({
               className="content-stretch flex gap-1 items-center justify-start leading-[0] not-italic relative shrink-0 text-[18px] text-nowrap tracking-[-0.45px] hover:opacity-70 transition-opacity"
             >
               <div className="font-['SUIT:SemiBold',_sans-serif] relative shrink-0 text-[#808089]">
-                <p className="leading-[normal] text-nowrap whitespace-pre">팔로우</p>
+                <p className="leading-[normal] text-nowrap whitespace-pre">팔로잉</p>
               </div>
               <div className="font-['SUIT:ExtraBold',_sans-serif] relative shrink-0 text-[#34343d]">
                 <p className="leading-[normal] text-nowrap whitespace-pre">
@@ -154,7 +160,7 @@ export default function ProfileSummary({
             className={`box-border content-stretch flex gap-1.5 h-[46px] items-center justify-center px-[18px] py-2.5 relative rounded-[12px] shrink-0 transition-colors ${
               followSummary?.followedByMe 
                 ? 'bg-[#f7f7f8] hover:bg-[#eeeeef]' 
-                : 'bg-[#1e89f4] hover:bg-[#1a7ae6]'
+                : 'bg-[#3d5570] hover:bg-[#0f2a44]'
             }`}
           >
             <div className={`font-['SUIT:Bold',_sans-serif] leading-[0] not-italic relative shrink-0 text-[18px] text-nowrap tracking-[-0.45px] ${
@@ -183,11 +189,11 @@ export default function ProfileSummary({
       <DMModal 
         open={dmModalOpen}
         onOpenChange={setDmModalOpen}
-        targetUser={profile ? {
-          id: profile.userId,
-          name: profile.name,
-          profileImageUrl: profile.profileImageUrl
-        } : null}
+        targetUser={{
+          id: userId,
+          name: profile?.name || '사용자',
+          profileImageUrl: profile?.profileImageUrl
+        }}
       />
 
       {/* 팔로워 모달 */}

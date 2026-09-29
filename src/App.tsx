@@ -6,15 +6,20 @@ import MainLayout from '@/components/layout/MainLayout';
 import ProtectedRoute from '@/components/layout/ProtectedRoute';
 
 import LoginPage from '@/pages/auth/login/page';
+import OAuthCallbackPage from '@/pages/auth/oauth-callback/page';
 import RegisterPage from '@/pages/auth/register/page';
 import ForgotPasswordPage from '@/pages/auth/forgot-password/page';
 import RecommendationsPage from '@/pages/recommendations/page';
 import ClosetPage from '@/pages/closet/page';
+import OutfitsPage from '@/pages/outfits/page';
+import NewOutfitPage from '@/pages/outfits/new/page';
 import FeedsPage from '@/pages/feeds/page';
 import ProfilePage from '@/pages/profile/page';
 import UserManagementPage from '@/pages/admin/users/page';
 import ClothesAttributeManagementPage from '@/pages/admin/clothes-attributes/page';
 import MyProfileSettingsPage from '@/pages/settings/page';
+import DirectMessagesPage from '@/pages/direct-messages/page';
+import RecommendationPreferencesPage from '@/pages/recommendations/preferences/page';
 import NotFoundPage from '@/pages/404/page';
 import CsrfInitializer from "@/components/auth/CsrfInitializer.tsx";
 
@@ -30,6 +35,7 @@ function App() {
         {/* Public Routes */}
         <Route path="/auth/*" element={<AuthLayout />}>
           <Route path="login" element={<LoginPage />} />
+          <Route path="oauth/callback" element={<OAuthCallbackPage />} />
           <Route path="register" element={<RegisterPage />} />
           <Route path="forgot-password" element={<ForgotPasswordPage />} />
         </Route>
@@ -38,12 +44,16 @@ function App() {
         <Route path="/" element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
           <Route index element={<Navigate to="/recommendations" replace />} />
           <Route path="recommendations" element={<RecommendationsPage />} />
+          <Route path="recommendations/preferences" element={<RecommendationPreferencesPage />} />
           <Route path="closet" element={<ClosetPage />} />
+          <Route path="outfits" element={<OutfitsPage />} />
+          <Route path="outfits/new" element={<NewOutfitPage />} />
           <Route path="feeds" element={<FeedsPage />} />
           <Route path="profiles" element={<ProfilePage />} />
           <Route path="admin/users" element={<UserManagementPage />} />
           <Route path="admin/clothes-attributes" element={<ClothesAttributeManagementPage />} />
           <Route path="settings" element={<MyProfileSettingsPage />} />
+          <Route path="direct-messages" element={<DirectMessagesPage />} />
         </Route>
         
         <Route path="/404" element={<NotFoundPage />} />

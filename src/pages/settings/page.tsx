@@ -53,7 +53,7 @@ export default function MyProfileSettingsPage() {
         name: profile.name || '',
         gender: profile.gender,
         birthDate: profile.birthDate || '',
-        location: profile.location,
+        location: undefined,
         temperatureSensitivity: profile.temperatureSensitivity,
         profileImageUrl: profile.profileImageUrl
       });
@@ -87,7 +87,7 @@ export default function MyProfileSettingsPage() {
         name: profile.name || '',
         gender: profile.gender,
         birthDate: profile.birthDate || '',
-        location: profile.location,
+        location: undefined,
         temperatureSensitivity: profile.temperatureSensitivity,
         profileImageUrl: profile.profileImageUrl
       });
@@ -108,13 +108,10 @@ export default function MyProfileSettingsPage() {
         name: data.name || undefined,
         gender: data.gender,
         birthDate: data.birthDate || undefined,
+        latitude: data.location?.latitude,
+        longitude: data.location?.longitude,
         temperatureSensitivity: data.temperatureSensitivity
       };
-
-      // 위치 정보 처리
-      if (data.location) {
-        updateRequest.location = data.location;
-      }
 
       // API 직접 호출
       const updatedProfile = await updateProfile(
@@ -145,9 +142,9 @@ export default function MyProfileSettingsPage() {
   }
 
   return (
-    <div className="space-y-6 px-8 ">
+    <div className="h-full space-y-6 bg-[#fcfaf6] px-8 py-6">
 
-      <div className="bg-white p-8">
+      <div className="bg-[#fbfaf7] p-8">
         <form onSubmit={handleSubmit(onSubmit)} className="max-w-[428px] mx-auto space-y-6">
           {/* 프로필 이미지 */}
           <ProfileImageUpload
@@ -192,6 +189,7 @@ export default function MyProfileSettingsPage() {
           {/* 현재 위치 */}
           <LocationInput
             location={watchedValues.location}
+            locationNames={profile?.locationNames}
             onChange={handleLocationChange}
           />
 

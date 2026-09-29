@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Dialog, DialogContent, DialogOverlay, DialogTitle, DialogClose } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogOverlay, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { useImageUpload } from '@/hooks/useImageUpload';
@@ -9,22 +9,18 @@ import { updateClothes } from '@/lib/api/clothes';
 import { toast } from 'sonner';
 import type { ClothesDto, ClothesType, ClothesAttributeDto } from '@/lib/api/types';
 
-import closeIcon from '@/assets/icons/ic_X.svg'
 import emptyImageIcon from '@/assets/icons/empty image.svg'
 
 const CLOTHES_TYPES = [
-  { label: '상의', value: 'TOP' as ClothesType },
-  { label: '하의', value: 'BOTTOM' as ClothesType },
-  { label: '원피스', value: 'DRESS' as ClothesType },
-  { label: '아우터', value: 'OUTER' as ClothesType },
-  { label: '속옷', value: 'UNDERWEAR' as ClothesType },
-  { label: '신발', value: 'SHOES' as ClothesType },
-  { label: '악세서리', value: 'ACCESSORY' as ClothesType },
-  { label: '양말', value: 'SOCKS' as ClothesType },
-  { label: '모자', value: 'HAT' as ClothesType },
-  { label: '가방', value: 'BAG' as ClothesType },
-  { label: '스카프', value: 'SCARF' as ClothesType },
-  { label: '기타', value: 'ETC' as ClothesType },
+  { label: '상의', value: '상의' as ClothesType },
+  { label: '바지', value: '바지' as ClothesType },
+  { label: '치마', value: '치마' as ClothesType },
+  { label: '아우터', value: '아우터' as ClothesType },
+  { label: '원피스', value: '원피스' as ClothesType },
+  { label: '신발', value: '신발' as ClothesType },
+  { label: '모자', value: '모자' as ClothesType },
+  { label: '가방', value: '가방' as ClothesType },
+  { label: '악세서리', value: '악세서리' as ClothesType },
 ];
 
 interface EditClothesModalProps {
@@ -41,8 +37,14 @@ export default function EditClothesModal({ open, onClose, clothes }: EditClothes
   
   const [formData, setFormData] = useState({
     name: '',
+    brand: '',
     type: '' as ClothesType,
-    attributes: [] as ClothesAttributeDto[]
+    season: '',
+    gender: '',
+    attributes: [] as ClothesAttributeDto[],
+    description: '',
+    isOwned: true,
+    preference: 3
   });
   const [selectedAttributes, setSelectedAttributes] = useState<Record<string, string>>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -59,8 +61,14 @@ export default function EditClothesModal({ open, onClose, clothes }: EditClothes
     if (open && clothes) {
       setFormData({
         name: clothes.name,
+        brand: clothes.brand ?? '',
         type: clothes.type,
-        attributes: clothes.attributes
+        season: clothes.season ?? '',
+        gender: clothes.gender ?? '',
+        attributes: clothes.attributes,
+        description: clothes.description ?? '',
+        isOwned: clothes.isOwned ?? true,
+        preference: clothes.preference ?? 3
       });
       
       // 기존 속성들을 selectedAttributes로 변환
@@ -95,8 +103,14 @@ export default function EditClothesModal({ open, onClose, clothes }: EditClothes
       const attributes = convertSelectedAttributesToDto();
       const updatedClothes = await updateClothes(clothes.id, {
         name: formData.name,
+        brand: formData.brand,
         type: formData.type,
-        attributes: attributes
+        season: formData.season,
+        gender: formData.gender,
+        attributes: attributes,
+        description: formData.description,
+        isOwned: formData.isOwned,
+        preference: formData.preference
       }, selectedImage || undefined);
       
       update(updatedClothes.id, updatedClothes);
@@ -112,7 +126,17 @@ export default function EditClothesModal({ open, onClose, clothes }: EditClothes
 
   const handleClose = () => {
     clearImage();
-    setFormData({ name: '', type: '' as ClothesType, attributes: [] });
+    setFormData({
+      name: '',
+      brand: '',
+      type: '' as ClothesType,
+      season: '',
+      gender: '',
+      attributes: [],
+      description: '',
+      isOwned: true,
+      preference: 3
+    });
     setSelectedAttributes({});
     onClose();
   };
@@ -123,20 +147,12 @@ export default function EditClothesModal({ open, onClose, clothes }: EditClothes
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogOverlay className="bg-black/50" />
       <DialogContent className="max-w-[550px] p-0 bg-transparent border-none" showCloseButton={false}>
-        <div className="bg-white box-border content-stretch flex flex-col gap-6 items-center justify-start p-[30px] relative rounded-[20px] shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)] w-full max-h-[90vh] overflow-y-auto">
+        <div className="bg-white box-border content-stretch flex flex-col gap-6 items-center justify-start p-[30px] relative rounded-[12px] shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)] w-full max-h-[90vh] overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {/* 헤더 */}
-            <div className="content-stretch flex items-center justify-between relative shrink-0 w-full">
-              <div className="w-[30px]" />
+            <div className="content-stretch flex items-center justify-center relative shrink-0 w-full">
               <DialogTitle className="font-bold leading-none not-italic relative shrink-0 text-gray-800 text-[22px] text-nowrap tracking-[-0.55px]">
                 옷 수정
               </DialogTitle>
-              <DialogClose asChild>
-                <button className="overflow-clip relative shrink-0 size-[30px] hover:bg-gray-100 rounded transition-colors">
-                  <div className="absolute inset-[20.834%]">
-                    <img alt="닫기" className="block max-w-none size-full" src={closeIcon} />
-                  </div>
-                </button>
-              </DialogClose>
             </div>
 
             {/* 이미지 업로드 */}
@@ -158,7 +174,7 @@ export default function EditClothesModal({ open, onClose, clothes }: EditClothes
               </div>
               <button 
                 onClick={() => fileInputRef.current?.click()}
-                className="bg-blue-500 hover:bg-blue-600 box-border content-stretch flex flex-col gap-2 items-center justify-center mb-[-26px] overflow-clip px-3 py-1.5 relative rounded-[100px] shrink-0 transition-colors"
+                className="bg-[#3d5570] hover:bg-[#0f2a44] box-border content-stretch flex flex-col gap-2 items-center justify-center mb-[-26px] overflow-clip px-3 py-1.5 relative rounded-[100px] shrink-0 transition-colors"
               >
                 <div className="flex flex-col font-bold justify-center leading-none not-italic relative shrink-0 text-[16px] text-white tracking-[-0.4px] w-full">
                   <p className="leading-normal">변경</p>
@@ -189,6 +205,21 @@ export default function EditClothesModal({ open, onClose, clothes }: EditClothes
                 />
               </div>
 
+              {/* 브랜드 */}
+              <div className="content-stretch flex flex-col gap-2.5 items-start justify-start relative shrink-0 w-full">
+                <label htmlFor="edit-clothes-brand" className="font-bold leading-none not-italic relative shrink-0 text-gray-500 text-[14px] tracking-[-0.35px] w-full">
+                  브랜드
+                </label>
+                <input
+                  id="edit-clothes-brand"
+                  type="text"
+                  value={formData.brand}
+                  onChange={(e) => setFormData(prev => ({ ...prev, brand: e.target.value }))}
+                  placeholder="브랜드를 입력해주세요"
+                  className="bg-white box-border content-stretch flex h-[46px] items-center justify-between px-5 py-3.5 relative rounded-[12px] shrink-0 w-full border border-gray-200 shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)] focus:outline-none focus:border-blue-500"
+                />
+              </div>
+
               {/* 종류 */}
               <div className="content-stretch flex flex-col gap-2.5 items-start justify-start relative shrink-0 w-full">
                 <div className="font-bold leading-none not-italic relative shrink-0 text-gray-500 text-[14px] tracking-[-0.35px] w-full">
@@ -206,6 +237,85 @@ export default function EditClothesModal({ open, onClose, clothes }: EditClothes
                     ))}
                   </SelectContent>
                 </Select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 w-full">
+                <div className="content-stretch flex flex-col gap-2.5 items-start justify-start relative shrink-0 w-full">
+                  <label htmlFor="edit-clothes-season" className="font-bold leading-none text-gray-500 text-[14px] tracking-[-0.35px] w-full">
+                    계절
+                  </label>
+                  <input
+                    id="edit-clothes-season"
+                    type="text"
+                    value={formData.season}
+                    onChange={(e) => setFormData(prev => ({ ...prev, season: e.target.value }))}
+                    placeholder="예: 가을"
+                    className="bg-white h-[46px] px-5 py-3.5 rounded-[12px] w-full border border-gray-200 shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)] focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+                <div className="content-stretch flex flex-col gap-2.5 items-start justify-start relative shrink-0 w-full">
+                  <label htmlFor="edit-clothes-gender" className="font-bold leading-none text-gray-500 text-[14px] tracking-[-0.35px] w-full">
+                    성별
+                  </label>
+                  <input
+                    id="edit-clothes-gender"
+                    type="text"
+                    value={formData.gender}
+                    onChange={(e) => setFormData(prev => ({ ...prev, gender: e.target.value }))}
+                    placeholder="예: 남성"
+                    className="bg-white h-[46px] px-5 py-3.5 rounded-[12px] w-full border border-gray-200 shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)] focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+              </div>
+
+              {/* 설명 */}
+              <div className="content-stretch flex flex-col gap-2.5 items-start justify-start relative shrink-0 w-full">
+                <label htmlFor="edit-clothes-description" className="font-bold leading-none not-italic relative shrink-0 text-gray-500 text-[14px] tracking-[-0.35px] w-full">
+                  설명
+                </label>
+                <textarea
+                  id="edit-clothes-description"
+                  value={formData.description}
+                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                  placeholder="의상에 대한 설명을 입력해주세요"
+                  rows={3}
+                  className="bg-white box-border resize-y min-h-[92px] px-5 py-3.5 rounded-[12px] w-full border border-gray-200 shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)] focus:outline-none focus:border-blue-500"
+                />
+              </div>
+
+              {/* 보유 여부 */}
+              <label className="content-stretch flex items-center justify-between relative shrink-0 w-full cursor-pointer">
+                <span className="font-bold text-gray-500 text-[14px] tracking-[-0.35px]">보유 여부</span>
+                <span className="flex items-center gap-2 text-[14px] text-gray-700">
+                  <input
+                    type="checkbox"
+                    checked={formData.isOwned}
+                    onChange={(e) => setFormData(prev => ({ ...prev, isOwned: e.target.checked }))}
+                    className="size-4 accent-blue-500 cursor-pointer"
+                  />
+                  보유함
+                </span>
+              </label>
+
+              {/* 선호도 */}
+              <div className="content-stretch flex flex-col gap-2.5 items-start justify-start relative shrink-0 w-full">
+                <div className="flex items-center justify-between w-full">
+                  <label htmlFor="edit-clothes-preference" className="font-bold text-gray-500 text-[14px] tracking-[-0.35px]">선호도</label>
+                  <span className="font-semibold text-[#3d5570] text-[14px]">{formData.preference} / 5</span>
+                </div>
+                <input
+                  id="edit-clothes-preference"
+                  type="range"
+                  min="1"
+                  max="5"
+                  step="1"
+                  value={formData.preference}
+                  onChange={(e) => setFormData(prev => ({ ...prev, preference: Number(e.target.value) }))}
+                  className="w-full accent-blue-500 cursor-pointer"
+                />
+                <div className="flex justify-between w-full px-0.5 text-[12px] text-gray-400">
+                  <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                </div>
               </div>
 
               {/* 의상 속성 Select들 */}

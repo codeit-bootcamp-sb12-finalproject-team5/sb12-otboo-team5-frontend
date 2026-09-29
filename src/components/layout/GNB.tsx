@@ -3,8 +3,8 @@ import ProfileIcon from '../gnb/ProfileIcon.tsx';
 
 export default function GNB() {
   return (
-    <div className="box-border content-stretch flex items-center justify-end pb-4 pt-3.5 px-8 relative size-full">
-      <div className="content-stretch flex gap-[30px] items-center justify-start relative shrink-0">
+    <div className="box-border content-stretch flex items-center justify-end pb-4 pt-5 px-10 relative size-full">
+      <div className="content-stretch flex gap-[30px] items-center justify-start relative mr-5 shrink-0">
         {/* 알림 아이콘 */}
         <NotificationIcon />
         

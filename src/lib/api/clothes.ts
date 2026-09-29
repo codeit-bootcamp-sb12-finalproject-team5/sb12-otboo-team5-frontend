@@ -23,7 +23,7 @@ export const createClothes = async (
 ): Promise<ClothesDto> => {
   const formData = new FormData();
 
-  formData.append('request', new Blob([JSON.stringify(request)], { type: 'application/json' }));
+  formData.append('post', new Blob([JSON.stringify(request)], { type: 'application/json' }));
   
   if (image) {
     formData.append('image', image);
@@ -61,5 +61,5 @@ export const deleteClothes = async (clothesId: string): Promise<void> => {
  * 구매 링크로 옷 정보 불러오기
  */
 export const extractByUrl = async (url: string): Promise<ClothesDto> => {
-  return apiClient.get<ClothesDto>('/api/clothes/extractions', { params: { url } });
+  return apiClient.get<ClothesDto>('/api/clothes/weblink-extractions', { params: { url } });
 };

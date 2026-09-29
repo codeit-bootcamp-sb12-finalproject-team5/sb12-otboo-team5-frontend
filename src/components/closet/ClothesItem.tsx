@@ -1,3 +1,4 @@
+import { type PointerEvent, useRef } from 'react';
 import { MoreVertical, Edit, Trash2 } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import type { ClothesDto } from '@/lib/api/types';
@@ -10,10 +11,34 @@ interface ClothesItemProps {
 }
 
 export default function ClothesItem({ clothes, isOwner = false, onEdit, onDelete }: ClothesItemProps) {
+  const tagListRef = useRef<HTMLDivElement>(null);
+  const dragStartRef = useRef({ x: 0, scrollLeft: 0, active: false });
+
+  const handleTagPointerDown = (event: PointerEvent<HTMLDivElement>) => {
+    const list = tagListRef.current;
+    if (!list || event.button !== 0) return;
+
+    dragStartRef.current = { x: event.clientX, scrollLeft: list.scrollLeft, active: true };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+
+  const handleTagPointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    const list = tagListRef.current;
+    if (!list || !dragStartRef.current.active) return;
+    list.scrollLeft = dragStartRef.current.scrollLeft - (event.clientX - dragStartRef.current.x);
+  };
+
+  const handleTagPointerEnd = (event: PointerEvent<HTMLDivElement>) => {
+    dragStartRef.current.active = false;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+  };
+
   return (
-    <div className="content-stretch flex flex-col gap-3 items-start justify-start relative w-full group">
+    <div className="content-stretch flex flex-col gap-1.5 items-start justify-start relative w-full group">
       {/* 이미지 */}
-      <div className="aspect-square bg-gray-200 rounded-[16px] shrink-0 w-full overflow-hidden relative">
+      <div className="aspect-square bg-gray-200 rounded-[10px] shrink-0 w-full overflow-hidden relative">
         {clothes.imageUrl ? (
           <img 
             src={clothes.imageUrl} 
@@ -63,7 +88,7 @@ export default function ClothesItem({ clothes, isOwner = false, onEdit, onDelete
       </div>
 
       {/* 제목 */}
-      <div className="font-bold leading-none not-italic overflow-ellipsis overflow-hidden relative shrink-0 text-gray-900 text-[18px] text-nowrap tracking-[-0.45px] w-full">
+      <div className="font-bold leading-none not-italic overflow-ellipsis overflow-hidden relative shrink-0 text-gray-900 text-[14px] text-nowrap tracking-[-0.35px] w-full">
         <p className="text-overflow-inherit text-wrap-mode-inherit white-space-collapse-inherit leading-normal overflow-inherit truncate">
           {clothes.name}
         </p>
@@ -71,13 +96,20 @@ export default function ClothesItem({ clothes, isOwner = false, onEdit, onDelete
 
       {/* 속성 태그들 */}
       <div className="relative shrink-0 w-full">
-        <div className="content-stretch flex gap-1.5 items-center justify-start overflow-x-auto">
+        <div
+          ref={tagListRef}
+          onPointerDown={handleTagPointerDown}
+          onPointerMove={handleTagPointerMove}
+          onPointerUp={handleTagPointerEnd}
+          onPointerCancel={handleTagPointerEnd}
+          className="content-stretch flex cursor-grab touch-pan-y select-none gap-1.5 items-center justify-start overflow-x-auto [scrollbar-width:none] active:cursor-grabbing [&::-webkit-scrollbar]:hidden"
+        >
           {clothes.attributes.map((attribute, index) => (
             <div 
               key={index}
-              className="box-border content-stretch flex gap-1 items-center justify-center px-1.5 py-1 relative rounded-[7px] shrink-0 border border-gray-300"
+              className="box-border content-stretch flex gap-1 items-center justify-center px-1.5 py-0.5 relative rounded-[5px] shrink-0 border border-gray-300"
             >
-              <div className="font-semibold leading-none not-italic relative shrink-0 text-gray-500 text-[14px] tracking-[-0.35px] w-full">
+              <div className="font-semibold leading-none not-italic relative shrink-0 text-gray-500 text-[11px] tracking-[-0.25px] w-full">
                 <p className="leading-normal">{attribute.value}</p>
               </div>
             </div>

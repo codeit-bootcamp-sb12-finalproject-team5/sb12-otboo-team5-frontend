@@ -5,9 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import SocialLoginSection from "./SocialLoginSection";
 import {createUser} from "@/lib/api";
+import { useAuthStore } from "@/lib/stores/useAuthStore";
 
 export default function RegisterForm() {
   const navigate = useNavigate();
+  const { signIn } = useAuthStore();
   const [formData, setFormData] = useState({
     email: "",
     name: "",
@@ -148,9 +150,10 @@ export default function RegisterForm() {
         password: formData.password
       });
       
-      // 성공 시 로그인 페이지로 이동
-      navigate("/auth/login");
-    } catch (err) {
+      // 가입한 계정으로 바로 로그인한 뒤 선호도 조사로 이동
+      await signIn(formData.email, formData.password);
+      navigate("/recommendations/preferences", { replace: true });
+    } catch {
       // 서버 에러 처리
       setErrors({ submit: "회원가입에 실패했습니다. 다시 시도해주세요." });
     } finally {
@@ -169,13 +172,9 @@ export default function RegisterForm() {
     formData.password === formData.confirmPassword;
 
   return (
-    <div className="flex flex-col gap-[30px] w-full">
-      <h1 className="text-gray-700 text-2xl font-extrabold tracking-[-0.6px] text-center">
-        나만의 옷장을 만들어보세요
-      </h1>
-      
-      <form onSubmit={handleSubmit} className="flex flex-col gap-[26px] w-full">
-        <div className="flex flex-col gap-[18px] w-full">
+    <div className="flex flex-col gap-6 w-full">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full">
+        <div className="flex flex-col gap-3.5 w-full">
           <div className="flex flex-col gap-2.5 w-full">
             <label 
               htmlFor="email"
@@ -186,7 +185,7 @@ export default function RegisterForm() {
             <Input
               id="email"
               type="email"
-              placeholder="codeit@codeit.com"
+              placeholder="이메일을 입력해주세요"
               value={formData.email}
               onChange={handleInputChange("email")}
               error={errors.email}
@@ -256,25 +255,22 @@ export default function RegisterForm() {
         <Button
           type="submit"
           disabled={!isFormValid || loading}
-          className="w-full"
+          className="h-[51px] w-full rounded-[9px] bg-[#163555] text-[16px] hover:bg-[#0f2945] disabled:bg-[#aeb8c1]"
         >
           {loading ? "가입 중..." : "가입하기"}
         </Button>
       </form>
       
-      <div className="flex gap-[7px] items-center justify-center text-base font-semibold tracking-[-0.4px]">
-        <span className="text-gray-500">
-          이미 계정이 있으신가요?
-        </span>
+      <div className="flex items-center gap-3 text-xs text-[#8993a0] before:h-px before:flex-1 before:bg-[#d7d7d4] after:h-px after:flex-1 after:bg-[#d7d7d4]">또는 간편하게 시작하기</div>
+      <SocialLoginSection />
+
+      <div className="flex gap-[7px] items-center justify-center text-sm font-semibold tracking-[-0.4px]">
+        <span className="text-[#8b939b]">이미 계정이 있으신가요?</span>
         <Link 
           to="/auth/login"
-          className="text-blue-500 hover:underline"
-        >
-          로그인
-        </Link>
+          className="text-[#294968] hover:underline"
+        >로그인</Link>
       </div>
-      
-      <SocialLoginSection />
     </div>
   );
 }

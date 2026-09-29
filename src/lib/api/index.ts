@@ -16,6 +16,9 @@ export * as feedApi from './feeds';
 // Clothes API
 export * as clothesApi from './clothes';
 
+// Outfit API
+export * as outfitApi from './outfits';
+
 // Clothes Attributes API
 export * as clothesAttributesApi from './clothes-attributes';
 
@@ -76,6 +79,8 @@ export {
   extractByUrl,
 } from './clothes';
 
+export { createOutfit, getOutfitList, getOutfit, updateOutfit, deleteOutfit, generateOutfitImage } from './outfits';
+
 export {
   // Clothes Attributes
   getClothesAttributeDef,
@@ -101,6 +106,9 @@ export {
 export {
   // Recommendations
   getRecommendation,
+  updateRecommendationPreferences,
+  getOutfitRecommendation,
+  getRecommendationUsage,
 } from './recommendations';
 
 export {
@@ -111,5 +119,9 @@ export {
 
 export {
   // Messages
-  getDms,
+  getDmRooms,
+  getDmMessages,
+  createDmRoom,
+  markDmMessagesRead,
+  leaveDmRoom,
 } from './messages';

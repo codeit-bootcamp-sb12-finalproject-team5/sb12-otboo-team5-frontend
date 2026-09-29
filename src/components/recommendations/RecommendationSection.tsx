@@ -1,37 +1,43 @@
 import {useEffect} from 'react';
 import RecommendationHeader from './RecommendationHeader';
 import RecommendationGrid from './RecommendationGrid';
-import EmptyRecommendation from './EmptyRecommendation';
 import {useRecommendationStore} from "@/lib/stores/useRecommendationStore.ts";
 import {useWeatherStore} from "@/lib/stores/useWeatherStore.ts";
+import {useAuthStore} from '@/lib/stores/useAuthStore';
+import {loadRecommendationSession} from '@/lib/recommendationSession';
 
 export default function RecommendationSection() {
   const { selectedWeather } = useWeatherStore();
-  const { data: recommendations, updateParams} = useRecommendationStore();
+  const userId = useAuthStore(state => state.data?.userDto.id);
+  const { data: recommendations, loading, setWeatherId, restore } = useRecommendationStore();
 
   useEffect(() => {
     if (selectedWeather?.id) {
-      updateParams({ weatherId: selectedWeather.id });
+      setWeatherId(selectedWeather.id);
+      if (userId) {
+        const cachedRecommendation = loadRecommendationSession('ootd', userId, selectedWeather.id);
+        if (cachedRecommendation) restore(selectedWeather.id, cachedRecommendation);
+      }
     }
-  }, [selectedWeather?.id, updateParams]);
+  }, [selectedWeather?.id, setWeatherId, restore, userId]);
 
   // selectedWeather가 없으면 추천 섹션을 렌더링하지 않음
   if (!selectedWeather) {
     return null;
   }
 
-  const hasClothes = recommendations && recommendations.clothes.length > 0;
+  const hasClothes = Boolean(recommendations?.outfits.some(outfit => outfit.clothes.length > 0));
 
   return (
-    <div className="relative w-full px-[100px] h-full">
-      <div className="bg-white rounded-[20px] box-border content-stretch flex flex-col gap-[34px] px-[40px] items-start justify-start py-8 relative w-full h-full shadow-[0px_-2px_10px_0px_rgba(0,0,0,0.05)]">
-        {hasClothes ? (
+    <div className="relative -mt-2 h-full min-h-0 w-full px-[52px] pb-6">
+      <div className="relative flex h-full min-h-0 w-full flex-col items-start justify-start gap-5 overflow-hidden rounded-[12px] border-[0.2px] border-[#7a8ca3] bg-[#fdfdfa] px-[40px] py-5 shadow-[0px_8px_24px_rgba(15,42,68,0.06)]">
+        {loading || hasClothes ? (
             <>
               <RecommendationHeader/>
               <RecommendationGrid/>
             </>
         ) : (
-          <EmptyRecommendation/>
+          <RecommendationHeader centered />
         )}
       </div>
     </div>

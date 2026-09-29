@@ -5,7 +5,7 @@ import { useAuthStore } from '@/lib/stores/useAuthStore';
 import { useInfiniteScroll } from '@/lib/hooks/useInfiniteScroll';
 import ClothesItem from '@/components/closet/ClothesItem';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import type { ClothesType } from "@/lib/api";
+import type { ClothesCategory } from "@/lib/api";
 
 interface UserClosetProps {
   userId: string;
@@ -37,36 +37,30 @@ export default function UserCloset({ userId }: UserClosetProps) {
   }, [userId, updateParams, fetch, isOwnProfile, updateProfileParams, fetchProfile]);
 
   // 카테고리 매핑
-  const categoryMap: Record<string, ClothesType | undefined> = {
+  const categoryMap: Record<string, ClothesCategory | undefined> = {
     '전체': undefined,
     '상의': 'TOP',
-    '하의': 'BOTTOM',
-    '원피스': 'DRESS',
+    '바지': 'PANTS',
+    '치마': 'SKIRT',
     '아우터': 'OUTER',
-    '속옷': 'UNDERWEAR',
-    '액세서리': 'ACCESSORY',
+    '원피스': 'DRESS',
     '신발': 'SHOES',
-    '양말': 'SOCKS',
     '모자': 'HAT',
     '가방': 'BAG',
-    '스카프': 'SCARF',
-    '기타': 'ETC'
+    '악세서리': 'ACCESSORY'
   };
 
-  const reverseCategoryMap: Record<ClothesType | 'ALL', string> = {
+  const reverseCategoryMap: Record<ClothesCategory | 'ALL', string> = {
     'ALL': '전체',
     'TOP': '상의',
-    'BOTTOM': '하의',
-    'DRESS': '원피스',
+    'PANTS': '바지',
+    'SKIRT': '치마',
     'OUTER': '아우터',
-    'UNDERWEAR': '속옷',
-    'ACCESSORY': '액세서리',
+    'DRESS': '원피스',
     'SHOES': '신발',
-    'SOCKS': '양말',
     'HAT': '모자',
     'BAG': '가방',
-    'SCARF': '스카프',
-    'ETC': '기타'
+    'ACCESSORY': '악세서리'
   };
 
   const handleCategoryChange = (category: string) => {
@@ -127,17 +121,14 @@ export default function UserCloset({ userId }: UserClosetProps) {
             <SelectContent>
               <SelectItem value="전체">전체</SelectItem>
               <SelectItem value="상의">상의</SelectItem>
-              <SelectItem value="하의">하의</SelectItem>
-              <SelectItem value="원피스">원피스</SelectItem>
+              <SelectItem value="바지">바지</SelectItem>
+              <SelectItem value="치마">치마</SelectItem>
               <SelectItem value="아우터">아우터</SelectItem>
-              <SelectItem value="속옷">속옷</SelectItem>
-              <SelectItem value="액세서리">액세서리</SelectItem>
+              <SelectItem value="원피스">원피스</SelectItem>
               <SelectItem value="신발">신발</SelectItem>
-              <SelectItem value="양말">양말</SelectItem>
               <SelectItem value="모자">모자</SelectItem>
               <SelectItem value="가방">가방</SelectItem>
-              <SelectItem value="스카프">스카프</SelectItem>
-              <SelectItem value="기타">기타</SelectItem>
+              <SelectItem value="악세서리">악세서리</SelectItem>
             </SelectContent>
           </Select>
         </div>
