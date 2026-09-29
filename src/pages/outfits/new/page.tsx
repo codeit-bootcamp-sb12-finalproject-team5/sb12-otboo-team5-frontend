@@ -11,7 +11,7 @@ import AddOutfitModal from '@/components/recommendations/AddOutfitModal';
 import { getClothes } from '@/lib/api/clothes';
 import { getOutfitRecommendation, getRecommendationUsage } from '@/lib/api/recommendations';
 import { getProfileWeather } from '@/lib/api/weather';
-import type { ClothesDto, RecommendationDto, RecommendationUsage, RecommendedOutfitDto, WeatherDto } from '@/lib/api';
+import {generateOutfitImage, type ClothesDto, type OutfitCreateResponse, type RecommendationDto, type RecommendationUsage, type RecommendedOutfitDto, type WeatherDto} from '@/lib/api';
 import { useAuthStore } from '@/lib/stores/useAuthStore';
 import {loadRecommendationSession, saveRecommendationSession} from '@/lib/recommendationSession';
 import outfitRecommendationIllustration from '@/assets/illust_logos/outfit-recommendation.png';
@@ -38,23 +38,44 @@ export default function NewOutfitPage() {
   const [isRegistrationConfirmOpen, setIsRegistrationConfirmOpen] = useState(false);
   const [isOutfitModalOpen, setIsOutfitModalOpen] = useState(false);
   const [generationMode, setGenerationMode] = useState<'FITTING' | 'COMPOSITION'>();
+  const [registeredOutfitId, setRegisteredOutfitId] = useState<string>();
+  const [generatedImageUrl, setGeneratedImageUrl] = useState<string>();
+  const [generatingMode, setGeneratingMode] = useState<'FITTING' | 'COMPOSITION'>();
 
   const openRegistrationConfirm = () => {
     setOutfitToRegister(selectedOutfit);
     setSelectedOutfit(undefined);
-    setIsRegistrationConfirmOpen(true);
-  };
-
-  const continueRegistration = () => {
     setGenerationMode(undefined);
-    setIsRegistrationConfirmOpen(false);
+    setRegisteredOutfitId(undefined);
+    setGeneratedImageUrl(undefined);
     setIsOutfitModalOpen(true);
   };
 
-  const openGeneratedRegistration = (mode: 'FITTING' | 'COMPOSITION') => {
-    setGenerationMode(mode);
-    setIsRegistrationConfirmOpen(false);
-    setIsOutfitModalOpen(true);
+  const openGeneratedRegistration = async (mode: 'FITTING' | 'COMPOSITION') => {
+    if (!registeredOutfitId) {
+      toast.error('등록된 아웃핏 정보를 찾을 수 없습니다.');
+      return;
+    }
+
+    setGeneratingMode(mode);
+    try {
+      const result = await generateOutfitImage(registeredOutfitId, mode);
+      setGenerationMode(mode);
+      setGeneratedImageUrl(result.imageUrl);
+      setIsRegistrationConfirmOpen(false);
+      setIsOutfitModalOpen(true);
+    } catch (error) {
+      console.error('아웃핏 이미지 생성 실패:', error);
+      toast.error(`${mode === 'FITTING' ? '피팅' : '조합'} 이미지를 생성하지 못했습니다.`);
+    } finally {
+      setGeneratingMode(undefined);
+    }
+  };
+
+  const handleRegistrationSuccess = (registeredOutfit: OutfitCreateResponse) => {
+    setIsOutfitModalOpen(false);
+    setRegisteredOutfitId(registeredOutfit.id);
+    setIsRegistrationConfirmOpen(true);
   };
 
   useEffect(() => {
@@ -174,31 +195,30 @@ export default function NewOutfitPage() {
         if (!open) {
           setIsRegistrationConfirmOpen(false);
           setOutfitToRegister(undefined);
+          setRegisteredOutfitId(undefined);
+          setGeneratedImageUrl(undefined);
         }
       }}>
         <DialogContent className="w-[680px] max-w-[calc(100%-2rem)] rounded-[12px] bg-white p-7 sm:max-w-[calc(100%-2rem)]" showCloseButton={false}>
           <div className="flex flex-col gap-5">
             <div>
-              <h2 className="text-[22px] font-extrabold text-[#3d5570]">OUTFIT 등록</h2>
-              <p className="mt-2 text-[15px] text-[#696975]">아래 항목을 추가해서 OUTFIT 등록을 하시겠습니까?</p>
+              <h2 className="text-[22px] font-extrabold text-[#3d5570]">OUTFIT에 추가하기</h2>
+              <p className="mt-2 text-[15px] text-[#696975]">아래 항목도 OUTFIT에 추가하시겠습니까?</p>
             </div>
             <div className="grid grid-cols-2 gap-5">
-              <button type="button" onClick={() => openGeneratedRegistration('FITTING')} className="flex flex-col items-center rounded-[10px] bg-[#f7f7f8] p-3 transition-colors hover:bg-[#f2ede5]">
+              <button type="button" disabled={Boolean(generatingMode)} onClick={() => openGeneratedRegistration('FITTING')} className="flex flex-col items-center rounded-[10px] bg-[#f7f7f8] p-3 transition-colors hover:bg-[#f2ede5] disabled:cursor-wait disabled:opacity-60">
                 <div className="flex h-[180px] w-full items-center justify-center"><img src={fittingIllustration} alt="피팅 일러스트" className="h-[180px] w-full object-contain" /></div>
-                <p className="mt-2 text-[13px] font-bold tracking-[0.08em] text-[#3d5570]">FITTING</p>
+                <p className="mt-2 text-[13px] font-bold tracking-[0.08em] text-[#3d5570]">{generatingMode === 'FITTING' ? '생성 중...' : 'FITTING'}</p>
               </button>
-              <button type="button" onClick={() => openGeneratedRegistration('COMPOSITION')} className="flex flex-col items-center rounded-[10px] bg-[#f7f7f8] p-3 transition-colors hover:bg-[#f2ede5]">
+              <button type="button" disabled={Boolean(generatingMode)} onClick={() => openGeneratedRegistration('COMPOSITION')} className="flex flex-col items-center rounded-[10px] bg-[#f7f7f8] p-3 transition-colors hover:bg-[#f2ede5] disabled:cursor-wait disabled:opacity-60">
                 <div className="flex h-[180px] w-full items-center justify-center"><img src={compositionIllustration} alt="조합 일러스트" className="h-[150px] w-full object-contain" /></div>
-                <p className="mt-2 text-[13px] font-bold tracking-[0.08em] text-[#3d5570]">COMPOSITION</p>
+                <p className="mt-2 text-[13px] font-bold tracking-[0.08em] text-[#3d5570]">{generatingMode === 'COMPOSITION' ? '생성 중...' : 'COMPOSITION'}</p>
               </button>
-            </div>
-            <div className="flex justify-end">
-              <button type="button" onClick={continueRegistration} className="h-[36px] rounded-[8px] bg-[#3d5570] px-5 text-[14px] font-bold text-white hover:bg-[#0f2a44]">추가하지 않고 등록</button>
             </div>
           </div>
         </DialogContent>
       </Dialog>
-      <AddOutfitModal open={isOutfitModalOpen} outfit={outfitToRegister} category="OUTFIT" generationMode={generationMode} onClose={() => { setIsOutfitModalOpen(false); setOutfitToRegister(undefined); setGenerationMode(undefined); }} />
+      <AddOutfitModal open={isOutfitModalOpen} outfit={outfitToRegister} category="OUTFIT" generationMode={generationMode} generatedImageUrl={generatedImageUrl} onSuccess={handleRegistrationSuccess} onClose={() => { setIsOutfitModalOpen(false); setOutfitToRegister(undefined); setGenerationMode(undefined); setRegisteredOutfitId(undefined); setGeneratedImageUrl(undefined); }} />
     </div>
   );
 }
