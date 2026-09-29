@@ -44,17 +44,6 @@ jobs:
       - name: Build
         run: pnpm run build
 
-      # OIDC 신뢰 정책과 비교할 현재 Actions 실행 브랜치를 로그에 남깁니다.
-      - name: Check deployment branch
-        run: |
-          echo "GITHUB_REF=$GITHUB_REF"
-          echo "GITHUB_REF_NAME=$GITHUB_REF_NAME"
-
-      - name: Check OIDC claims
-        run: |
-          token="$(curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com" | jq -r '.value')"
-          python3 -c 'import base64,json,sys; payload=sys.argv[1].split(".")[1]; claims=json.loads(base64.urlsafe_b64decode(payload + "=" * (-len(payload) % 4))); print(json.dumps({key: claims.get(key) for key in ("aud","sub","repository","ref")}, indent=2))' "$token"
-
       # GitHub OIDC 토큰으로 AWS_ROLE_ARN 역할을 임시로 Assume
       - name: Configure AWS credentials through OIDC
         uses: aws-actions/configure-aws-credentials@v4

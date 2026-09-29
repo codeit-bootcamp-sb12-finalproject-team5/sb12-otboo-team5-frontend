@@ -12,6 +12,7 @@ import ProfileAvatar from '@/components/profile/ProfileAvatar';
 import commentIcon from '@/assets/icons/ic_comment.svg';
 import emptyImageIcon from '@/assets/icons/empty image.svg';
 import {useNavigate} from "react-router-dom";
+import { getFeedImages } from './feedImages';
 
 function WeatherIcon({ skyStatus }: { skyStatus: SkyStatus }) {
   switch (skyStatus) {
@@ -33,8 +34,8 @@ interface FeedCardProps {
   onClick?: () => void;
 }
 
-function ImageLayout({ ootds }: { ootds: FeedDto['ootds'] }) {
-  const images = ootds.filter(ootd => ootd.imageUrl);
+function ImageLayout({ feed }: { feed: FeedDto }) {
+  const images = getFeedImages(feed).filter(image => image.imageUrl);
 
 
 
@@ -63,14 +64,14 @@ function ImageLayout({ ootds }: { ootds: FeedDto['ootds'] }) {
   if (images.length === 2) {
     // 2개 이미지: 좌우 분할
     return (
-      <div className="aspect-[307.5/206] content-stretch flex gap-0.5 items-start justify-start overflow-clip relative shrink-0 w-full">
-        <div className="h-full relative shrink-0 w-[182px]">
+      <div className="grid aspect-[307.5/206] grid-cols-[minmax(0,3fr)_minmax(56px,2fr)] gap-0.5 overflow-clip relative shrink-0 w-full">
+        <div className="relative min-w-0">
           <div 
             className="absolute bg-center bg-cover bg-no-repeat inset-0 rounded" 
             style={{ backgroundImage: `url('${images[0].imageUrl}')` }} 
           />
         </div>
-        <div className="basis-0 grow h-full relative shrink-0">
+        <div className="relative min-w-0">
           <div 
             className="absolute bg-center bg-cover bg-no-repeat inset-0 rounded" 
             style={{ backgroundImage: `url('${images[1].imageUrl}')` }} 
@@ -82,14 +83,14 @@ function ImageLayout({ ootds }: { ootds: FeedDto['ootds'] }) {
 
   // 3개 이상: 왼쪽 1개, 오른쪽 상하 2개 + 오버레이
   return (
-    <div className="aspect-[307.5/206] content-stretch flex gap-0.5 items-start justify-start overflow-clip relative shrink-0 w-full">
-      <div className="h-full relative shrink-0 w-[182px]">
+    <div className="grid aspect-[307.5/206] grid-cols-[minmax(0,3fr)_minmax(56px,2fr)] gap-0.5 overflow-clip relative shrink-0 w-full">
+      <div className="relative min-w-0">
         <div 
           className="absolute bg-center bg-cover bg-no-repeat inset-0 rounded" 
           style={{ backgroundImage: `url('${images[0].imageUrl}')` }} 
         />
       </div>
-      <div className="basis-0 content-stretch flex flex-col gap-0.5 grow h-full items-start justify-center min-h-px min-w-px relative shrink-0">
+      <div className="flex min-w-0 flex-col gap-0.5">
         <div className="basis-0 grow min-h-px min-w-px relative shrink-0 w-full">
           <div 
             className="absolute bg-center bg-cover bg-no-repeat inset-0 rounded" 
@@ -236,7 +237,7 @@ export default function FeedCard({ feed, onClick }: FeedCardProps) {
       </div>
 
       {/* 이미지 영역 */}
-      <ImageLayout ootds={feed.ootds} />
+      <ImageLayout feed={feed} />
 
       {/* 내용 */}
       <div className="box-border content-stretch flex gap-2 items-center justify-start px-0.5 py-0 relative shrink-0 w-full">
