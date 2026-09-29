@@ -4,6 +4,7 @@ import type {
   RecommendationDto,
   RecommendationPreferenceRequest,
   RecommendationUsageResponse,
+  UserPreferenceSurveyOption,
 } from './types';
 
 const RECOMMENDATION_TIMEOUT_MS = 90_000;
@@ -33,6 +34,10 @@ export const getOutfitRecommendation = async (params: RecommendationParams): Pro
 /** 오늘의 추천 사용량 조회 */
 export const getRecommendationUsage = async (): Promise<RecommendationUsageResponse> => {
   return apiClient.get<RecommendationUsageResponse>('/api/recommendations/usage');
+};
+
+export const getRecommendationPreferenceOptions = (signal?: AbortSignal): Promise<UserPreferenceSurveyOption[]> => {
+  return apiClient.get<UserPreferenceSurveyOption[]>('/api/recommendations/preferences', { signal });
 };
 
 export const updateRecommendationPreferences = async (
