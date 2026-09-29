@@ -3,6 +3,7 @@ import type { FeedDto } from '@/lib/api/types';
 import leftArrowIcon from '@/assets/icons/ic_left.svg';
 import rightArrowIcon from '@/assets/icons/ic_right.svg';
 import emptyImageIcon from '@/assets/icons/empty image.svg';
+import { getFeedImages } from './feedImages';
 
 interface FeedDetailLeftSectionProps {
   feed: FeedDto;
@@ -14,15 +15,15 @@ export default function FeedDetailLeftSection({ feed }: FeedDetailLeftSectionPro
   const thumbnailDragStartRef = useRef<{ x: number; scrollLeft: number } | null>(null);
   const tagDragStartRef = useRef<{ x: number; scrollLeft: number } | null>(null);
   
-  // 현재 선택된 OOTD
-  const currentOotd = feed.ootds[currentIndex];
+  const images = getFeedImages(feed);
+  const currentOotd = images[currentIndex];
 
   const handlePrevious = () => {
-    setCurrentIndex(prev => prev === 0 ? feed.ootds.length - 1 : prev - 1);
+    setCurrentIndex(prev => prev === 0 ? images.length - 1 : prev - 1);
   };
 
   const handleNext = () => {
-    setCurrentIndex(prev => prev === feed.ootds.length - 1 ? 0 : prev + 1);
+    setCurrentIndex(prev => prev === images.length - 1 ? 0 : prev + 1);
   };
 
   const handleThumbnailClick = (index: number) => {
@@ -55,7 +56,7 @@ export default function FeedDetailLeftSection({ feed }: FeedDetailLeftSectionPro
                style={{ backgroundImage: `url('${currentOotd.imageUrl}')` }}>
             
             {/* 네비게이션 화살표 - OOTD가 2개 이상일 때만 표시 */}
-            {feed.ootds.length > 1 && (
+            {images.length > 1 && (
               <>
                 {/* 왼쪽 화살표 */}
                 <button
@@ -84,7 +85,7 @@ export default function FeedDetailLeftSection({ feed }: FeedDetailLeftSectionPro
             <img src={emptyImageIcon} alt="이미지 없음" className="w-16 h-16" />
             
             {/* 이미지가 없을 때도 화살표 표시 */}
-            {feed.ootds.length > 1 && (
+            {images.length > 1 && (
               <>
                 {/* 왼쪽 화살표 */}
                 <button
@@ -143,13 +144,14 @@ export default function FeedDetailLeftSection({ feed }: FeedDetailLeftSectionPro
 
         {/* OOTD 썸네일들 - 100x100 원형 */}
         <div ref={thumbnailListRef} onPointerDown={startThumbnailDrag} onPointerMove={dragThumbnails} onPointerUp={endThumbnailDrag} onPointerCancel={endThumbnailDrag} onPointerLeave={endThumbnailDrag} className="flex shrink-0 items-start gap-2.5 overflow-x-auto px-1 py-3 touch-pan-y select-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {feed.ootds.map((ootd, index) => {
+          {images.map((ootd, index) => {
             const isSelected = currentIndex === index;
             const hasImage = !!ootd.imageUrl;
             
             return (
               <button
-                key={ootd.clothesId}
+                key={ootd.key}
+                aria-label={ootd.name}
                 onClick={() => handleThumbnailClick(index)}
                 className="relative size-[100px] shrink-0 cursor-pointer rounded-[10px] transition-opacity hover:opacity-80"
               >
