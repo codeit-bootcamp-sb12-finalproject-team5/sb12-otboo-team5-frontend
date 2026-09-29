@@ -44,6 +44,12 @@ jobs:
       - name: Build
         run: pnpm run build
 
+      # OIDC 신뢰 정책과 비교할 현재 Actions 실행 브랜치를 로그에 남깁니다.
+      - name: Check deployment branch
+        run: |
+          echo "GITHUB_REF=$GITHUB_REF"
+          echo "GITHUB_REF_NAME=$GITHUB_REF_NAME"
+
       # GitHub OIDC 토큰으로 AWS_ROLE_ARN 역할을 임시로 Assume
       - name: Configure AWS credentials through OIDC
         uses: aws-actions/configure-aws-credentials@v4
