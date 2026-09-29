@@ -288,12 +288,13 @@ export interface OutfitImageResponse {
 }
 
 export interface RecommendationPreferenceRequest {
-  subcategories: string[];
-  colors: string[];
-  fits: string[];
-  materials: string[];
-  patterns: string[];
-  styles: string[];
+  clothesIds: string[];
+}
+
+export interface UserPreferenceSurveyOption {
+  category: ClothesCategory;
+  clothesId: string;
+  imageUrl: string;
 }
 
 export interface NotificationDto {
