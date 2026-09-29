@@ -1,0 +1,47 @@
+name: Frontend CI
+
+# main 브랜치로 보내는 PR에서 코드 품질과 빌드 가능 여부를 검증합니다.
+on:
+  pull_request:
+    branches:
+      - main
+      - dev
+  workflow_dispatch:
+
+# AWS 배포가 없는 검증 작업이므로 소스 코드 읽기 권한만 사용
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      # PR의 소스 코드를 Runner에 내려받습니다.
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      # 저장소의 pnpm lockfile과 동일한 pnpm 버전을 준비합니다.
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      # Vite 빌드에 사용할 Node.js와 pnpm 패키지 캐시를 설정합니다.
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      # lockfile 기준으로 의존성을 설치합니다.
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # ESLint 규칙 위반 여부를 검사합니다.
+      - name: Lint
+        run: pnpm run lint
+
+      # 배포용 Vite 정적 파일이 문제없이 생성되는지 확인합니다.
+      - name: Build
+        run: pnpm run build
