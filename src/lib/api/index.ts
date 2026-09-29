@@ -107,6 +107,7 @@ export {
   // Recommendations
   getRecommendation,
   updateRecommendationPreferences,
+  getRecommendationPreferenceOptions,
   getOutfitRecommendation,
   getRecommendationUsage,
 } from './recommendations';
