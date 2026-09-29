@@ -1,182 +1,185 @@
-import { useState } from 'react';
-import { Check, Sparkles } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Check, LoaderCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
-import { updateRecommendationPreferences } from '@/lib/api';
-import { cn } from '@/lib/utils';
-import type { RecommendationPreferenceRequest } from '@/lib/api/types';
+import OutfitImage from '@/components/outfits/OutfitImage';
+import { getRecommendationPreferenceOptions, updateRecommendationPreferences } from '@/lib/api';
+import type { ClothesCategory, UserPreferenceSurveyOption } from '@/lib/api/types';
 
-type PreferenceKey = keyof RecommendationPreferenceRequest;
-
-const PREFERENCE_FIELDS: Array<{
-  key: PreferenceKey;
-  title: string;
-  description: string;
-  values: string[];
-}> = [
-  {
-    key: 'subcategories',
-    title: '선호하는 아이템',
-    description: '평소 즐겨 입는 아이템을 모두 골라주세요.',
-    values: [
-      '긴소매티', '스웨트셔츠', '셔츠/블라우스', '후드티', '반소매티', '카라티', '니트', '민소매티',
-      '후드집업', '블루종', '레더', '슈트재킷', '카디건', '경량패딩', '헌팅재킷', '트러커재킷',
-      '스타디움재킷', '나일론재킷', '트레이닝재킷', '아노락재킷', '플리스', '환절기코트', '베스트',
-      '무스탕', '싱글코트', '더블코트', '기타코트', '롱패딩', '숏패딩', '데님팬츠', '조거팬츠',
-      '코튼팬츠', '슈트팬츠', '숏팬츠', '레깅스', '점프슈트', '미니스커트', '미디스커트', '롱스커트',
-      '미니원피스', '미디원피스', '맥시원피스', '메신저백', '숄더백', '백팩', '토트백', '에코백',
-      '보스턴백', '웨이스트백', '파우치', '브리프케이스', '캐리어', '클러치백', '캡', '베레모', '페도라',
-      '버킷', '비니', '트루퍼', '바라클라바', '스니커즈', '스포츠', '구두', '부츠', '샌들', '패딩',
-      '머플러', '주얼리', '안경', '시계', '벨트', '기타',
-    ],
-  },
-  {
-    key: 'colors',
-    title: '좋아하는 색상',
-    description: '옷을 고를 때 자주 손이 가는 색상을 골라주세요.',
-    values: [
-      '블랙', '화이트', '다크그레이', '그레이', '네이비', '아이보리', '라이트그레이', '카키', '베이지',
-      '블루', '다크네이비', '브라운', '다크브라운', '버건디', '스카이블루', '그린', '다크그린',
-      '올리브그린', '레드', '다크블루', '오트밀', '민트', '퍼플', '다크베이지', '핑크', '오렌지',
-      '라이트핑크', '라이트그린', '옐로우', '딥레드', '라이트브라운', '다크핑크', '샌드', '라이트옐로우',
-      '머스타드', '라벤더', '라임', '다크오렌지', '카멜', '브릭', '실버', '라이트오렌지', '페일핑크',
-      '피치', '데님', '카키베이지', '흑청', '연청', '중청', '골드', '클리어', '기타',
-    ],
-  },
-  {
-    key: 'fits',
-    title: '선호하는 핏',
-    description: '내가 편안하고 잘 어울린다고 느끼는 핏을 골라주세요.',
-    values: ['스탠다드', '오버사이즈', '슬림', '와이드'],
-  },
-  {
-    key: 'materials',
-    title: '좋아하는 소재',
-    description: '촉감이나 계절감 때문에 선호하는 소재를 골라주세요.',
-    values: [
-      '면', '폴리에스테르', '스판덱스', '나일론', '니트', '레이온', '아크릴', '기모', '울', '텐셀',
-      '폴리우레탄', '메시', '데님', '캐시미어', '면혼방', '플리스', '알파카', '모헤어', '실크',
-      '코듀로이', '벨벳', '기타',
-    ],
-  },
-  {
-    key: 'patterns',
-    title: '좋아하는 패턴',
-    description: '자주 찾는 디자인과 패턴을 골라주세요.',
-    values: [
-      '로고/그래픽', '단색/무지', '스트라이프', '가먼트다잉', '컬러블록', '체크', '플라워', '도트',
-      '카모플라쥬', '그라데이션', '드로잉', '디스트로이드', '레터링', '기타',
-    ],
-  },
-  {
-    key: 'styles',
-    title: '선호하는 스타일',
-    description: '나를 가장 잘 표현하는 스타일을 골라주세요.',
-    values: ['캐주얼', '스트릿', '고프코어', '워크웨어', '프레피', '시티보이', '스포티', '로맨틱', '클래식', '미니멀', '시크', '레트로', '기타'],
-  },
-];
-
-const EMPTY_PREFERENCES: RecommendationPreferenceRequest = {
-  subcategories: [],
-  colors: [],
-  fits: [],
-  materials: [],
-  patterns: [],
-  styles: [],
+const CATEGORY_LABELS: Record<ClothesCategory, string> = {
+  TOP: '상의', PANTS: '바지', SKIRT: '치마', OUTER: '아우터', DRESS: '원피스',
+  SHOES: '신발', HAT: '모자', BAG: '가방', ACCESSORY: '악세서리',
 };
+const MAX_SELECTIONS = 45;
 
 export default function RecommendationPreferencesPage() {
   const navigate = useNavigate();
-  const [preferences, setPreferences] = useState<RecommendationPreferenceRequest>(EMPTY_PREFERENCES);
+  const [options, setOptions] = useState<UserPreferenceSurveyOption[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [revision, setRevision] = useState(0);
+  const [step, setStep] = useState(0);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [isSaving, setIsSaving] = useState(false);
+  const savingRef = useRef(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
 
-  const togglePreference = (key: PreferenceKey, value: string) => {
-    setPreferences((current) => ({
-      ...current,
-      [key]: current[key].includes(value)
-        ? current[key].filter((selected) => selected !== value)
-        : [...current[key], value],
-    }));
+  useEffect(() => {
+    const controller = new AbortController();
+    setLoading(true);
+    setError(null);
+    getRecommendationPreferenceOptions(controller.signal)
+      .then(data => {
+        if (controller.signal.aborted) return;
+        setOptions(data);
+        setSelectedIds([]);
+        setStep(0);
+      })
+      .catch(() => {
+        if (!controller.signal.aborted) setError('설문 항목을 불러오지 못했습니다. 다시 시도해주세요.');
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setLoading(false);
+      });
+    return () => controller.abort();
+  }, [revision]);
+
+  const pages = useMemo(() => {
+    const groups = new Map<ClothesCategory, UserPreferenceSurveyOption[]>();
+    const seenIds = new Set<string>();
+    options.forEach(option => {
+      if (seenIds.has(option.clothesId)) return;
+      seenIds.add(option.clothesId);
+      const group = groups.get(option.category) ?? [];
+      group.push(option);
+      groups.set(option.category, group);
+    });
+    // Keep every option even if the server returns more than nine for a category.
+    return [...groups].flatMap(([category, items]) =>
+      Array.from({ length: Math.ceil(items.length / 9) }, (_, index) => ({
+        category,
+        items: items.slice(index * 9, (index + 1) * 9),
+      })),
+    );
+  }, [options]);
+  const currentPage = pages[step];
+  const categoryLabel = currentPage ? CATEGORY_LABELS[currentPage.category] ?? currentPage.category : '';
+  const isLastStep = step === pages.length - 1;
+
+  const moveToStep = (next: number) => {
+    setStep(next);
+    scrollRef.current?.scrollTo({ top: 0 });
+    headingRef.current?.focus();
   };
 
-  const selectedCount = Object.values(preferences).reduce((count, values) => count + values.length, 0);
+  const toggleSelection = (id: string) => {
+    if (savingRef.current) return;
+    if (!selectedIds.includes(id) && selectedIds.length >= MAX_SELECTIONS) {
+      toast.error('의상은 전체에서 최대 45개까지 선택할 수 있습니다.');
+      return;
+    }
+    setSelectedIds(current => current.includes(id)
+      ? current.filter(selected => selected !== id)
+      : [...current, id]);
+  };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const submit = async () => {
+    if (savingRef.current) return;
+    if (selectedIds.length === 0 || selectedIds.length > MAX_SELECTIONS) {
+      toast.error('전체 의상 중 최소 1개, 최대 45개를 선택해주세요.');
+      return;
+    }
+    savingRef.current = true;
     setIsSaving(true);
-
     try {
-      await updateRecommendationPreferences(preferences);
-      toast.success('선호도가 저장되었습니다. 이제 더 알맞은 옷을 추천해드릴게요.');
+      await updateRecommendationPreferences({ clothesIds: selectedIds });
+      toast.success('선호도가 저장되었습니다.');
       navigate('/recommendations', { replace: true });
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : '선호도 저장에 실패했습니다. 다시 시도해주세요.');
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : '저장에 실패했습니다. 다시 시도해주세요.');
     } finally {
+      savingRef.current = false;
       setIsSaving(false);
     }
   };
 
   return (
-    <div className="h-full overflow-y-auto bg-[#fcfaf6] px-5 py-8 sm:px-8 lg:px-12">
-      <div className="mx-auto max-w-5xl pb-8">
-        <div className="mb-6 rounded-3xl bg-gradient-to-br from-[#f2ede5] to-white px-6 py-7 sm:px-8">
-          <div className="mb-3 flex size-11 items-center justify-center rounded-2xl bg-[#3d5570] text-white shadow-lg shadow-[#b7a997]/40">
-            <Sparkles className="size-5" />
-          </div>
-          <h1 className="text-2xl font-extrabold tracking-[-0.7px] text-[#34343d] sm:text-3xl">나에게 맞는 옷을 찾아볼까요?</h1>
-          <p className="mt-2 text-sm font-medium tracking-[-0.3px] text-[#6b7280] sm:text-base">
-            좋아하는 스타일을 알려주시면 날씨와 취향에 맞춰 더 좋은 추천을 준비할게요. 여러 개를 선택해도 됩니다.
-          </p>
-        </div>
+    <div ref={scrollRef} className="h-full overflow-y-auto bg-[#fcfaf6] px-5 py-8 sm:px-8">
+      <div className="mx-auto max-w-3xl space-y-6 pb-6">
+        <header>
+          <h1 className="text-2xl font-extrabold text-gray-800">마음에 드는 의상을 골라주세요</h1>
+          <p className="mt-3 text-gray-600">카테고리별로 여러 의상을 선택할 수 있어요. 마음에 드는 의상이 없으면 선택 없이 다음으로 넘어가세요.</p>
+          <p id="selection-requirement" className="mt-2 font-semibold text-[#3d5570]">제출하려면 전체 의상 중 반드시 1개 이상 선택해야 합니다. 최대 45개까지 선택할 수 있어요.</p>
+        </header>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {PREFERENCE_FIELDS.map((field) => (
-            <section key={field.key} className="rounded-2xl border border-[#e7e9ee] bg-white p-5 shadow-sm sm:p-6">
-              <div className="mb-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                <h2 className="text-lg font-extrabold tracking-[-0.45px] text-[#34343d]">{field.title}</h2>
-                <span className="text-sm font-semibold text-[#3d5570]">{preferences[field.key].length}개 선택</span>
+        {loading ? (
+          <div role="status" className="flex items-center justify-center gap-2 py-20 text-gray-600">
+            <LoaderCircle className="size-5 animate-spin" aria-hidden="true" /> 설문 의상을 불러오는 중입니다.
+          </div>
+        ) : error || !currentPage ? (
+          <div className="rounded-2xl border bg-white p-8 text-center">
+            <p role={error ? 'alert' : 'status'} className="mb-4 text-gray-600">{error ?? '현재 선택할 수 있는 설문 의상이 없습니다.'}</p>
+            <Button variant="secondary" onClick={() => setRevision(value => value + 1)}>다시 불러오기</Button>
+          </div>
+        ) : (
+          <>
+            <nav aria-label="설문 단계" className="flex flex-wrap gap-2">
+              {pages.map((page, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  disabled={isSaving}
+                  aria-current={step === index ? 'step' : undefined}
+                  onClick={() => moveToStep(index)}
+                  className={`rounded-full border px-3 py-2 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-50 ${step === index ? 'border-[#3d5570] bg-[#3d5570] text-white' : 'border-[#ded6cb] bg-white text-gray-600'}`}
+                >
+                  {index + 1}. {CATEGORY_LABELS[page.category] ?? page.category}
+                </button>
+              ))}
+            </nav>
+            <section aria-labelledby="survey-category" aria-describedby="selection-requirement" className="rounded-2xl border border-[#ded6cb] bg-white p-4 sm:p-6">
+              <div className="mb-5 flex flex-wrap items-center justify-between gap-2">
+                <h2 ref={headingRef} tabIndex={-1} id="survey-category" className="text-xl font-bold text-gray-800">{categoryLabel}</h2>
+                <p className="text-sm text-gray-600" aria-live="polite">{step + 1} / {pages.length} 단계 · 이 페이지에서 {currentPage.items.filter(item => selectedIds.includes(item.clothesId)).length}개 선택</p>
               </div>
-              <p className="mb-4 text-sm font-medium tracking-[-0.3px] text-[#858590]">{field.description}</p>
-              <div className="flex max-h-56 flex-wrap gap-2 overflow-y-auto pr-1">
-                {field.values.map((value) => {
-                  const isSelected = preferences[field.key].includes(value);
+              <div className="grid grid-cols-3 gap-2 sm:gap-4">
+                {currentPage.items.map((option, index) => {
+                  const selected = selectedIds.includes(option.clothesId);
                   return (
                     <button
-                      key={value}
+                      key={option.clothesId}
                       type="button"
-                      aria-pressed={isSelected}
-                      onClick={() => togglePreference(field.key, value)}
-                      className={cn(
-                        'inline-flex min-h-9 items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-semibold tracking-[-0.3px] transition-colors',
-                        isSelected
-                          ? 'border-[#3d5570] bg-[#f2ede5] text-[#0f2a44]'
-                          : 'border-[#ded6cb] bg-white text-[#666672] hover:border-[#b7a997] hover:bg-[#f2ede5]',
-                      )}
+                      aria-label={`${categoryLabel} 의상 ${index + 1}`}
+                      aria-pressed={selected}
+                      disabled={isSaving}
+                      onClick={() => toggleSelection(option.clothesId)}
+                      className={`relative aspect-square overflow-hidden rounded-xl border-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3d5570] disabled:opacity-60 ${selected ? 'border-[#3d5570] ring-2 ring-[#3d5570]' : 'border-gray-200 hover:border-[#b7a997]'}`}
                     >
-                      {isSelected && <Check className="size-3.5" aria-hidden="true" />}
-                      {value}
+                      <OutfitImage imageUrl={option.imageUrl} alt={`${categoryLabel} 의상 ${index + 1}`} className="object-contain" />
+                      <span aria-hidden="true" className={`absolute right-2 top-2 flex size-6 items-center justify-center rounded-full border ${selected ? 'border-[#3d5570] bg-[#3d5570] text-white' : 'border-gray-300 bg-white/90'}`}>
+                        {selected && <Check className="size-4" />}
+                      </span>
                     </button>
                   );
                 })}
               </div>
             </section>
-          ))}
-
-          <div className="sticky bottom-0 flex flex-col gap-3 rounded-2xl border border-[#e7e9ee] bg-white/95 p-4 shadow-lg backdrop-blur sm:flex-row sm:items-center sm:justify-between sm:px-5">
-            <p className="text-sm font-semibold text-[#666672]">
-              총 <span className="text-[#3d5570]">{selectedCount}개</span>의 선호도를 선택했어요.
-            </p>
-            <div className="flex gap-2 sm:w-auto">
-              <Button type="button" variant="secondary" className="flex-1 sm:flex-none" onClick={() => navigate('/recommendations')}>
-                다음에 할게요
-              </Button>
-              <Button type="submit" className="flex-1 sm:flex-none" disabled={isSaving}>
-                {isSaving ? '저장 중...' : '선호도 저장'}
-              </Button>
-            </div>
-          </div>
-        </form>
+            <footer className="sticky bottom-0 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#ded6cb] bg-white/95 p-4 shadow-sm">
+              <p aria-live="polite" className="text-sm font-semibold text-[#3d5570]">전체 {selectedIds.length} / 45개 선택</p>
+              <div className="flex gap-2">
+                <Button type="button" variant="secondary" disabled={step === 0 || isSaving} onClick={() => moveToStep(step - 1)}>이전</Button>
+                {isLastStep ? (
+                  <Button type="button" disabled={isSaving || selectedIds.length === 0} onClick={submit}>{isSaving ? '저장 중...' : '선호도 제출'}</Button>
+                ) : (
+                  <Button type="button" disabled={isSaving} onClick={() => moveToStep(step + 1)}>다음</Button>
+                )}
+              </div>
+              {isLastStep && selectedIds.length === 0 && <p className="w-full text-sm text-red-600">제출하려면 이전 단계 또는 현재 단계에서 의상을 최소 1개 선택해주세요.</p>}
+            </footer>
+          </>
+        )}
       </div>
     </div>
   );
