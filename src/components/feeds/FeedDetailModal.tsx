@@ -28,7 +28,7 @@ export default function FeedDetailModal({ feed, open, onOpenChange }: FeedDetail
       >
         <div className="flex size-full min-h-0 gap-5 overflow-hidden">
           {/* 왼쪽 섹션 - OOTD 캐러셀 (531px) */}
-          <FeedDetailLeftSection feed={currentFeed} />
+          <FeedDetailLeftSection key={currentFeed.id} feed={currentFeed} />
           {/* 오른쪽 섹션 - 피드 정보 & 댓글 (367px) */}
           <FeedDetailRightSection feed={currentFeed} onDelete={() => onOpenChange(false)} />
         </div>

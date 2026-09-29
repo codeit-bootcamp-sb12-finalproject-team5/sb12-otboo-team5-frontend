@@ -203,6 +203,7 @@ export interface OotdDto {
 
 export interface FeedDto {
   id: string;
+  imageUrl?: string | null;
   createdAt: string;
   updatedAt: string;
   author: AuthorDto;

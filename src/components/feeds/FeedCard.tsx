@@ -12,6 +12,7 @@ import ProfileAvatar from '@/components/profile/ProfileAvatar';
 import commentIcon from '@/assets/icons/ic_comment.svg';
 import emptyImageIcon from '@/assets/icons/empty image.svg';
 import {useNavigate} from "react-router-dom";
+import { getFeedImages } from './feedImages';
 
 function WeatherIcon({ skyStatus }: { skyStatus: SkyStatus }) {
   switch (skyStatus) {
@@ -33,8 +34,8 @@ interface FeedCardProps {
   onClick?: () => void;
 }
 
-function ImageLayout({ ootds }: { ootds: FeedDto['ootds'] }) {
-  const images = ootds.filter(ootd => ootd.imageUrl);
+function ImageLayout({ feed }: { feed: FeedDto }) {
+  const images = getFeedImages(feed).filter(image => image.imageUrl);
 
 
 
@@ -236,7 +237,7 @@ export default function FeedCard({ feed, onClick }: FeedCardProps) {
       </div>
 
       {/* 이미지 영역 */}
-      <ImageLayout ootds={feed.ootds} />
+      <ImageLayout feed={feed} />
 
       {/* 내용 */}
       <div className="box-border content-stretch flex gap-2 items-center justify-start px-0.5 py-0 relative shrink-0 w-full">
