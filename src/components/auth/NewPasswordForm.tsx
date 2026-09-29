@@ -105,7 +105,7 @@ export default function NewPasswordForm({ onComplete }: NewPasswordFormProps) {
       await changePassword(userId, {password: formData.password});
       
       onComplete();
-    } catch (err) {
+    } catch {
       // 일반적인 에러 처리
       setErrors({ password: "비밀번호 변경에 실패했습니다. 다시 시도해주세요." });
     } finally {

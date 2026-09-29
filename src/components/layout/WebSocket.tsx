@@ -2,10 +2,7 @@ import { useWebSocketStore } from "@/lib/stores/websocketStore";
 import {useAuthStore} from "@/lib/stores/useAuthStore.ts";
 import {useEffect} from "react";
 
-interface WebSocketProps {
-}
-
-export default function WebSocket({ }: WebSocketProps) {
+export default function WebSocket() {
   const { connect, disconnect } = useWebSocketStore();
   const { isAuthenticated, getAccessToken } = useAuthStore();
 
