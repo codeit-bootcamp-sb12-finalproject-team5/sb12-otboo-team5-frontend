@@ -57,8 +57,8 @@ export default function UserList() {
     }
     
     return params.sortDirection === 'DESCENDING' 
-      ? <ChevronDown className="w-4 h-4 text-blue-500" />
-      : <ChevronUp className="w-4 h-4 text-blue-500" />;
+      ? <ChevronDown className="w-4 h-4 text-[#3d5570]" />
+      : <ChevronUp className="w-4 h-4 text-[#3d5570]" />;
   };
 
   const handleLockToggle = async (user: UserDto) => {
@@ -130,7 +130,7 @@ export default function UserList() {
               <TableRow className="bg-[#f7f7f8] h-11 hover:bg-[#f7f7f8] border-none">
                 <TableHead 
                   className={`group px-5 py-3 text-[16px] font-['SUIT:Bold',_sans-serif] tracking-[-0.4px] w-[300px] cursor-pointer select-none ${
-                    params.sortBy === 'email' ? 'text-blue-500' : 'text-[#34343d] hover:text-blue-500'
+                    params.sortBy === 'email' ? 'text-[#3d5570]' : 'text-[#34343d] hover:text-[#3d5570]'
                   }`}
                   onClick={() => handleSort('email')}
                 >
@@ -141,7 +141,7 @@ export default function UserList() {
                 </TableHead>
                 <TableHead 
                   className={`group px-5 py-3 text-[16px] font-['SUIT:Bold',_sans-serif] tracking-[-0.4px] w-[320px] cursor-pointer select-none ${
-                    params.sortBy === 'createdAt' ? 'text-blue-500' : 'text-[#34343d] hover:text-blue-500'
+                    params.sortBy === 'createdAt' ? 'text-[#3d5570]' : 'text-[#34343d] hover:text-[#3d5570]'
                   }`}
                   onClick={() => handleSort('createdAt')}
                 >

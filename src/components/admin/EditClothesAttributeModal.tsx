@@ -127,7 +127,7 @@ export default function EditClothesAttributeModal({ isOpen, attribute, onClose }
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="w-[550px] p-[30px] gap-[23px]" showCloseButton={false}>
+      <DialogContent className="w-[550px] rounded-[12px] p-[30px] gap-[23px]" showCloseButton={false}>
         {/* 헤더 */}
         <DialogHeader className="flex flex-row items-center justify-between space-y-0">
           <div />
@@ -206,7 +206,7 @@ export default function EditClothesAttributeModal({ isOpen, attribute, onClose }
             <Button
               onClick={handleSubmit}
               disabled={loading}
-              className="h-[46px] px-[18px] py-2.5 bg-[#1e89f4] hover:bg-[#1e89f4]/90 text-white font-['SUIT:Bold',_sans-serif] text-[18px] tracking-[-0.45px] rounded-[12px]"
+              className="h-[46px] px-[18px] py-2.5 bg-[#3d5570] hover:bg-[#0f2a44] text-white font-['SUIT:Bold',_sans-serif] text-[18px] tracking-[-0.45px] rounded-[12px]"
             >
               {loading ? "처리 중..." : "완료"}
             </Button>

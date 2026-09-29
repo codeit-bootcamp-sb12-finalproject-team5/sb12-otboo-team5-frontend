@@ -142,9 +142,9 @@ export default function MyProfileSettingsPage() {
   }
 
   return (
-    <div className="space-y-6 px-8 ">
+    <div className="h-full space-y-6 bg-[#fcfaf6] px-8 py-6">
 
-      <div className="bg-white p-8">
+      <div className="bg-[#fbfaf7] p-8">
         <form onSubmit={handleSubmit(onSubmit)} className="max-w-[428px] mx-auto space-y-6">
           {/* 프로필 이미지 */}
           <ProfileImageUpload

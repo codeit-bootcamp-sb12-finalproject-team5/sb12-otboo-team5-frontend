@@ -5,6 +5,7 @@ import type {
   OutfitDto,
   OutfitListParams,
   OutfitListResponse,
+  OutfitImageResponse,
   OutfitUpdateRequest,
   OutfitUpdateResponse,
 } from './types';
@@ -30,4 +31,14 @@ export const updateOutfit = (outfitId: string, request: OutfitUpdateRequest): Pr
 
 export const deleteOutfit = async (outfitId: string): Promise<void> => {
   await apiClient.delete<void>(`/api/outfit/${encodeURIComponent(outfitId)}`);
+};
+
+export const generateOutfitImage = (
+  outfitId: string,
+  type: 'FITTING' | 'COMPOSITION',
+): Promise<OutfitImageResponse> => {
+  return apiClient.get<OutfitImageResponse>(`/api/outfit/${encodeURIComponent(outfitId)}/generate`, {
+    params: { type },
+    timeout: 0,
+  });
 };

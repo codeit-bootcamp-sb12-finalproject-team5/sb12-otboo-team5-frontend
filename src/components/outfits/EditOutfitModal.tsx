@@ -129,7 +129,7 @@ export default function EditOutfitModal({ outfit, open, onOpenChange, onSaved }:
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90dvh] max-w-[calc(100%-2rem)] overflow-y-auto p-6 sm:max-w-[680px]" showCloseButton={!saving}>
+      <DialogContent className="max-h-[90dvh] max-w-[calc(100%-2rem)] overflow-y-auto rounded-[12px] p-6 sm:max-w-[680px]" showCloseButton={!saving}>
         <DialogTitle className="text-[22px] font-bold tracking-[-0.55px]">아웃핏 수정</DialogTitle>
         <DialogDescription>이름, 설명, 카테고리와 포함할 의류를 변경할 수 있습니다.</DialogDescription>
         <form onSubmit={handleSave} className="mt-2 space-y-5">
@@ -141,7 +141,7 @@ export default function EditOutfitModal({ outfit, open, onOpenChange, onSaved }:
               maxLength={100}
               required
               disabled={saving}
-              className="h-[46px] w-full rounded-xl border border-gray-200 px-4 text-base font-medium text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:bg-gray-100"
+              className="h-[46px] w-full rounded-xl border border-gray-200 px-4 text-base font-medium text-gray-900 outline-none focus:border-[#3d5570] focus:ring-2 focus:ring-[#f2ede5] disabled:bg-gray-100"
             />
           </label>
           <label className="block space-y-2 text-sm font-bold text-gray-600">
@@ -151,7 +151,7 @@ export default function EditOutfitModal({ outfit, open, onOpenChange, onSaved }:
               onChange={(event) => setDescription(event.target.value)}
               disabled={saving}
               rows={3}
-              className="w-full resize-y rounded-xl border border-gray-200 px-4 py-3 text-base font-medium text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:bg-gray-100"
+              className="w-full resize-y rounded-xl border border-gray-200 px-4 py-3 text-base font-medium text-gray-900 outline-none focus:border-[#3d5570] focus:ring-2 focus:ring-[#f2ede5] disabled:bg-gray-100"
             />
           </label>
           <label className="block space-y-2 text-sm font-bold text-gray-600">
@@ -162,7 +162,7 @@ export default function EditOutfitModal({ outfit, open, onOpenChange, onSaved }:
               maxLength={100}
               required
               disabled={saving}
-              className="h-[46px] w-full rounded-xl border border-gray-200 px-4 text-base font-medium text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:bg-gray-100"
+              className="h-[46px] w-full rounded-xl border border-gray-200 px-4 text-base font-medium text-gray-900 outline-none focus:border-[#3d5570] focus:ring-2 focus:ring-[#f2ede5] disabled:bg-gray-100"
             />
           </label>
           <fieldset disabled={saving} className="space-y-2">
@@ -176,8 +176,8 @@ export default function EditOutfitModal({ outfit, open, onOpenChange, onSaved }:
                 {wardrobe.map((item) => {
                   const checked = selectedClothesIds.includes(item.id);
                   return (
-                    <label key={item.id} className={`flex cursor-pointer items-center gap-2 rounded-lg p-2 transition-colors ${checked ? 'bg-blue-50' : 'hover:bg-gray-50'}`}>
-                      <input type="checkbox" checked={checked} onChange={() => toggleClothes(item.id)} className="size-4 accent-blue-500" />
+                    <label key={item.id} className={`flex cursor-pointer items-center gap-2 rounded-lg p-2 transition-colors ${checked ? 'bg-[#f2ede5]' : 'hover:bg-gray-50'}`}>
+                      <input type="checkbox" checked={checked} onChange={() => toggleClothes(item.id)} className="size-4 accent-[#3d5570]" />
                       <span className="size-10 shrink-0 overflow-hidden rounded-md bg-gray-100">
                         <OutfitImage imageUrl={item.imageUrl} alt="" />
                       </span>

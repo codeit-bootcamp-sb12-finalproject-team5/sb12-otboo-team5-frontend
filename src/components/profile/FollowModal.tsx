@@ -111,7 +111,7 @@ export default function FollowModal({ open, onOpenChange, type, targetUserId }: 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
-        className="bg-white w-[600px] h-[510px] max-w-[min(600px,90vw)] max-h-[min(510px,85vh)] p-0 gap-0 rounded-[30px] border-0 shadow-lg flex overflow-hidden"
+        className="bg-white w-[600px] h-[510px] max-w-[min(600px,90vw)] max-h-[min(510px,85vh)] p-0 gap-0 rounded-[12px] border-0 shadow-lg flex overflow-hidden"
         showCloseButton={false}
       >
         <div className="flex flex-col h-full w-full">

@@ -18,7 +18,7 @@ export default function ClothesGrid({ onAddClick, isOwner, onEditClothes, onDele
   });
 
   return (
-    <div className="h-full overflow-y-auto">
+    <div className="h-full overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       {clothes.length === 0 ? (
         isEmpty() ? (
           <EmptyCloset onClickRegister={onAddClick} />

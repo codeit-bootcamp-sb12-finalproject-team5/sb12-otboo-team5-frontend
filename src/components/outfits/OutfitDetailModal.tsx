@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ChevronLeft, ChevronRight, Edit, LoaderCircle, MoreVertical, RefreshCw, Trash2, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Edit, LoaderCircle, MoreVertical, RefreshCw, Shirt, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { deleteOutfit, getOutfit } from '@/lib/api/outfits';
 import { createFeed } from '@/lib/api/feeds';
@@ -10,7 +10,6 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogTitle,
@@ -34,14 +33,17 @@ type DetailState =
 function OutfitDetails({ detail, summary, onRegisterFeed, isFeedRegistering }: { detail: OutfitDto; summary: OutfitDto; onRegisterFeed: () => void; isFeedRegistering: boolean }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const clothes = detail.clothes;
-  const currentClothes = clothes[currentIndex];
+  const visualItems: OutfitDto['clothes'] = detail.image
+    ? [{ id: `generated-${detail.id}`, name: `${detail.name} 생성 이미지`, imageUrl: detail.image }, ...clothes]
+    : clothes;
+  const currentClothes = visualItems[currentIndex];
   const summaryNames = new Map(summary.clothes.map((item) => [item.id, item.name]));
   const getClothesName = (item: OutfitDto['clothes'][number], index: number) => (
     item.name || summaryNames.get(item.id) || `의류 ${index + 1}`
   );
   const changeImage = (direction: number) => {
-    if (clothes.length > 1) {
-      setCurrentIndex((index) => (index + direction + clothes.length) % clothes.length);
+    if (visualItems.length > 1) {
+      setCurrentIndex((index) => (index + direction + visualItems.length) % visualItems.length);
     }
   };
 
@@ -58,7 +60,7 @@ function OutfitDetails({ detail, summary, onRegisterFeed, isFeedRegistering }: {
             changeImage(event.key === 'ArrowLeft' ? -1 : 1);
           }
         }}
-        className="min-w-0 border-b border-[#e7e7e9] outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#1e89f4] md:border-r md:border-b-0"
+        className="min-w-0 border-b border-[#ded6cb] outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#3d5570] md:border-r md:border-b-0"
       >
         <div className="relative aspect-square bg-[#f7f7f8]">
           <OutfitImage
@@ -66,13 +68,13 @@ function OutfitDetails({ detail, summary, onRegisterFeed, isFeedRegistering }: {
             alt={currentClothes ? getClothesName(currentClothes, currentIndex) : '등록된 의류가 없습니다'}
             className="size-full object-contain"
           />
-          {clothes.length > 1 && (
+          {visualItems.length > 1 && (
             <>
               <button
                 type="button"
                 aria-label="이전 의류 사진"
                 onClick={() => changeImage(-1)}
-                className="absolute top-1/2 left-4 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-[#373740] shadow-md transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-[#1e89f4]"
+                className="absolute top-1/2 left-4 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-[#3d5570] shadow-md transition-colors hover:bg-[#f2ede5] focus-visible:outline-2 focus-visible:outline-[#3d5570]"
               >
                 <ChevronLeft className="size-6" aria-hidden="true" />
               </button>
@@ -80,7 +82,7 @@ function OutfitDetails({ detail, summary, onRegisterFeed, isFeedRegistering }: {
                 type="button"
                 aria-label="다음 의류 사진"
                 onClick={() => changeImage(1)}
-                className="absolute top-1/2 right-4 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-[#373740] shadow-md transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-[#1e89f4]"
+                className="absolute top-1/2 right-4 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-[#3d5570] shadow-md transition-colors hover:bg-[#f2ede5] focus-visible:outline-2 focus-visible:outline-[#3d5570]"
               >
                 <ChevronRight className="size-6" aria-hidden="true" />
               </button>
@@ -91,21 +93,21 @@ function OutfitDetails({ detail, summary, onRegisterFeed, isFeedRegistering }: {
           <p className="min-w-0 break-words text-base font-bold text-[#373740]">
             {currentClothes ? getClothesName(currentClothes, currentIndex) : '등록된 의류가 없습니다'}
           </p>
-          {clothes.length > 0 && (
-            <span className="shrink-0 text-sm text-[#808089]">{currentIndex + 1} / {clothes.length}</span>
+          {visualItems.length > 0 && (
+            <span className="shrink-0 text-sm text-[#808089]">{currentIndex + 1} / {visualItems.length}</span>
           )}
         </div>
-        {clothes.length > 0 && (
+        {visualItems.length > 0 && (
           <div className="flex gap-2.5 overflow-x-auto px-5 pt-4 pb-5" aria-label="의류 선택">
-            {clothes.map((item, index) => (
+            {visualItems.map((item, index) => (
               <button
                 type="button"
                 key={item.id}
                 aria-label={`${getClothesName(item, index)} 사진 보기`}
                 aria-pressed={currentIndex === index}
                 onClick={() => setCurrentIndex(index)}
-                className={`relative size-20 shrink-0 overflow-hidden rounded-xl border-2 transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1e89f4] ${
-                  currentIndex === index ? 'border-[#1e89f4]' : 'border-transparent'
+                className={`relative size-20 shrink-0 overflow-hidden rounded-xl border-2 transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3d5570] ${
+                  currentIndex === index ? 'border-[#3d5570]' : 'border-transparent'
                 }`}
               >
                 <OutfitImage imageUrl={item.imageUrl} alt="" className="size-full object-cover" />
@@ -119,18 +121,21 @@ function OutfitDetails({ detail, summary, onRegisterFeed, isFeedRegistering }: {
           <h2 className="text-2xl leading-snug font-bold break-words tracking-tight text-[#373740]">
             {detail.name}
           </h2>
-          <p className="mt-3 text-sm font-medium text-[#808089]">의류 {clothes.length}개</p>
+          <p className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#f2ede5] px-3 py-1.5 text-sm font-semibold text-[#7a8ca3]">
+            <Shirt className="size-4 text-[#b7a997]" aria-hidden="true" />
+            의류 {clothes.length}개
+          </p>
         </div>
-        <div>
-          <h3 className="text-sm font-bold text-[#808089]">설명</h3>
-          <p className="mt-2 leading-relaxed break-words whitespace-pre-wrap text-[#64646f]">
+        <div className="border-t border-[#ded6cb] pt-5">
+          <h3 className="text-[18px] font-bold text-[#0f2a44]">코디 설명</h3>
+          <p className="mt-2 leading-relaxed break-words whitespace-pre-wrap text-[15px] text-[#3d5570]">
             {detail.description || '등록된 설명이 없습니다.'}
           </p>
         </div>
         {detail.weather && <OutfitWeather weather={detail.weather} />}
         {['outfit', 'ootd'].includes(detail.category.toLowerCase()) && (
           <div className="mt-auto pt-4">
-            <Button className="w-full bg-[#1e89f4] hover:bg-[#1479d8]" disabled={isFeedRegistering} onClick={onRegisterFeed}>
+            <Button className="w-full bg-[#3d5570] hover:bg-[#0f2a44]" disabled={isFeedRegistering} onClick={onRegisterFeed}>
               {isFeedRegistering ? '피드 등록 중...' : '피드 등록하기'}
             </Button>
           </div>
@@ -233,22 +238,16 @@ export default function OutfitDetailModal({ outfit, onClose, onCloseAutoFocus, o
           event.preventDefault();
           onCloseAutoFocus();
         }}
-        className="max-h-[90dvh] w-[calc(100%-2rem)] max-w-[918px] gap-0 overflow-y-auto rounded-[20px] border-[#e7e7e9] bg-white p-0 sm:max-w-[918px]"
+        className="max-h-[90dvh] w-[calc(100%-2rem)] max-w-[918px] gap-0 overflow-y-auto rounded-[12px] border-[#e7e7e9] bg-white p-0 sm:max-w-[918px]"
       >
         <DialogTitle className="sr-only">{detail ? `${detail.name} 상세` : '아웃핏 상세'}</DialogTitle>
         <DialogDescription className="sr-only">아웃핏을 구성하는 의류 사진과 설명, 날씨를 확인하세요.</DialogDescription>
-        <DialogClose
-          aria-label="아웃핏 상세 닫기"
-          className="absolute top-3 right-3 z-10 flex size-9 items-center justify-center rounded-full bg-white/95 text-[#64646f] shadow-sm hover:bg-[#f7f7f8] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1e89f4]"
-        >
-          <X className="size-5" aria-hidden="true" />
-        </DialogClose>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
               type="button"
               aria-label="아웃핏 메뉴"
-              className="absolute top-3 right-14 z-10 flex size-9 items-center justify-center rounded-full bg-white/95 text-[#64646f] shadow-sm hover:bg-[#f7f7f8] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1e89f4]"
+              className="absolute top-3 right-3 z-10 flex size-9 items-center justify-center rounded-full bg-white/95 text-[#64646f] shadow-sm hover:bg-[#f2ede5] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3d5570]"
             >
               <MoreVertical className="size-5" aria-hidden="true" />
             </button>
@@ -274,7 +273,7 @@ export default function OutfitDetailModal({ outfit, onClose, onCloseAutoFocus, o
           </div>
         ) : (
           <div role="status" className="flex min-h-80 flex-col items-center justify-center gap-3 px-6 py-16 text-[#808089]">
-            <LoaderCircle className="size-7 animate-spin text-[#1e89f4]" aria-hidden="true" />
+            <LoaderCircle className="size-7 animate-spin text-[#3d5570]" aria-hidden="true" />
             <p>아웃핏을 불러오는 중이에요.</p>
           </div>
         )}
@@ -318,7 +317,7 @@ export default function OutfitDetailModal({ outfit, onClose, onCloseAutoFocus, o
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={feedRegistering}>취소</AlertDialogCancel>
-            <AlertDialogAction onClick={handleRegisterFeed} disabled={feedRegistering} className="bg-[#1e89f4] hover:bg-[#1479d8]">
+            <AlertDialogAction onClick={handleRegisterFeed} disabled={feedRegistering} className="bg-[#3d5570] hover:bg-[#0f2a44]">
               {feedRegistering ? '등록 중...' : '피드 등록'}
             </AlertDialogAction>
           </AlertDialogFooter>

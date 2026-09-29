@@ -80,7 +80,7 @@ export default function AddFeedModal({ open, onClose, onCreated, outfit }: AddFe
   return (
     <Dialog open={open} onOpenChange={handleCancel}>
       <DialogOverlay className="bg-[rgba(19,19,22,0.5)]" />
-      <DialogContent className="bg-white box-border content-stretch flex flex-col gap-6 items-center justify-center overflow-clip p-[30px] rounded-[30px] w-[733px] max-w-none" showCloseButton={false}>
+      <DialogContent className="bg-white box-border content-stretch flex flex-col gap-6 items-center justify-center overflow-clip p-[30px] rounded-[12px] w-[733px] max-w-none" showCloseButton={false}>
         {/* 헤더 */}
         <div className="content-stretch flex items-center justify-between relative shrink-0 w-full">
           <div className="content-stretch flex gap-2 items-center justify-start shrink-0" />
@@ -118,7 +118,7 @@ export default function AddFeedModal({ open, onClose, onCreated, outfit }: AddFe
           <button
             onClick={handleSubmit}
             disabled={loading || !content.trim()}
-            className="bg-[#1e89f4] box-border content-stretch flex gap-1.5 h-[46px] items-center justify-center px-[18px] py-2.5 relative rounded-[12px] shrink-0 hover:bg-[#1e89f4]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-[#3d5570] box-border content-stretch flex gap-1.5 h-[46px] items-center justify-center px-[18px] py-2.5 relative rounded-[12px] shrink-0 hover:bg-[#0f2a44] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <div className="font-bold leading-[0] not-italic relative shrink-0 text-[18px] text-nowrap text-white tracking-[-0.45px]">
               <p className="leading-[normal] whitespace-pre">{loading ? '등록 중...' : '등록'}</p>

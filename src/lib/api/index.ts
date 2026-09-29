@@ -79,7 +79,7 @@ export {
   extractByUrl,
 } from './clothes';
 
-export { createOutfit, getOutfitList, getOutfit, updateOutfit, deleteOutfit } from './outfits';
+export { createOutfit, getOutfitList, getOutfit, updateOutfit, deleteOutfit, generateOutfitImage } from './outfits';
 
 export {
   // Clothes Attributes

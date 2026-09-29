@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Dialog, DialogContent, DialogOverlay, DialogTitle, DialogClose } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogOverlay, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { useImageUpload } from '@/hooks/useImageUpload';
@@ -9,7 +9,6 @@ import { updateClothes } from '@/lib/api/clothes';
 import { toast } from 'sonner';
 import type { ClothesDto, ClothesType, ClothesAttributeDto } from '@/lib/api/types';
 
-import closeIcon from '@/assets/icons/ic_X.svg'
 import emptyImageIcon from '@/assets/icons/empty image.svg'
 
 const CLOTHES_TYPES = [
@@ -148,20 +147,12 @@ export default function EditClothesModal({ open, onClose, clothes }: EditClothes
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogOverlay className="bg-black/50" />
       <DialogContent className="max-w-[550px] p-0 bg-transparent border-none" showCloseButton={false}>
-        <div className="bg-white box-border content-stretch flex flex-col gap-6 items-center justify-start p-[30px] relative rounded-[20px] shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)] w-full max-h-[90vh] overflow-y-auto">
+        <div className="bg-white box-border content-stretch flex flex-col gap-6 items-center justify-start p-[30px] relative rounded-[12px] shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)] w-full max-h-[90vh] overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {/* 헤더 */}
-            <div className="content-stretch flex items-center justify-between relative shrink-0 w-full">
-              <div className="w-[30px]" />
+            <div className="content-stretch flex items-center justify-center relative shrink-0 w-full">
               <DialogTitle className="font-bold leading-none not-italic relative shrink-0 text-gray-800 text-[22px] text-nowrap tracking-[-0.55px]">
                 옷 수정
               </DialogTitle>
-              <DialogClose asChild>
-                <button className="overflow-clip relative shrink-0 size-[30px] hover:bg-gray-100 rounded transition-colors">
-                  <div className="absolute inset-[20.834%]">
-                    <img alt="닫기" className="block max-w-none size-full" src={closeIcon} />
-                  </div>
-                </button>
-              </DialogClose>
             </div>
 
             {/* 이미지 업로드 */}
@@ -183,7 +174,7 @@ export default function EditClothesModal({ open, onClose, clothes }: EditClothes
               </div>
               <button 
                 onClick={() => fileInputRef.current?.click()}
-                className="bg-blue-500 hover:bg-blue-600 box-border content-stretch flex flex-col gap-2 items-center justify-center mb-[-26px] overflow-clip px-3 py-1.5 relative rounded-[100px] shrink-0 transition-colors"
+                className="bg-[#3d5570] hover:bg-[#0f2a44] box-border content-stretch flex flex-col gap-2 items-center justify-center mb-[-26px] overflow-clip px-3 py-1.5 relative rounded-[100px] shrink-0 transition-colors"
               >
                 <div className="flex flex-col font-bold justify-center leading-none not-italic relative shrink-0 text-[16px] text-white tracking-[-0.4px] w-full">
                   <p className="leading-normal">변경</p>
@@ -310,7 +301,7 @@ export default function EditClothesModal({ open, onClose, clothes }: EditClothes
               <div className="content-stretch flex flex-col gap-2.5 items-start justify-start relative shrink-0 w-full">
                 <div className="flex items-center justify-between w-full">
                   <label htmlFor="edit-clothes-preference" className="font-bold text-gray-500 text-[14px] tracking-[-0.35px]">선호도</label>
-                  <span className="font-semibold text-blue-500 text-[14px]">{formData.preference} / 5</span>
+                  <span className="font-semibold text-[#3d5570] text-[14px]">{formData.preference} / 5</span>
                 </div>
                 <input
                   id="edit-clothes-preference"

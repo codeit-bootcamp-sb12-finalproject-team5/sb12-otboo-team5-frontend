@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import hangerIcon from '@/assets/icons/il_hanger.svg';
 import refreshIcon from '@/assets/icons/ic_refresh.svg';
+import wardrobeIllustration from '@/assets/illust_logos/recommendation-wardrobe.png';
 import {useRecommendationStore} from "@/lib/stores/useRecommendationStore.ts";
 import {useWeatherStore} from '@/lib/stores/useWeatherStore';
 import {getRecommendationUsage} from '@/lib/api/recommendations';
@@ -83,13 +83,14 @@ export default function RecommendationHeader({centered = false}: RecommendationH
   }
 
   const hasRecommendation = Boolean(recommendation?.outfits.some(outfit => outfit.clothes.length > 0));
+  const selectedDayLabel = selectedWeather ? getSelectedDayLabel(selectedWeather.forecastAt) : '오늘';
   const recommendationMessage = selectedWeather
     ? `${isToday(selectedWeather.forecastAt) ? '오늘' : formatDate(selectedWeather.forecastAt)} 날씨에 맞는 옷을 추천해드릴게요`
     : '';
   const recommendationModal = (
     <RecommendationConfirmModal
       open={isRecommendationModalOpen}
-      dateLabel={selectedWeather ? formatDate(selectedWeather.forecastAt) : ''}
+      dateLabel={selectedWeather ? getRecommendationDateLabel(selectedWeather.forecastAt) : ''}
       usage={usage}
       clothes={clothes}
       selectedClothesIds={selectedClothesIds}
@@ -104,17 +105,28 @@ export default function RecommendationHeader({centered = false}: RecommendationH
 
   if (centered) {
     return (
-      <div className="flex min-h-[400px] w-full items-center justify-center">
-        <button
-          className="flex h-[52px] items-center justify-center gap-2 rounded-[12px] bg-[#1e89f4] px-6 font-bold text-[18px] text-white transition-colors hover:bg-[#1479dd] disabled:cursor-not-allowed disabled:opacity-50"
-          onClick={handleOpenRecommendationModal}
-          disabled={loading}
-        >
-          {loading ? '추천 중...' : 'OOTD 추천 받기'}
-          <img alt="" className="size-5 brightness-0 invert" src={refreshIcon} />
-        </button>
+      <section className="flex min-h-0 w-full flex-1 flex-col items-center justify-center py-3 text-center">
+        <header>
+          <h2 className="font-serif text-[29px] font-semibold tracking-[-0.05em] text-[#0f2a44] sm:text-[34px]">{selectedDayLabel} OOTD 추천</h2>
+          <p className="mt-1 text-[13px] font-semibold tracking-[-0.4px] text-[#7a8ca3]">날씨에 맞는 스타일링을 <span className="underline decoration-[#ded6cb] decoration-1 underline-offset-4">내 옷장</span>에서 추천해드려요.</p>
+        </header>
+
+        <img src={wardrobeIllustration} alt="옷장 속 다양한 의류 일러스트" className="mt-3 h-[clamp(125px,19vh,185px)] w-full max-w-[430px] object-contain" />
+        <p className="-mt-1 text-[13px] font-semibold tracking-[-0.4px] text-[#7a8ca3]">버튼을 눌러 날씨에 맞는 OOTD를 추천받아보세요.</p>
+
+        <div className="mt-3 border-t border-[#e5ddd2] pt-3">
+          <button
+            className="flex h-[42px] min-w-[230px] items-center justify-center gap-1.5 rounded-[10px] bg-[#0f2a44] px-4 text-[15px] font-bold text-white transition-colors hover:bg-[#3d5570] disabled:cursor-not-allowed disabled:opacity-50"
+            onClick={handleOpenRecommendationModal}
+            disabled={loading}
+          >
+            {loading ? '추천 중...' : 'OOTD 추천 받기'}
+            <img alt="" className="size-4 brightness-0 invert" src={refreshIcon} />
+          </button>
+          <p className="mt-1.5 text-[11px] font-medium text-[#7a8ca3]">추천 결과는 매번 새롭게 제안돼요.</p>
+        </div>
         {recommendationModal}
-      </div>
+      </section>
     );
   }
 
@@ -122,16 +134,13 @@ export default function RecommendationHeader({centered = false}: RecommendationH
     <div className="content-stretch flex items-center justify-between relative w-full">
       {/* 헤더 섹션 */}
       <div className="content-stretch flex flex-col gap-1 items-start justify-center relative shrink-0">
-        <div className="content-stretch flex gap-2 items-center justify-start relative shrink-0">
-          <div className="overflow-clip relative shrink-0 size-6">
-            <img alt="옷걸이" className="block max-w-none size-full" src={hangerIcon} />
-          </div>
-          <div className="font-extrabold leading-none not-italic relative shrink-0 text-[#212126] text-[24px] text-nowrap tracking-[-0.6px]">
+        <div className="content-stretch flex items-center justify-start relative shrink-0">
+          <div className="font-extrabold leading-none not-italic relative shrink-0 text-[#0f2a44] text-[21px] text-nowrap tracking-[-0.5px]">
             <p className="leading-normal whitespace-pre">#추천 OOTD</p>
           </div>
         </div>
         {hasRecommendation && (
-          <div className="font-semibold leading-none not-italic relative shrink-0 text-[#808089] text-[18px] text-nowrap tracking-[-0.45px]">
+          <div className="font-semibold leading-none not-italic relative shrink-0 text-[#7a8ca3] text-[15px] text-nowrap tracking-[-0.4px]">
             <p className="leading-normal whitespace-pre">{recommendationMessage}</p>
           </div>
         )}
@@ -141,16 +150,16 @@ export default function RecommendationHeader({centered = false}: RecommendationH
       <div className="content-stretch flex gap-3 items-center justify-start relative shrink-0">
         {/* OOTD 추천 요청 버튼 */}
         <button
-          className="bg-white box-border content-stretch flex gap-1.5 h-[46px] items-center justify-center px-[18px] py-2.5 relative rounded-[12px] shrink-0 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-[#d4d4d9] shadow-[0px_2px_4px_0px_rgba(55,55,64,0.03)]"
+          className="bg-[#fbfaf7] box-border content-stretch flex gap-1.5 h-[42px] items-center justify-center px-4 py-2 relative rounded-[10px] shrink-0 hover:bg-[#f2ede5] transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-[#7a8ca3] shadow-[0px_2px_6px_rgba(15,42,68,0.05)]"
           onClick={handleOpenRecommendationModal}
           disabled={loading}
         >
-          <div className="font-semibold leading-none not-italic relative shrink-0 text-[#696975] text-[16px] text-nowrap tracking-[-0.4px]">
+          <div className="font-semibold leading-none not-italic relative shrink-0 text-[#3d5570] text-[14px] text-nowrap tracking-[-0.35px]">
             <p className="leading-normal whitespace-pre">
               {loading ? '추천 중...' : hasRecommendation ? '다른 옷 추천' : 'OOTD 추천 받기'}
             </p>
           </div>
-          <img alt="새로고침" className="size-5" src={refreshIcon} />
+          <img alt="새로고침" className="size-4" src={refreshIcon} />
         </button>
 
       </div>
@@ -172,6 +181,32 @@ function isToday(dateTime: string) {
 function formatDate(dateTime: string) {
   const date = new Date(dateTime);
   return `${date.getMonth() + 1}월 ${date.getDate()}일`;
+}
+
+function getSelectedDayLabel(dateTime: string) {
+  const selectedDate = new Date(dateTime);
+  const today = new Date();
+  const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  const startOfSelected = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+  const dayDifference = Math.round((startOfSelected.getTime() - startOfToday.getTime()) / 86_400_000);
+
+  if (dayDifference <= 0) return '오늘의';
+  if (dayDifference === 1) return '내일';
+  if (dayDifference === 2) return '모레';
+  return `${selectedDate.getMonth() + 1}월 ${selectedDate.getDate()}일`;
+}
+
+function getRecommendationDateLabel(dateTime: string) {
+  const selectedDate = new Date(dateTime);
+  const today = new Date();
+  const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  const startOfSelected = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+  const dayDifference = Math.round((startOfSelected.getTime() - startOfToday.getTime()) / 86_400_000);
+
+  if (dayDifference <= 0) return '오늘';
+  if (dayDifference === 1) return '내일';
+  if (dayDifference === 2) return '모레';
+  return formatDate(dateTime);
 }
 
 async function getAllClothes(ownerId: string) {

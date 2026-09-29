@@ -69,7 +69,7 @@ export default function ProfileSummary({
 
   if (profileLoading && !isOwnProfile) {
     return (
-      <div className="box-border content-stretch flex items-center justify-between pb-5 pt-0 px-5 relative w-full">
+      <div className="box-border content-stretch flex items-center justify-between pb-0 pt-0 px-5 relative w-full">
         {/* 프로필 스켈레톤 */}
         <div className="content-stretch flex gap-5 items-center justify-start relative shrink-0">
           <div className="bg-gray-200 relative rounded-[100px] shrink-0 size-[90px] animate-pulse" />
@@ -91,7 +91,7 @@ export default function ProfileSummary({
   }
 
   return (
-    <div className="box-border content-stretch flex items-center justify-between pb-5 pt-0 px-5 relative w-full">
+    <div className="box-border content-stretch flex items-center justify-between pb-0 pt-0 px-5 relative w-full">
       <div className="content-stretch flex gap-5 items-center justify-start relative shrink-0">
         {/* 프로필 이미지 */}
         <div className="bg-[#a9a9b1] relative rounded-[100px] shrink-0 size-[90px] overflow-hidden">
@@ -160,7 +160,7 @@ export default function ProfileSummary({
             className={`box-border content-stretch flex gap-1.5 h-[46px] items-center justify-center px-[18px] py-2.5 relative rounded-[12px] shrink-0 transition-colors ${
               followSummary?.followedByMe 
                 ? 'bg-[#f7f7f8] hover:bg-[#eeeeef]' 
-                : 'bg-[#1e89f4] hover:bg-[#1a7ae6]'
+                : 'bg-[#3d5570] hover:bg-[#0f2a44]'
             }`}
           >
             <div className={`font-['SUIT:Bold',_sans-serif] leading-[0] not-italic relative shrink-0 text-[18px] text-nowrap tracking-[-0.45px] ${

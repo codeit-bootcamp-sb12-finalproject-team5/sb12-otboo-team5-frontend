@@ -118,10 +118,10 @@ export default function RecommendationPreferencesPage() {
   };
 
   return (
-    <div className="h-full overflow-y-auto bg-[#f7f9fc] px-5 py-8 sm:px-8 lg:px-12">
+    <div className="h-full overflow-y-auto bg-[#fcfaf6] px-5 py-8 sm:px-8 lg:px-12">
       <div className="mx-auto max-w-5xl pb-8">
-        <div className="mb-6 rounded-3xl bg-gradient-to-br from-[#e9f4ff] to-white px-6 py-7 sm:px-8">
-          <div className="mb-3 flex size-11 items-center justify-center rounded-2xl bg-[#3182f6] text-white shadow-lg shadow-blue-200">
+        <div className="mb-6 rounded-3xl bg-gradient-to-br from-[#f2ede5] to-white px-6 py-7 sm:px-8">
+          <div className="mb-3 flex size-11 items-center justify-center rounded-2xl bg-[#3d5570] text-white shadow-lg shadow-[#b7a997]/40">
             <Sparkles className="size-5" />
           </div>
           <h1 className="text-2xl font-extrabold tracking-[-0.7px] text-[#34343d] sm:text-3xl">나에게 맞는 옷을 찾아볼까요?</h1>
@@ -135,7 +135,7 @@ export default function RecommendationPreferencesPage() {
             <section key={field.key} className="rounded-2xl border border-[#e7e9ee] bg-white p-5 shadow-sm sm:p-6">
               <div className="mb-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
                 <h2 className="text-lg font-extrabold tracking-[-0.45px] text-[#34343d]">{field.title}</h2>
-                <span className="text-sm font-semibold text-[#3182f6]">{preferences[field.key].length}개 선택</span>
+                <span className="text-sm font-semibold text-[#3d5570]">{preferences[field.key].length}개 선택</span>
               </div>
               <p className="mb-4 text-sm font-medium tracking-[-0.3px] text-[#858590]">{field.description}</p>
               <div className="flex max-h-56 flex-wrap gap-2 overflow-y-auto pr-1">
@@ -150,8 +150,8 @@ export default function RecommendationPreferencesPage() {
                       className={cn(
                         'inline-flex min-h-9 items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-semibold tracking-[-0.3px] transition-colors',
                         isSelected
-                          ? 'border-[#3182f6] bg-[#e9f4ff] text-[#1d6fd8]'
-                          : 'border-[#e0e2e7] bg-white text-[#666672] hover:border-[#9fc7fa] hover:bg-[#f5f9ff]',
+                          ? 'border-[#3d5570] bg-[#f2ede5] text-[#0f2a44]'
+                          : 'border-[#ded6cb] bg-white text-[#666672] hover:border-[#b7a997] hover:bg-[#f2ede5]',
                       )}
                     >
                       {isSelected && <Check className="size-3.5" aria-hidden="true" />}
@@ -165,7 +165,7 @@ export default function RecommendationPreferencesPage() {
 
           <div className="sticky bottom-0 flex flex-col gap-3 rounded-2xl border border-[#e7e9ee] bg-white/95 p-4 shadow-lg backdrop-blur sm:flex-row sm:items-center sm:justify-between sm:px-5">
             <p className="text-sm font-semibold text-[#666672]">
-              총 <span className="text-[#3182f6]">{selectedCount}개</span>의 선호도를 선택했어요.
+              총 <span className="text-[#3d5570]">{selectedCount}개</span>의 선호도를 선택했어요.
             </p>
             <div className="flex gap-2 sm:w-auto">
               <Button type="button" variant="secondary" className="flex-1 sm:flex-none" onClick={() => navigate('/recommendations')}>
